@@ -7,6 +7,7 @@
   - Tăng tốc độ infer và finetune
 
 ![](img/envi-405b-00.jpg)
+*llama 3.1 405b vẫn hallu ra tiếng Trung trong tác vụ dịch Anh Việt*
 
 **Cách làm**
 - Tạo En, Vi dataset chứa các tài liệu tiếng Anh Việt và giả sử đó là toàn bộ nội dung của 2 ngôn ngữ
@@ -54,6 +55,20 @@ Theo thể loại:
   5%   20.3G   laws
   3%   11.4G   gov
 ```
+
+**Đối tượng thực hành**
+- qwen2.5 có 0.5b, 1.5b, 3b, 7b, 14b, `32b`, `72b` models
+- llama3.x có 1b, 3b, 8b, `70b`, 405b models
+- gemma2 có 2b, 9b, `27b` models
+- Các model được đánh giấu có chất lượng tốt và có thể quant để chạy trên 24G hoặc 40G vram
+
+- `qwen2.5` https://huggingface.co/Qwen/Qwen2.5-14B-Instruct
+- `qwen2.0` https://huggingface.co/SeaLLMs/SeaLLMs-v3-7B-Chat
+- `qwen1.5` https://huggingface.co/5CD-AI/Viet-Sailor-4B-Instruct
+
+- [ ] Kiểm tra xem vocab của họ nhà qwen có giống nhau 100% không?
+
+- [ ] Sửa code llama.cpp python hoặc exllama để có thể chạy đc model đã sửa vocab
 
 - - -
 
