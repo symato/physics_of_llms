@@ -69,7 +69,7 @@ def get_uniq_tokens(infile):
             with open(outfile, "wt") as f:
                 f.write(json.dumps(count))
 
-            print(f'get_uniq_token {infile}:{count["last_line_idx"]} ...')
+            print(f'get_uniq_token {infile}:{count["last_line_idx"]} ...', flush = True)
             texts = []
 
 
@@ -79,7 +79,7 @@ def get_uniq_tokens(infile):
     with open(outfile, "wt") as f:
         f.write(json.dumps(count))
 
-    print(f'get_uniq_token {infile} DONE.')
+    print(f'get_uniq_token {infile} DONE.', flush = True)
     return json.load(open(outfile))
 
 
