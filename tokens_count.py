@@ -120,26 +120,45 @@ def get_final_count(input_files):
 
 count = get_final_count(input_files)
 
-tid_count_pairs = [ [k, v] for k, v in count.items() if v >= min_count ]
+tid_count_pairs = [ [k, v] for k, v in count.items() ]
 print(len(tid_count_pairs))
 
 tid_count_pairs.sort( key = lambda x: -x[1] )
 
-x = tid_count_pairs[        :   1000] + \
-    tid_count_pairs[ -11000 : -10000] + \
-    tid_count_pairs[  -1000 :       ]
+def ok(x):
+    tid, count = x
+
+    if count >= min_count:
+        return True
+
+    token = tokenizer.decode(int(tid))
+    for char in token:
+        if ord(char) > 255:
+            return False
+
+    return True
+
+tid_count_pairs = [ x for x in tid_count_pairs if ok(x) ]
+
+x = \
+    tid_count_pairs[        :    100] + \
+                        [[ "0" , 0 ]] + \
+    tid_count_pairs[ -10100 : -10000] + \
+                        [[ "0" , 0 ]] + \
+    tid_count_pairs[  -100 :        ] + \
+                        [[ "0" , 0 ]]
 
 maxx = 25
 spaces = " " * 100
 
 for tid, count in x:
+    if count == 0:
+        print("\n")
+        continue
+
     if tid != "last_line_idx":
         token = json.dumps(tokenizer.decode(int(tid)), ensure_ascii = False)
-        for char in token:
-            if ord(char) > 255:
-                break
-        if ord(char) > 255:
-            n = len(token)
-            print(f"{tid}{spaces[:10 - len(tid)]} {token}{spaces[:maxx - n]}\t{count:10.0f}")
+        n = len(token)
+        print(f"{tid}{spaces[:10 - len(tid)]} {token}{spaces[:maxx - n]}\t{count:10.0f}")
 
 print(len(tid_count_pairs))
