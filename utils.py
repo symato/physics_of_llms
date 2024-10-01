@@ -1,4 +1,6 @@
 import time, os
+import subprocess
+
 location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 ## Các màu hay dùng
@@ -36,7 +38,17 @@ def pretty_num(x):
 	return round(x*100)/100
 
 
+def mkdirs(path):
+	splits = path.split("/")
+	for i in range(0, len(splits)):
+	    x = "/".join(splits[ : i + 1])
+	    cmd = f"mkdir -p {x}"
+	    print(cmd)
+	    subprocess.run(cmd, shell = True)
+
+
 if __name__ == "__main__":
+
 	reset_timer(timer="my timer")
 
 	s = "chào cả nhà, cả nhà khỏe không ạ?"

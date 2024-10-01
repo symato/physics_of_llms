@@ -4,16 +4,23 @@ from functools import partial
 from utils import *
 from transformers import AutoTokenizer
 from threading import Thread
-import time
+import re
 
 try:
-    sys.argv[1]
-    input_files = ["test.jsonl.xz"]
+    x = re.sub(r'/*$', "", sys.argv[1].strip())
+    input_files = glob.glob(f"{x}/*.lzma")
 except:
-    input_files = glob.glob("../NAM-005_436G_Vi-En-Code/*.lzma")
+    input_files = ["data/test.jsonl.xz"]
+
+try:    model_path = sys.argv[2]
+except: model_path = "Qwen/Qwen2.5-14B-Instruct"
+
+
+PATH = f"data/{model_path}"
+mkdirs(PATH)
 
 tokenizer = AutoTokenizer.from_pretrained(
-    "Qwen/Qwen2.5-14B-Instruct",
+    model_path,
     model_max_length = 1024 * 1024 * 4, # 4m ctxlen có thể chứa 1 cuốn sách
 )
 
@@ -45,9 +52,10 @@ def merge_count(count, x):
 
 
 def get_uniq_tokens(infile):
-    outfile = infile + "_count.json"
+    x = infile.split("/")[-1]
+    outfile = f"{PATH}/{x}_count.json.xz"
 
-    try: count = json.load(open(outfile))
+    try: count = json.load(lzma.open(outfile))
     except: count = { "last_line_idx": 0 }
 
     if "last_line_idx" not in count: # DONE
@@ -66,7 +74,7 @@ def get_uniq_tokens(infile):
             merge_count(count, count_tokens(texts))
             count["last_line_idx"] = idx
 
-            with open(outfile, "wt") as f:
+            with lzma.open(outfile, "wt") as f:
                 f.write(json.dumps(count))
 
             print(f'get_uniq_token {infile}:{count["last_line_idx"]} ...', flush = True)
@@ -76,15 +84,15 @@ def get_uniq_tokens(infile):
     merge_count(count, count_tokens(texts))
     count.pop("last_line_idx")
 
-    with open(outfile, "wt") as f:
+    with lzma.open(outfile, "wt") as f:
         f.write(json.dumps(count))
 
     print(f'get_uniq_token {infile} DONE.', flush = True)
-    return json.load(open(outfile))
+    return json.load(lzma.open(outfile))
 
 
 def get_final_count():
-    countfile = "tokens_count.json"
+    countfile = f"{PATH}/tokens_count.json.xz"
 
     if not os.path.exists(countfile):
         with Pool( processes = num_procs() ) as pool:
@@ -99,10 +107,10 @@ def get_final_count():
 
         return count
 
-        with open(countfile, "wt") as f:
+        with lzma.open(countfile, "wt") as f:
             f.write(json.dumps(count))
 
-    return json.load(open(countfile))
+    return json.load(lzma.open(countfile))
 
 
 count = get_final_count()
