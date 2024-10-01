@@ -8,8 +8,9 @@ import re
 
 try:
     x = re.sub(r'/*$', "", sys.argv[1].strip())
-    if x == "fast":
-        input_files = "fast"
+    if re.match(r"\d+", x):
+        input_files = "stats_mode"
+        min_count = int(x)
     else:
         input_files = glob.glob(f"{x}/*.lzma")
 except:
@@ -98,7 +99,7 @@ def get_uniq_tokens(infile):
 
 
 def get_final_count(input_files):
-    if input_files == "fast":
+    if input_files == "stats_mode":
         input_files = glob.glob(f"{PATH}/*_count.json.xz")
         input_files = [ x.replace("_count.json.xz", "") for x in input_files ]
         print(input_files)
@@ -117,14 +118,18 @@ def get_final_count(input_files):
 
 
 count = get_final_count(input_files)
-print(len(count))
 
-tid_count_pairs = [ [k, v] for k, v in count.items() ]
+tid_count_pairs = [ [k, v] for k, v in count.items() if v >= min_count ]
+print(len(tid_count_pairs))
 
 tid_count_pairs.sort( key = lambda x: -x[1] )
 
 x = tid_count_pairs[: 20] + tid_count_pairs[-20 : ]
-for t, c in x:
-    if t != "last_line_idx":
-        t = int(t)
-        print(f"{t}\t\t'{re.escape(tokenizer.decode(t))}'\t\t\t{c}")
+
+spaces = " " * 100
+for tid, c in x:
+    if tid != "last_line_idx":
+        token = json.dumps(tokenizer.decode(int(tid)), ensure_ascii = False)
+        print(f"{tid}{spaces[:10 - len(tid)]} {token}{spaces[:30 - len(token)]} {c:10.0f}")
+
+print(len(tid_count_pairs))
