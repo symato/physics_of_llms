@@ -80,7 +80,7 @@ def get_final_count():
     if not os.path.exists(countfile):
 
         n = len(input_files)
-        chunk_size = (n // 2) + 1
+        chunk_size = (n // 5) + 1
 
         threads = [
             Thread(target = process_input_files, kwargs = { "files": input_files[i : i + chunk_size], })
