@@ -58,7 +58,7 @@ def get_uniq_tokens(infile):
         chunk_size = 256
         chunks = [texts[i:i + chunk_size] for i in range(0, len(texts), chunk_size)]
 
-        n = int( num_procs() * 0.5 )
+        n = int( num_procs() * 0.8 )
         with Pool(processes = n) as pool:
             for x in pool.imap_unordered(count_tokens, chunks):
                 merge_count(count, x)
@@ -80,7 +80,7 @@ def get_final_count():
     if not os.path.exists(countfile):
 
         n = len(input_files)
-        chunk_size = (n // 8) + 1
+        chunk_size = (n // 5) + 1
 
         threads = [
             Thread(target = process_input_files, kwargs = { "files": input_files[i : i + chunk_size], })
@@ -91,7 +91,7 @@ def get_final_count():
             thread.start()
             # nghỉ 1 lúc trước khi bắt đầu thread khác 
             # để để tạo sự lệch nhịp trong việc xử lý files đầu vào
-            time.sleep(60)
+            time.sleep(30)
 
         for thread in threads:
             thread.join() # finish
