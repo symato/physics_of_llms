@@ -1,13 +1,12 @@
 import os, sys, lzma, glob, json
 from multiprocessing import Pool
 from functools import partial
-from utils import *
-from transformers import AutoTokenizer
 from threading import Thread
 import re
 
-model_path = "Qwen/Qwen2.5-14B-Instruct"
-model_path = "meta-llama/Llama-3.1-70B-Instruct"
+from utils import *
+from unicode_utils import *
+from tokens_check import *
 
 min_count = 0
 max_count = 0
@@ -35,36 +34,6 @@ PATH = f"data/{model_path}"
 mkdirs(PATH)
 
 
-'''
-The 4E00—9FFF range covers CJK Unified Ideographs (CJK=Chinese, Japanese and Korean). 
-There are a number of lower ranges that relate, to some degree, to CJK:
-
-31C0—31EF CJK Strokes
-31F0—31FF Katakana Phonetic Extensions
-3200—32FF Enclosed CJK Letters and Months
-3300—33FF CJK Compatibility
-3400—4DBF CJK Unified Ideographs Extension A
-4DC0—4DFF Yijing Hexagram Symbols
-4E00—9FFF CJK Unified Ideographs 
-'''
-min_cjk = ord('\u4e00')
-max_cjk = ord('\u9fff')
-
-###
-def contains_cjk(token):
-    for char in token:
-        o = ord(char)
-        if min_cjk <= o and o <= max_cjk:
-            return True
-    return False
-
-###
-def not_latin(token):
-    for char in token:
-        if ord(char) > 255:
-            return True
-    return False
-
 ###
 def ok(x):
     tid, count = x
@@ -79,18 +48,11 @@ def ok(x):
         if contains_cjk(token):
             return False            
     else:
-        # Loại nếu không phải chữ latin
-        if not_latin(token):
+        # Loại nếu không phải ascii
+        if not_ascii(token):
             return False
 
     return True
-
-
-
-tokenizer = AutoTokenizer.from_pretrained(
-    model_path,
-    model_max_length = 1024 * 1024 * 4, # 4m ctxlen có thể chứa 1 cuốn sách
-)
 
 
 def count_tokens(texts):
@@ -159,14 +121,14 @@ def get_uniq_tokens(infile):
     if "last_line_idx" in count:
         count.pop("last_line_idx")
 
-    # Loại bỏ cjk and not_latin
+    # Loại bỏ cjk and not_ascii
     for k, v in list(count.items()):
         token = tokenizer.decode(int(k))
 
         if contains_cjk(token):
             count.pop(k)
 
-        elif v < 10 and not_latin(token):
+        elif v < 10 and not_ascii(token):
             count.pop(k)
 
     return count
