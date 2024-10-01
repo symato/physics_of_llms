@@ -64,6 +64,22 @@ unwanted_langs = '''
 unwanted_langs = "".join(unwanted_langs)
 unwanted_langs_re = regex.compile(f'[{unwanted_langs}]+')
 
+'''
+https://stackoverflow.com/questions/64509631/is-there-a-regex-to-match-all-unicode-emojis
+/(\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/g
+'''
+'''
+import re
+emoji_re = r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'
+
+def is_emoji(token):
+    for c in token:
+        m = re.match(emoji_re, c)
+        if not m:
+            print(m, c, ord(c))
+            return False
+    return True
+'''
 
 def contains_unwanted(token):
     if contains_cjk(token):
@@ -89,28 +105,34 @@ There are a number of lower ranges that relate, to some degree, to CJK:
 4DC0—4DFF Yijing Hexagram Symbols
 4E00—9FFF CJK Unified Ideographs 
 '''
+
+min_cjk = 11935
 # min_cjk = ord('\u31c0')
-min_cjk = ord('\u4e00')
+
+max_cjk = 64055
 # max_cjk = ord('\u9fff')
-max_cjk = 54876
 
 if __name__ ==  "__main__":
 
-    samples = """
+    unwanted = """
 ทรูวิชั่นส์asdf, ầds tiến lên
 게시판
 활
+⽗
+臘
+怒
+辰
+⺟
+旅
+里
+拓
+見
+嘆
 """.strip().split("\n")
 
-    for x in samples:
+    for x in unwanted:
         if not contains_unwanted(x):
          print(x)
          print(min_cjk, max_cjk)
          for c in x:
             print(ord(c), c)
-
-'''
-
-python3 tokens_check.py > latin_tokens.txt
-
-'''

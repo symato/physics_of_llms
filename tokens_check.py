@@ -3,7 +3,7 @@ from transformers import AutoTokenizer
 from unicode_utils import *
 
 model_path = "Qwen/Qwen2.5-14B-Instruct"
-model_path = "meta-llama/Llama-3.1-70B-Instruct"
+# model_path = "meta-llama/Llama-3.1-70B-Instruct"
 
 tokenizer = AutoTokenizer.from_pretrained(
     model_path,
@@ -12,6 +12,7 @@ tokenizer = AutoTokenizer.from_pretrained(
 
 wanted = open("tokens_wanted.txt", "wt")
 unwanted = open("tokens_unwanted.txt", "wt")
+wanted_count = 0
 
 for tid in range(0, tokenizer.vocab_size):
 	token = tokenizer.decode(tid)
@@ -19,4 +20,7 @@ for tid in range(0, tokenizer.vocab_size):
 	if contains_unwanted(token):
 		unwanted.write(token + "\n")
 	else:
+		wanted_count += 1
 		wanted.write(token + "\n")
+
+print(f"wanted {wanted_count} / {tokenizer.vocab_size}")
