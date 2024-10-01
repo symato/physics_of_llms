@@ -134,31 +134,58 @@ total = len(tid_count_pairs)
 
 tid_count_pairs.sort( key = lambda x: -x[1] )
 
+'''
+The 4E00—9FFF range covers CJK Unified Ideographs (CJK=Chinese, Japanese and Korean). 
+There are a number of lower ranges that relate, to some degree, to CJK:
+
+31C0—31EF CJK Strokes
+31F0—31FF Katakana Phonetic Extensions
+3200—32FF Enclosed CJK Letters and Months
+3300—33FF CJK Compatibility
+3400—4DBF CJK Unified Ideographs Extension A
+4DC0—4DFF Yijing Hexagram Symbols
+4E00—9FFF CJK Unified Ideographs 
+'''
+
+min_cjk = ord('\u4e00')
+max_cjk = ord('\u9fff')
+removed = []
+###
 def ok(x):
     tid, count = x
 
-    if count >= max_count:
-        return True
-
     if count < min_count:
+        removed.append(x)
         return False
 
     token = tokenizer.decode(int(tid))
-    for char in token:
-        if ord(char) > 255:
-            return False
+
+    if count >= max_count:
+        # loại đi nếu là CJK
+        for char in token:
+            o = ord(char)
+            if min_cjk <= o and o <= max_cjk:
+                removed.append(x)
+                return False
+
+    else:
+        # Loại nếu không phải chữ latin
+        for char in token:
+            if ord(char) > 255:
+                removed.append(x)
+                return False
 
     return True
 
 tid_count_pairs = [ x for x in tid_count_pairs if ok(x) ]
 
 x = \
-    tid_count_pairs[        :    100] + \
-                        [[ "0" , 0 ]] + \
-    tid_count_pairs[ -10100 : -10000] + \
-                        [[ "0" , 0 ]] + \
-    tid_count_pairs[  -100 :        ] + \
-                        [[ "0" , 0 ]]
+    removed[        :    100] + \
+                [[ "0" , 0 ]] + \
+    removed[ -10100 : -10000] + \
+                [[ "0" , 0 ]] + \
+    removed[  -100 :        ] + \
+                [[ "0" , 0 ]]
 
 maxx = 25
 spaces = " " * 100
@@ -174,3 +201,111 @@ for tid, count in x:
         print(f"{tid}{spaces[:10 - len(tid)]} {token}{spaces[:maxx - n]}\t{count:10.0f}")
 
 print(f"{len(tid_count_pairs)} / {total}")
+
+
+'''
+python3 tokens_count.py 3500 20000
+87352 / 148986
+
+75608      ">Create"                          3527
+31588      "WebElement"                       3527
+90835      "invalidate"                       3526
+73046      "cych"                             3526
+86107      " erklä"                           3526
+97599      " dicts"                           3525
+69317      "_JOIN"                            3525
+86828      "(geometry"                        3524
+70076      " MainPage"                        3523
+91795      "departments"                      3523
+83245      " imdb"                            3523
+95435      ".checkbox"                        3523
+80325      " DTO"                             3522
+97781      "PermissionsResult"                3522
+79924      "\titer"                           3522
+38913      "_WORLD"                           3522
+49931      " TIMER"                           3522
+53601      "HasMaxLength"                     3522
+85663      ".purchase"                        3521
+64668      ".Getter"                          3521
+96417      ".playlist"                        3520
+31923      ">\";"                             3520
+72631      ":hidden"                          3519
+66323      "(rgb"                             3519
+81374      ".bz"                              3519
+91192      " egret"                           3519
+84636      ")\":"                             3519
+93277      " kuk"                             3518
+69462      " Spiele"                          3518
+83486      ".answers"                         3518
+51439      "getX"                             3517
+68915      "(seg"                             3517
+55612      "signin"                           3517
+96268      "\tcomment"                        3517
+62444      " getHeight"                       3516
+93354      " WebClient"                       3516
+88056      "_residual"                        3516
+89459      "(dateTime"                        3516
+85464      "[mask"                            3516
+8986       " occas"                           3515
+95383      "/Base"                            3515
+35130      "entai"                            3515
+93544      "(SS"                              3515
+95267      "(thing"                           3514
+78330      "[from"                            3514
+71823      "_MARGIN"                          3514
+18839      "mercial"                          3514
+85524      "_Location"                        3514
+53230      "\tmp"                             3514
+89875      ".listFiles"                       3513
+47519      "THREAD"                           3513
+45528      " incarcer"                        3513
+86352      " MDB"                             3513
+60156      "(speed"                           3512
+65641      " ClassNotFoundException"          3512
+55575      "_NATIVE"                          3512
+62421      "_initialized"                     3511
+88633      "isObject"                         3511
+80308      "_Stop"                            3510
+75139      ".nanoTime"                        3510
+75903      "_sentences"                       3510
+38285      "adx"                              3510
+81422      "BACKGROUND"                       3509
+59845      ")});\n"                           3509
+80551      "Instantiate"                      3509
+57560      "_LICENSE"                         3509
+70747      "RenderTarget"                     3509
+48885      " })("                             3508
+27876      " **)"                             3508
+76669      "(priority"                        3508
+63827      ".authService"                     3508
+73475      "_cred"                            3508
+98344      " Wohnung"                         3508
+68700      "$I"                               3507
+66631      " SIMD"                            3506
+81226      "_shot"                            3506
+83858      "_ISO"                             3506
+31234      "ategori"                          3505
+54722      ">}'"                              3505
+78085      "\tstat"                           3505
+143250     " científico"                      3505
+72652      "=settings"                        3505
+52508      "%</"                              3505
+81497      ".correct"                         3504
+74018      "_SEQUENCE"                        3504
+48671      " ImageIcon"                       3503
+62930      "\tsettings"                       3503
+91458      " IEntity"                         3502
+80132      " readdir"                         3502
+90164      " dct"                             3502
+49777      " |\r\n"                           3501
+92334      "ULLET"                            3501
+41513      "_stride"                          3501
+32459      "lld"                              3501
+90781      " --------------------"            3501
+92938      "PageIndex"                        3501
+76993      "_algo"                            3501
+69802      ".TextUtils"                       3500
+78879      " Npgsql"                          3500
+82034      "(ra"                              3500
+
+'''
