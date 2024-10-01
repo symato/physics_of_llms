@@ -7,6 +7,8 @@ from threading import Thread
 import re
 
 min_count = 0
+max_count = 0
+
 try:
     x = re.sub(r'/*$', "", sys.argv[1].strip())
     if re.match(r"\d+", x):
@@ -19,11 +21,18 @@ except:
 print(input_files)
 
 
-try:    model_path = sys.argv[2]
-except: model_path = "Qwen/Qwen2.5-14B-Instruct"
+try:
+    max_count = int( sys.argv[2] )
+except:
+    pass
+print(min_count, max_count)
+
+
+model_path = "Qwen/Qwen2.5-14B-Instruct"
 
 PATH = f"data/{model_path}"
 mkdirs(PATH)
+
 
 tokenizer = AutoTokenizer.from_pretrained(
     model_path,
@@ -121,14 +130,14 @@ def get_final_count(input_files):
 count = get_final_count(input_files)
 
 tid_count_pairs = [ [k, v] for k, v in count.items() ]
-print(len(tid_count_pairs))
+total = len(tid_count_pairs)
 
 tid_count_pairs.sort( key = lambda x: -x[1] )
 
 def ok(x):
     tid, count = x
 
-    if count >= 3 * min_count:
+    if count >= max_count:
         return True
 
     if count < min_count:
@@ -164,4 +173,4 @@ for tid, count in x:
         n = len(token)
         print(f"{tid}{spaces[:10 - len(tid)]} {token}{spaces[:maxx - n]}\t{count:10.0f}")
 
-print(len(tid_count_pairs))
+print(f"{len(tid_count_pairs)} / {total}")
