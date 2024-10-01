@@ -1,0 +1,6 @@
+.git
+_git
+*.json
+*.jsonl
+*.txt
+__pycache__/
