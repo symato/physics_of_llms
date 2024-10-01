@@ -6,6 +6,7 @@ from transformers import AutoTokenizer
 from threading import Thread
 import re
 
+min_count = 0
 try:
     x = re.sub(r'/*$', "", sys.argv[1].strip())
     if re.match(r"\d+", x):
@@ -131,14 +132,14 @@ x = tid_count_pairs[        :   1000] + \
 maxx = 25
 spaces = " " * 100
 
-for tid, c in x:
+for tid, count in x:
     if tid != "last_line_idx":
         token = json.dumps(tokenizer.decode(int(tid)), ensure_ascii = False)
-        for c in token:
-            if ord(c) > 255:
+        for char in token:
+            if ord(char) > 255:
                 break
-        if ord(c) > 255:
+        if ord(char) > 255:
             n = len(token)
-            print(f"{tid}{spaces[:10 - len(tid)]} {token}{spaces[:maxx - n]}\t{c:10.0f}")
+            print(f"{tid}{spaces[:10 - len(tid)]} {token}{spaces[:maxx - n]}\t{count:10.0f}")
 
 print(len(tid_count_pairs))
