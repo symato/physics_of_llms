@@ -176,7 +176,6 @@ def get_final_count(input_files):
     if input_files == "stats_mode":
         input_files = glob.glob(f"{PATH}/*_count.json.xz")
         input_files = [ x.replace("_count.json.xz", "") for x in input_files ]
-        print(input_files)
 
     count = {}
     with Pool( processes = num_procs() ) as pool:
