@@ -14,7 +14,7 @@ except:
 
 tokenizer = AutoTokenizer.from_pretrained(
     "Qwen/Qwen2.5-14B-Instruct",
-    model_max_length = 1024 * 1024 * 4, # 4m ctxlen should fit a book
+    model_max_length = 1024 * 1024 * 4, # 4m ctxlen có thể chứa 1 cuốn sách
 )
 
 
@@ -52,7 +52,7 @@ def get_uniq_tokens(infile):
     else:
         count = { "last_line_idx": 0 }
 
-    if "last_line_idx" not in count: # đã xử lý ở version trước
+    if "last_line_idx" not in count: # DONE
         return count
 
     print(f'get_uniq_token {infile}:{count["last_line_idx"]} ...')
@@ -66,7 +66,7 @@ def get_uniq_tokens(infile):
         text = json.loads(line)["text"]
         texts.append( text )
 
-        if idx % 256 == 255:
+        if idx % 16 == 15:
             merge_count(count, count_tokens(texts))
             count["last_line_idx"] = idx
 
@@ -77,7 +77,7 @@ def get_uniq_tokens(infile):
 
 
     merge_count(count, count_tokens(texts))
-    count["last_line_idx"] = idx
+    count.pop("last_line_idx")
 
     with open(outfile, "wt") as f:
         f.write(json.dumps(count))
