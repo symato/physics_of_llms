@@ -128,7 +128,7 @@ tid_count_pairs.sort( key = lambda x: -x[1] )
 def ok(x):
     tid, count = x
 
-    if count >= min_count:
+    if count >= 3 * min_count:
         return True
 
     token = tokenizer.decode(int(tid))
