@@ -4,3 +4,4 @@ _git
 *.jsonl
 *.txt
 __pycache__/
+nohup.out

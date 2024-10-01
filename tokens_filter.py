@@ -12,7 +12,7 @@ except:
 
 tokenizer = AutoTokenizer.from_pretrained(
     "Qwen/Qwen2.5-14B-Instruct",
-    model_max_length = 1024 * 1024,
+    model_max_length = 1024 * 1024 * 4, # 4m ctxlen should fit a book
 )
 
 def get_uniq_tokens(infile):
