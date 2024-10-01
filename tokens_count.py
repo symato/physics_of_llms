@@ -48,7 +48,6 @@ There are a number of lower ranges that relate, to some degree, to CJK:
 '''
 min_cjk = ord('\u4e00')
 max_cjk = ord('\u9fff')
-removed = []
 
 ###
 def contains_cjk(token):
@@ -72,11 +71,15 @@ def ok(x):
     if count < min_count:
         return False
 
-    if count < max_count:
-        token = tokenizer.decode(int(tid))
+    token = tokenizer.decode(int(tid))
+
+    if count >= max_count:
+        # Lại nếu chứa cjk
+        if contains_cjk(token):
+            return False            
+    else:
         # Loại nếu không phải chữ latin
         if not_latin(token):
-            removed.append(x)
             return False
 
     return True
@@ -152,19 +155,18 @@ def get_uniq_tokens(infile):
         count = json.load(lzma.open(outfile))
 
 
-    # Loại bỏ cjk and not_latin
-    for k, v in list(count.items()):
-        try: token = tokenizer.decode(int(k))
-        except: token = None
-
-        if token:
-            if contains_cjk(token):
-                count.pop(k)
-            elif v < 10 and not_latin(token):
-                count.pop(k)
-
     if "last_line_idx" in count:
         count.pop("last_line_idx")
+
+    # Loại bỏ cjk and not_latin
+    for k, v in list(count.items()):
+        token = tokenizer.decode(int(k))
+
+        if contains_cjk(token):
+            count.pop(k)
+
+        elif v < 10 and not_latin(token):
+            count.pop(k)
 
     return count
 
@@ -194,9 +196,31 @@ count = get_final_count(input_files)
 tid_count_pairs = [ [k, v] for k, v in count.items() ]
 total = len(tid_count_pairs)
 
-tid_count_pairs.sort( key = lambda x: -x[1] )
 
-tid_count_pairs = [ x for x in tid_count_pairs if ok(x) ]
+def remove_not_ok_pairs(pairs):
+    keep = []
+    remove = []
+
+    for x in pairs:
+        if ok(x): keep.append(x)
+        else:   remove.append(x)
+
+    return keep, remove
+
+chunk_size = 1024*2
+chunks = [tid_count_pairs[i:i + chunk_size] for i in range(0, len(tid_count_pairs), chunk_size)]
+
+remain_pairs = []
+removed = []
+
+with Pool( processes = num_procs() ) as pool:
+    for keep, remove in pool.imap_unordered(remove_not_ok_pairs, chunks):
+        remain_pairs += keep
+        removed += remove
+
+
+# remain_pairs.sort( key = lambda x: -x[1] )
+
 
 x = \
     removed[        :    100] + \
@@ -219,7 +243,7 @@ for tid, count in x:
         n = len(token)
         print(f"{tid}{spaces[:10 - len(tid)]} {token}{spaces[:maxx - n]}\t{count:10.0f}")
 
-print(f"{len(tid_count_pairs)} / {total}")
+print(f"{len(remain_pairs)} / {total}")
 
 
 '''
