@@ -51,14 +51,14 @@ def merge_count(count, x):
         count[k] += v
 
 
-def get_uniq_tokens(infile):
+def get_uniq_tokens(infile, fast = False):
     x = infile.split("/")[-1]
     outfile = f"{PATH}/{x}_count.json.xz"
 
     try: count = json.load(lzma.open(outfile))
     except: count = { "last_line_idx": 0 }
 
-    if "last_line_idx" not in count: # DONE
+    if fast or "last_line_idx" not in count: # DONE
         return count
 
     texts = []
@@ -70,7 +70,7 @@ def get_uniq_tokens(infile):
         text = json.loads(line)["text"]
         texts.append( text )
 
-        if idx % 2000 == 1999:
+        if idx % 10000 == 9999:
             merge_count(count, count_tokens(texts))
             count["last_line_idx"] = idx
 
@@ -91,7 +91,7 @@ def get_uniq_tokens(infile):
     return json.load(lzma.open(outfile))
 
 
-def get_final_count():
+def get_final_count(fast = False):
     countfile = f"{PATH}/tokens_count.json.xz"
 
     if not os.path.exists(countfile):
@@ -102,7 +102,7 @@ def get_final_count():
         count = {}
         for infile in input_files:
 
-            x = get_uniq_tokens(infile)
+            x = get_uniq_tokens(infile, fast = fast)
             merge_count(count, x)
 
         return count
@@ -113,5 +113,5 @@ def get_final_count():
     return json.load(lzma.open(countfile))
 
 
-count = get_final_count()
+count = get_final_count(fast = True)
 print(len(count))
