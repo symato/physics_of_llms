@@ -99,8 +99,9 @@ def get_uniq_tokens(infile):
 
 def get_final_count(input_files):
     if input_files == "fast":
-        input_files = glob.glob(f"{PATH}/_count.json.xz")
+        input_files = glob.glob(f"{PATH}/*_count.json.xz")
         input_files = [ x.replace("_count.json.xz", "") for x in input_files ]
+        print(input_files)
 
     with Pool( processes = num_procs() ) as pool:
         for _ in pool.imap_unordered(get_uniq_tokens, input_files):
