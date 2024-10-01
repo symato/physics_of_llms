@@ -164,6 +164,9 @@ def get_uniq_tokens(infile):
             elif v < 10 and not_latin(token):
                 count.pop(k)
 
+    if "last_line_idx" in count:
+        count.pop("last_line_idx")
+
     return count
 
 
