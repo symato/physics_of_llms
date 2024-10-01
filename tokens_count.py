@@ -186,6 +186,7 @@ def get_final_count(input_files):
     return count
 
 
+print("get_final_count ...")
 count = get_final_count(input_files)
 
 tid_count_pairs = [ [k, v] for k, v in count.items() ]
@@ -208,14 +209,14 @@ chunks = [tid_count_pairs[i:i + chunk_size] for i in range(0, len(tid_count_pair
 remain_pairs = []
 removed = []
 
+print("remove_not_ok_pairs ...")
 with Pool( processes = num_procs() ) as pool:
     for keep, remove in pool.imap_unordered(remove_not_ok_pairs, chunks):
         remain_pairs += keep
         removed += remove
 
-
+print("sort remain_pairs ...")
 # remain_pairs.sort( key = lambda x: -x[1] )
-
 
 x = \
     removed[        :    100] + \
