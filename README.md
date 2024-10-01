@@ -62,11 +62,10 @@ Theo thể loại:
 - gemma2 có 2b, 9b, `27b` models
 - Các model được đánh giấu có chất lượng tốt và có thể quant để chạy trên 24G hoặc 40G vram
 
-- `qwen2.5` https://huggingface.co/Qwen/Qwen2.5-14B-Instruct
-- `qwen2.0` https://huggingface.co/SeaLLMs/SeaLLMs-v3-7B-Chat
-- `qwen1.5` https://huggingface.co/5CD-AI/Viet-Sailor-4B-Instruct
-
 - [ ] Kiểm tra xem vocab của họ nhà qwen có giống nhau 100% không?
+  - `qwen2.5` https://huggingface.co/Qwen/Qwen2.5-14B-Instruct
+  - `qwen2.0` https://huggingface.co/SeaLLMs/SeaLLMs-v3-7B-Chat
+  - `qwen1.5` https://huggingface.co/5CD-AI/Viet-Sailor-4B-Instruct
 
 - [ ] Sửa code llama.cpp python hoặc exllama để có thể chạy đc model đã sửa vocab
 
