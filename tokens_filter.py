@@ -54,10 +54,10 @@ def get_uniq_tokens(infile):
         count = {}
         texts =  [ json.loads(line)["text"] for line in lzma.open(infile) ]
 
-        chunk_size = 1024
+        chunk_size = 128
         chunks = [texts[i:i + chunk_size] for i in range(0, len(texts), chunk_size)]
 
-        n = int( num_procs() * 0.5 )
+        n = int( num_procs() * 0.9 )
         with Pool(processes = n) as pool:
             for x in pool.imap_unordered(count_tokens, chunks):
                 merge_count(count, x)
@@ -73,7 +73,7 @@ def get_final_count():
 
     if not os.path.exists(countfile):
 
-        delta = 3
+        delta = 2
         for i in range(0, len(input_files), delta):
             threads = [
                 Thread(target=get_uniq_tokens, kwargs={ "infile": infile, })
