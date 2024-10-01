@@ -53,8 +53,6 @@ def get_uniq_tokens(infile):
     if "last_line_idx" not in count: # DONE
         return count
 
-    print(f'get_uniq_token {infile}:{count["last_line_idx"]} ...')
-
     texts = []
 
     for idx, line in enumerate( lzma.open(infile) ):
@@ -71,6 +69,7 @@ def get_uniq_tokens(infile):
             with open(outfile, "wt") as f:
                 f.write(json.dumps(count))
 
+            print(f'get_uniq_token {infile}:{count["last_line_idx"]} ...')
             texts = []
 
 
@@ -80,6 +79,7 @@ def get_uniq_tokens(infile):
     with open(outfile, "wt") as f:
         f.write(json.dumps(count))
 
+    print(f'get_uniq_token {infile} DONE.')
     return json.load(open(outfile))
 
 
