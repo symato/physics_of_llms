@@ -119,10 +119,12 @@ def get_final_count(input_files):
 count = get_final_count(input_files)
 print(len(count))
 
-tid_count_pairs = [ [int(k), v] for k, v in count.items() ]
+tid_count_pairs = [ [k, v] for k, v in count.items() ]
 
 tid_count_pairs.sort( key = lambda x: -x[1] )
 
 x = tid_count_pairs[: 20] + tid_count_pairs[-20 : ]
 for t, c in x:
-    print(f"{t}\t\t'{re.escape(tokenizer.decode(t))}'\t\t\t{c}")
+    if t != "last_line_idx":
+        t = int(t)
+        print(f"{t}\t\t'{re.escape(tokenizer.decode(t))}'\t\t\t{c}")
