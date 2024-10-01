@@ -4,6 +4,7 @@ from functools import partial
 from utils import *
 from transformers import AutoTokenizer
 from threading import Thread
+import time
 
 try:
     sys.argv[1]
@@ -68,23 +69,31 @@ def get_uniq_tokens(infile):
     return json.load(open(outfile))
 
 
+def process_input_files(files):
+    for x in files:
+        get_uniq_tokens(x)
+
+
 def get_final_count():
     countfile = "tokens_count.json"
 
     if not os.path.exists(countfile):
 
-        delta = 2
-        for i in range(0, len(input_files), delta):
-            threads = [
-                Thread(target=get_uniq_tokens, kwargs={ "infile": infile, })
-                for infile in input_files[ i : i + delta ]
-            ]
+        n = len(input_files)
+        chunk_size = (n // 2) + 1
 
-            for thread in threads:
-                thread.start()
+        threads = [
+            Thread(target = process_input_files, kwargs = { "files": input_files[i : i + chunk_size], })
+            for i in range(0, n, chunk_size)
+        ]
 
-            for thread in threads:
-                thread.join() # finish
+        for thread in threads:
+            thread.start()
+            # nghỉ 10s để để tạo sự lệch nhịp trong việc xử lý files đầu vào
+            time.sleep(10)
+
+        for thread in threads:
+            thread.join() # finish
 
         count = {}
 
