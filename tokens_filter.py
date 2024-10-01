@@ -55,7 +55,7 @@ def get_uniq_tokens(infile):
         count = {}
         texts =  [ json.loads(line)["text"] for line in lzma.open(infile) ]
 
-        chunk_size = 128
+        chunk_size = 256
         chunks = [texts[i:i + chunk_size] for i in range(0, len(texts), chunk_size)]
 
         n = int( num_procs() * 0.9 )
