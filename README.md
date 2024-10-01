@@ -77,6 +77,7 @@ Theo thể loại:
 - tạo bộ từ điển từ ghép tiếng Việt thông dụng, chỉ cần khoảng 2k - 8k từ
 - dùng một bộ lọc trước lúc tknz để lọc và map từ ghép này vào token id mới
 - dùng một cách thông minh để khởi tạo embedding values của tokens mới
+  - Zero-Shot Tokenizer Transfer https://github.com/bminixhofer/zett
 - dùng lora finetune để refine new embeddings
   - freeze all layers, finetune embeddings trước
   - sau đó finetune all models
