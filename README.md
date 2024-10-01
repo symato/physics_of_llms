@@ -27,9 +27,16 @@
   trimmed vocabulary size to 50,589 and continually pretrained google/mt5-base on a merged 20GB dataset
 
 **Triển khai**
-- Dataset https://huggingface.co/datasets/Symonsters/NAM-005_436G_Vi-En-Code
+- [x] Dataset
+- [x] Lọc theo thống kê mới giảm được gần một nửa 86k / 151k (qwen vocab)
+  - bị mất một số emoji
+- [ ] Cần kết hợp với lọc theo bảng mã unicode
+  - giữ lại emoji
+  - loại bỏ cjk, thailand, chữ tượng hình ...
+- [ ] Target bộ từ vựng <= 64k
 
-650GB text Việt, Anh, Code (100b tokens) để tiếp tục pre-train LLMs
+650GB text Việt, Anh, Code (100b tokens)
+https://huggingface.co/datasets/Symonsters/NAM-005_436G_Vi-En-Code
 ```
  75.4G    100_book
  34.8G    100_code

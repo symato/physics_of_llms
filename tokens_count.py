@@ -239,11 +239,13 @@ for tid, count in x:
         n = len(token)
         print(f"{tid}{spaces[:10 - len(tid)]} {token}{spaces[:maxx - n]}\t{count:10.0f}")
 
-print(f"{len(remain_pairs)} / {total}")
+print(f"{len(remain_pairs)} / {tokenizer.vocab_size}")
 
 
 '''
 python3 tokens_count.py 5000 20000
+
+86543 / 151643
 
 137966     " нем"                            19977
 77334      "します"                          19945
