@@ -80,7 +80,7 @@ def get_final_count():
     if not os.path.exists(countfile):
 
         n = len(input_files)
-        chunk_size = (n // 5) + 1
+        chunk_size = (n // 3) + 1
 
         threads = [
             Thread(target = process_input_files, kwargs = { "files": input_files[i : i + chunk_size], })
@@ -91,7 +91,7 @@ def get_final_count():
             thread.start()
             # nghỉ 1 lúc trước khi bắt đầu thread khác 
             # để để tạo sự lệch nhịp trong việc xử lý files đầu vào
-            time.sleep(90)
+            time.sleep(120)
 
         for thread in threads:
             thread.join() # finish
