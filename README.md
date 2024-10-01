@@ -26,7 +26,7 @@
 **Triển khai**
 - Dataset https://huggingface.co/datasets/Symonsters/NAM-005_436G_Vi-En-Code
 
-650GB text Việt, Anh, Code (100b tokens) để tiếp tục pre-train BLOOM 7b1
+650GB text Việt, Anh, Code (100b tokens) để tiếp tục pre-train LLMs
 ```
  75.4G    100_book
  34.8G    100_code
