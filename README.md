@@ -1,6 +1,6 @@
 ## Tỉa và mapping vocab sao cho model chỉ sinh ra tiếng Anh và Việt
 - Các open source LLMs hiện tại khi dịch Anh, Việt thi thoảng model output tiếng Tàu
-- Bộ từ vựng Anh Việt có lẽ chỉ chiếm 1/4 trong tổng số 100k - 200k vocab size.
+- Bộ từ vựng Anh Việt có lẽ chỉ chiếm 1/4 - 1/2 trong tổng số 100k - 200k vocab size.
   Khi tỉa gọn lại thì sẽ giúp:
   - Không thể ouptut tokens nào khác ngoài En hoặc Vi
   - Giảm vram khi infer và finetune embeddings
