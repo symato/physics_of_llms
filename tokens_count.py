@@ -124,7 +124,7 @@ print(len(tid_count_pairs))
 
 tid_count_pairs.sort( key = lambda x: -x[1] )
 
-x = tid_count_pairs[: 20] + tid_count_pairs[-20 : ]
+x = tid_count_pairs[: 100] + tid_count_pairs[-100 : ]
 
 maxx = 20
 spaces = " " * 100
