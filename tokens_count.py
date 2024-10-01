@@ -22,7 +22,6 @@ def count_tokens(texts):
     count = {}
     for text in texts:
         # tokens = tokenizer.tokenize(text)
-
         token_ids = tokenizer.encode(text)
         # text = tokenizer.decode(token_ids)
 
@@ -48,59 +47,59 @@ def merge_count(count, x):
 def get_uniq_tokens(infile):
     outfile = infile + "_count.json"
 
-    if not os.path.exists(outfile):
+    if os.path.exists(outfile):
+        count = json.load(open(outfile))
+    else:
+        count = { "last_line_idx": 0 }
 
-        print(f"get_uniq_token {infile} ...")
+    if "last_line_idx" not in count: # đã xử lý ở version trước
+        return count
 
-        count = {}
-        texts =  [ json.loads(line)["text"] for line in lzma.open(infile) ]
+    print(f'get_uniq_token {infile}:{count["last_line_idx"]} ...')
 
-        chunk_size = 256
-        chunks = [texts[i:i + chunk_size] for i in range(0, len(texts), chunk_size)]
+    texts = []
 
-        n = int( num_procs() * 0.8 )
-        with Pool(processes = n) as pool:
-            for x in pool.imap_unordered(count_tokens, chunks):
-                merge_count(count, x)
+    for idx, line in enumerate( lzma.open(infile) ):
+        if idx <= count["last_line_idx"]:
+            continue
 
-        with open(outfile, "wt") as f:
-            f.write(json.dumps(count))
+        text = json.loads(line)["text"]
+        texts.append( text )
+
+        if idx % 256 == 255:
+            merge_count(count, count_tokens(texts))
+            count["last_line_idx"] = idx
+
+            with open(outfile, "wt") as f:
+                f.write(json.dumps(count))
+
+            texts = []
+
+
+    merge_count(count, count_tokens(texts))
+    count["last_line_idx"] = idx
+
+    with open(outfile, "wt") as f:
+        f.write(json.dumps(count))
 
     return json.load(open(outfile))
-
-
-def process_input_files(files):
-    for x in files:
-        get_uniq_tokens(x)
 
 
 def get_final_count():
     countfile = "tokens_count.json"
 
     if not os.path.exists(countfile):
-
-        n = len(input_files)
-        chunk_size = (n // 5) + 1
-
-        threads = [
-            Thread(target = process_input_files, kwargs = { "files": input_files[i : i + chunk_size], })
-            for i in range(0, n, chunk_size)
-        ]
-
-        for thread in threads:
-            thread.start()
-            # nghỉ 1 lúc trước khi bắt đầu thread khác 
-            # để để tạo sự lệch nhịp trong việc xử lý files đầu vào
-            time.sleep(30)
-
-        for thread in threads:
-            thread.join() # finish
+        with Pool( processes = num_procs() ) as pool:
+            for _ in pool.imap_unordered(get_uniq_tokens, input_files):
+                pass
 
         count = {}
-
         for infile in input_files:
+
             x = get_uniq_tokens(infile)
             merge_count(count, x)
+
+        return count
 
         with open(countfile, "wt") as f:
             f.write(json.dumps(count))
