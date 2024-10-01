@@ -130,6 +130,6 @@ spaces = " " * 100
 for tid, c in x:
     if tid != "last_line_idx":
         token = json.dumps(tokenizer.decode(int(tid)), ensure_ascii = False)
-        print(f"{tid}{spaces[:10 - len(tid)]} {token}{spaces[:30 - len(token)]} {c:10.0f}")
+        print(f"{tid}{spaces[:10 - len(tid)]} {token}{spaces[:30 - len(token)]}\t{c:10.0f}")
 
 print(len(tid_count_pairs))
