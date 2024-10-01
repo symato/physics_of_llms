@@ -34,17 +34,66 @@ PATH = f"data/{model_path}"
 mkdirs(PATH)
 
 
+'''
+The 4E00—9FFF range covers CJK Unified Ideographs (CJK=Chinese, Japanese and Korean). 
+There are a number of lower ranges that relate, to some degree, to CJK:
+
+31C0—31EF CJK Strokes
+31F0—31FF Katakana Phonetic Extensions
+3200—32FF Enclosed CJK Letters and Months
+3300—33FF CJK Compatibility
+3400—4DBF CJK Unified Ideographs Extension A
+4DC0—4DFF Yijing Hexagram Symbols
+4E00—9FFF CJK Unified Ideographs 
+'''
+min_cjk = ord('\u4e00')
+max_cjk = ord('\u9fff')
+removed = []
+
+###
+def contains_cjk(token):
+    for char in token:
+        o = ord(char)
+        if min_cjk <= o and o <= max_cjk:
+            return True
+    return False
+
+###
+def not_latin(token):
+    for char in token:
+        if ord(char) > 255:
+            return True
+    return False
+
+###
+def ok(x):
+    tid, count = x
+
+    if count < min_count:
+        removed.append(x)
+        return False
+
+    if count < max_count:
+        token = tokenizer.decode(int(tid))
+        # Loại nếu không phải chữ latin
+        if not_latin(token):
+            removed.append(x)
+            return False
+
+    return True
+
+
+
 tokenizer = AutoTokenizer.from_pretrained(
     model_path,
     model_max_length = 1024 * 1024 * 4, # 4m ctxlen có thể chứa 1 cuốn sách
 )
 
+
 def count_tokens(texts):
     count = {}
     for text in texts:
-        # tokens = tokenizer.tokenize(text)
         token_ids = tokenizer.encode(text)
-        # text = tokenizer.decode(token_ids)
 
         for tid in token_ids:
 
@@ -53,7 +102,6 @@ def count_tokens(texts):
 
             count[tid] += 1
     return count
-
 
 
 def merge_count(count, x):
@@ -72,40 +120,52 @@ def get_uniq_tokens(infile):
     try: count = json.load(lzma.open(outfile))
     except: count = { "last_line_idx": 0 }
 
-    if not os.path.exists(infile):
-        return count
+    if os.path.exists(infile) and "last_line_idx" in count: # DONE
 
-    if "last_line_idx" not in count: # DONE
-        return count
+        texts = []
 
-    texts = []
+        for idx, line in enumerate( lzma.open(infile) ):
+            if idx <= count["last_line_idx"]:
+                continue
 
-    for idx, line in enumerate( lzma.open(infile) ):
-        if idx <= count["last_line_idx"]:
-            continue
+            text = json.loads(line)["text"]
+            texts.append( text )
 
-        text = json.loads(line)["text"]
-        texts.append( text )
+            if idx % 10000 == 9999:
+                merge_count(count, count_tokens(texts))
+                count["last_line_idx"] = idx
 
-        if idx % 10000 == 9999:
-            merge_count(count, count_tokens(texts))
-            count["last_line_idx"] = idx
+                with lzma.open(outfile, "wt") as f:
+                    f.write(json.dumps(count))
 
-            with lzma.open(outfile, "wt") as f:
-                f.write(json.dumps(count))
-
-            print(f'get_uniq_token {infile}:{count["last_line_idx"]} ...', flush = True)
-            texts = []
+                print(f'get_uniq_token {infile}:{count["last_line_idx"]} ...', flush = True)
+                texts = []
 
 
-    merge_count(count, count_tokens(texts))
-    count.pop("last_line_idx")
+        merge_count(count, count_tokens(texts))
+        count.pop("last_line_idx")
 
-    with lzma.open(outfile, "wt") as f:
-        f.write(json.dumps(count))
+        with lzma.open(outfile, "wt") as f:
+            f.write(json.dumps(count))
 
-    print(f'get_uniq_token {infile} DONE.', flush = True)
-    return json.load(lzma.open(outfile))
+        print(f'get_uniq_token {infile} DONE.', flush = True)
+
+        count = json.load(lzma.open(outfile))
+
+
+    # Loại bỏ cjk and not_latin
+    for k, v in list(count.items()):
+        try: token = tokenizer.decode(int(k))
+        except: token = None
+
+        if token:
+            if contains_cjk(token):
+                count.pop(k)
+            elif v < 10 and not_latin(token):
+                count.pop(k)
+
+    return count
+
 
 
 def get_final_count(input_files):
@@ -133,49 +193,6 @@ tid_count_pairs = [ [k, v] for k, v in count.items() ]
 total = len(tid_count_pairs)
 
 tid_count_pairs.sort( key = lambda x: -x[1] )
-
-'''
-The 4E00—9FFF range covers CJK Unified Ideographs (CJK=Chinese, Japanese and Korean). 
-There are a number of lower ranges that relate, to some degree, to CJK:
-
-31C0—31EF CJK Strokes
-31F0—31FF Katakana Phonetic Extensions
-3200—32FF Enclosed CJK Letters and Months
-3300—33FF CJK Compatibility
-3400—4DBF CJK Unified Ideographs Extension A
-4DC0—4DFF Yijing Hexagram Symbols
-4E00—9FFF CJK Unified Ideographs 
-'''
-
-min_cjk = ord('\u4e00')
-max_cjk = ord('\u9fff')
-removed = []
-###
-def ok(x):
-    tid, count = x
-
-    if count < min_count:
-        removed.append(x)
-        return False
-
-    token = tokenizer.decode(int(tid))
-
-    if count >= max_count:
-        # loại đi nếu là CJK
-        for char in token:
-            o = ord(char)
-            if min_cjk <= o and o <= max_cjk:
-                removed.append(x)
-                return False
-
-    else:
-        # Loại nếu không phải chữ latin
-        for char in token:
-            if ord(char) > 255:
-                removed.append(x)
-                return False
-
-    return True
 
 tid_count_pairs = [ x for x in tid_count_pairs if ok(x) ]
 
