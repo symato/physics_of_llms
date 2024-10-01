@@ -214,8 +214,9 @@ with Pool( processes = num_procs() ) as pool:
         remain_pairs += keep
         removed += remove
 
-print("sort remain_pairs ...")
-# remain_pairs.sort( key = lambda x: -x[1] )
+print("sort remain_pairs and removed ...")
+remain_pairs.sort( key = lambda x: -x[1] )
+removed.sort( key = lambda x: -x[1] )
 
 x = \
     removed[        :    100] + \
