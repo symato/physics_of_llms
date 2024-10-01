@@ -6,6 +6,9 @@ from transformers import AutoTokenizer
 from threading import Thread
 import re
 
+model_path = "Qwen/Qwen2.5-14B-Instruct"
+model_path = "meta-llama/Llama-3.1-70B-Instruct"
+
 min_count = 0
 max_count = 0
 
@@ -27,8 +30,6 @@ except:
     pass
 print(min_count, max_count)
 
-
-model_path = "Qwen/Qwen2.5-14B-Instruct"
 
 PATH = f"data/{model_path}"
 mkdirs(PATH)
