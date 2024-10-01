@@ -70,7 +70,6 @@ def ok(x):
     tid, count = x
 
     if count < min_count:
-        removed.append(x)
         return False
 
     if count < max_count:
