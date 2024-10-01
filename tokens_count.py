@@ -66,7 +66,7 @@ def get_uniq_tokens(infile):
         text = json.loads(line)["text"]
         texts.append( text )
 
-        if idx % 16 == 15:
+        if idx % 128 == 127:
             merge_count(count, count_tokens(texts))
             count["last_line_idx"] = idx
 
