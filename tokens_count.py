@@ -8,13 +8,17 @@ import re
 
 try:
     x = re.sub(r'/*$', "", sys.argv[1].strip())
-    input_files = glob.glob(f"{x}/*.lzma")
+    if x == "fast":
+        input_files = "fast"
+    else:
+        input_files = glob.glob(f"{x}/*.lzma")
 except:
     input_files = ["data/test.jsonl.xz"]
+print(input_files)
+
 
 try:    model_path = sys.argv[2]
 except: model_path = "Qwen/Qwen2.5-14B-Instruct"
-
 
 PATH = f"data/{model_path}"
 mkdirs(PATH)
@@ -23,7 +27,6 @@ tokenizer = AutoTokenizer.from_pretrained(
     model_path,
     model_max_length = 1024 * 1024 * 4, # 4m ctxlen có thể chứa 1 cuốn sách
 )
-
 
 def count_tokens(texts):
     count = {}
@@ -51,14 +54,17 @@ def merge_count(count, x):
         count[k] += v
 
 
-def get_uniq_tokens(infile, fast = False):
+def get_uniq_tokens(infile):
     x = infile.split("/")[-1]
     outfile = f"{PATH}/{x}_count.json.xz"
 
     try: count = json.load(lzma.open(outfile))
     except: count = { "last_line_idx": 0 }
 
-    if fast or "last_line_idx" not in count: # DONE
+    if not os.path.exists(infile):
+        return count
+
+    if "last_line_idx" not in count: # DONE
         return count
 
     texts = []
@@ -91,27 +97,23 @@ def get_uniq_tokens(infile, fast = False):
     return json.load(lzma.open(outfile))
 
 
-def get_final_count(fast = False):
-    countfile = f"{PATH}/tokens_count.json.xz"
+def get_final_count(input_files):
+    if input_files == "fast":
+        input_files = glob.glob(f"{PATH}/_count.json.xz")
+        input_files = [ x.replace("_count.json.xz", "") for x in input_files ]
 
-    if not os.path.exists(countfile):
-        with Pool( processes = num_procs() ) as pool:
-            for _ in pool.imap_unordered(get_uniq_tokens, input_files):
-                pass
+    with Pool( processes = num_procs() ) as pool:
+        for _ in pool.imap_unordered(get_uniq_tokens, input_files):
+            pass
 
-        count = {}
-        for infile in input_files:
+    count = {}
+    for infile in input_files:
 
-            x = get_uniq_tokens(infile, fast = fast)
-            merge_count(count, x)
+        x = get_uniq_tokens(infile)
+        merge_count(count, x)
 
-        return count
-
-        with lzma.open(countfile, "wt") as f:
-            f.write(json.dumps(count))
-
-    return json.load(lzma.open(countfile))
+    return count
 
 
-count = get_final_count(fast = True)
+count = get_final_count(input_files)
 print(len(count))
