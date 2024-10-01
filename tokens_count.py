@@ -126,14 +126,13 @@ tid_count_pairs.sort( key = lambda x: -x[1] )
 
 x = tid_count_pairs[: 100] + tid_count_pairs[-100 : ]
 
-maxx = 20
+maxx = 25
 spaces = " " * 100
 
 for tid, c in x:
     if tid != "last_line_idx":
         token = json.dumps(tokenizer.decode(int(tid)), ensure_ascii = False)
         n = len(token)
-        assert n <= maxx
         print(f"{tid}{spaces[:10 - len(tid)]} {token}{spaces[:maxx - n]}\t{c:10.0f}")
 
 print(len(tid_count_pairs))
