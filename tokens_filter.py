@@ -3,6 +3,7 @@ from multiprocessing import Pool
 from functools import partial
 from utils import *
 from transformers import AutoTokenizer
+from threading import Thread
 
 try:
     sys.argv[1]
@@ -56,7 +57,7 @@ def get_uniq_tokens(infile):
         chunk_size = 1024
         chunks = [texts[i:i + chunk_size] for i in range(0, len(texts), chunk_size)]
 
-        n = int( num_procs() * 0.5 ) 
+        n = int( num_procs() * 0.5 )
         with Pool(processes = n) as pool:
             for x in pool.imap_unordered(count_tokens, chunks):
                 merge_count(count, x)
@@ -72,11 +73,17 @@ def get_final_count():
 
     if not os.path.exists(countfile):
 
-        count = {}
+        delta = 3
+        for i in range(0, len(input_files), delta):
+            threads = [
+                Thread(target=get_uniq_tokens, kwargs={ "infile": infile, })
+                for infile in input_files[ i : i + delta ]
+            ]
 
-        with Pool(processes = 3) as pool:
-            for _ in pool.imap_unordered(get_uniq_tokens, input_files):
-                pass
+            for thread in threads:
+                thread.join() # finish
+
+        count = {}
 
         for infile in input_files:
             x = get_uniq_tokens(infile)
