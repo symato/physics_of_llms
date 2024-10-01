@@ -47,10 +47,8 @@ def merge_count(count, x):
 def get_uniq_tokens(infile):
     outfile = infile + "_count.json"
 
-    if os.path.exists(outfile):
-        count = json.load(open(outfile))
-    else:
-        count = { "last_line_idx": 0 }
+    try: count = json.load(open(outfile))
+    except: count = { "last_line_idx": 0 }
 
     if "last_line_idx" not in count: # DONE
         return count
