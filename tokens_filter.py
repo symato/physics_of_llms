@@ -81,6 +81,9 @@ def get_final_count():
             ]
 
             for thread in threads:
+                thread.start()
+
+            for thread in threads:
                 thread.join() # finish
 
         count = {}
