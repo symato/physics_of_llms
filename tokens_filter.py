@@ -91,7 +91,7 @@ def get_final_count():
             thread.start()
             # nghỉ 1 lúc trước khi bắt đầu thread khác 
             # để để tạo sự lệch nhịp trong việc xử lý files đầu vào
-            time.sleep(30)
+            time.sleep(60)
 
         for thread in threads:
             thread.join() # finish
