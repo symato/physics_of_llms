@@ -23,6 +23,9 @@
 
 - https://github.com/huggingface/transformers/issues/30860
 
+- https://huggingface.co/5CD-AI/visocial-T5-base
+  trimmed vocabulary size to 50,589 and continually pretrained google/mt5-base on a merged 20GB dataset
+
 **Triển khai**
 - Dataset https://huggingface.co/datasets/Symonsters/NAM-005_436G_Vi-En-Code
 
