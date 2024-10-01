@@ -178,15 +178,10 @@ def get_final_count(input_files):
         input_files = [ x.replace("_count.json.xz", "") for x in input_files ]
         print(input_files)
 
-    with Pool( processes = num_procs() ) as pool:
-        for _ in pool.imap_unordered(get_uniq_tokens, input_files):
-            pass
-
     count = {}
-    for infile in input_files:
-
-        x = get_uniq_tokens(infile)
-        merge_count(count, x)
+    with Pool( processes = num_procs() ) as pool:
+        for x in pool.imap_unordered(get_uniq_tokens, input_files):
+            merge_count(count, x)
 
     return count
 
