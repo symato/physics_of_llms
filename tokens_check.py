@@ -1,8 +1,12 @@
 from transformers import AutoTokenizer
+import subprocess, os, sys
 
 from unicode_utils import *
+from utils import num_procs
 
-import subprocess, os, sys
+from multiprocessing import Pool
+import glob, json
+
 
 model_path = "Qwen/Qwen2.5-14B-Instruct"
 # model_path = "meta-llama/Llama-3.1-70B-Instruct"
@@ -13,62 +17,83 @@ tokenizer = AutoTokenizer.from_pretrained(
 )
 
 
-# if __name__ == "__main__":
-
-wanted = open("data/tokens_wanted.txt", "wt")
-unwanted = open("data/tokens_unwanted.txt", "wt")
-
-wanted_tids = []
-
 try: do_check_lang = sys.argv[1] == "bylang"
 except: do_check_lang = False
-
 print("do_check_lang", do_check_lang)
 
+
 if do_check_lang:
-	subprocess.run("rm -rf data/tokens_by_lang", shell = True)
-	subprocess.run("mkdir -p data/tokens_by_lang", shell = True)
+    subprocess.run("rm -rf data/tokens_by_lang", shell = True)
+    subprocess.run("mkdir -p data/tokens_by_lang", shell = True)
 
-	def check_check(reg, token):
-	    m = regex.findall(reg, token)
-	    for x in m:
-	        for c in x:
-	            if ord(c) > 255: # not ascii
-	                return True
-	    return False
-
-
-	def write_to_lang_file(lang, token):
-	    filename = f"data/tokens_by_lang/{lang}.txt"
-	    with open(filename, "at") as f:
-	        f.write(token + "\n")
+    def check_check(reg, token):
+        m = regex.findall(reg, token)
+        for x in m:
+            for c in x:
+                if ord(c) > 255: # not ascii
+                    return True
+        return False
 
 
-	def check_lang(token):
-	    belongs_to_at_least_one_lang = False
-
-	    for lang, reg in unwanted_lang_re_pairs.items():
-	        if check_check(reg, token):
-	            belongs_to_at_least_one_lang = True
-	            write_to_lang_file(lang, token)
-
-	    if not belongs_to_at_least_one_lang:
-	        if contains_cjk(token):
-	            write_to_lang_file("CJK", token)
-	        else:
-	            write_to_lang_file("Others", token)
+    def write_to_lang_file(lang, tid, token):
+        filename = f"data/tokens_by_lang/{lang}.jsonl"
+        with open(filename, "at") as f:
+            f.write(json.dumps({"tid": tid, "token": token}, ensure_ascii = False) + "\n")
 
 
-for tid in range(0, tokenizer.vocab_size):
-	token = tokenizer.decode(tid)
+    def check_for_cjk_vi(lang, tid, token):
+        if contains_cjk(token):
+            write_to_lang_file("CJK", tid, token)
 
-	if do_check_lang:
-		check_lang(token)
+        elif canbe_vietnamese(token):
+            write_to_lang_file("CanBeVietnamese", tid, token)
+        else:
+            write_to_lang_file(lang, tid, token)
 
-	if contains_unwanted(token):
-		unwanted.write(token + "\n")
-	else:
-		wanted_tids.append(tid)
-		wanted.write(token + "\n")
 
-print(f"wanted {len(wanted_tids)} / {tokenizer.vocab_size}")
+    unwanted_lang_re_pairs = {"Latin": regex.compile(f'[\pLatin]+')}
+
+    for x in unwanted_langs:
+        unwanted_lang_re_pairs[x[3 : -1]] = regex.compile(f'[{x}]+')
+
+
+    def check_vocab(lang_reg):
+        lang, reg = lang_reg
+
+        for tid in range(0, tokenizer.vocab_size):
+            token = tokenizer.decode(tid)
+
+            if check_check(reg, token):
+                if not contains_cjk(token) and not canbe_vietnamese(token):
+                    write_to_lang_file(lang, tid, token)
+
+    with Pool( processes = num_procs() ) as pool:
+        for _ in pool.imap_unordered(check_vocab, unwanted_lang_re_pairs.items()):
+            pass
+
+    processed_tids = []
+    for filename in glob.glob("data/tokens_by_lang/*"):
+        processed_tids += [ json.loads(line)["tid"] for line in open(filename, "rt") ]
+    processed_tids = set( processed_tids )
+
+    for tid in range(0, tokenizer.vocab_size):
+        if tid not in processed_tids: # Others
+            token = tokenizer.decode(tid)
+            check_for_cjk_vi("Others", tid, token)            
+
+else:
+
+    wanted = open("data/tokens_wanted.txt", "wt")
+    unwanted = open("data/tokens_unwanted.txt", "wt")
+    wanted_tids = []
+
+    for tid in range(0, tokenizer.vocab_size):
+        token = tokenizer.decode(tid)
+
+        if contains_unwanted(token):
+            unwanted.write(token + "\n")
+        else:
+            wanted_tids.append(tid)
+            wanted.write(token + "\n")
+
+    print(f"wanted {len(wanted_tids)} / {tokenizer.vocab_size}")

@@ -63,12 +63,6 @@ unwanted_langs = '''
 
 unwanted_langs_re = regex.compile(f'[{"".join(unwanted_langs)}]+')
 
-unwanted_lang_re_pairs = {}
-
-for x in unwanted_langs:
-    unwanted_lang_re_pairs[x[3 : -1]] = regex.compile(f'[{x}]+')
-# print(unwanted_lang_re_pairs)
-
 # https://emoji-python.readthedocs.io/en/stable/
 from emoji import emoji_count # python -m pip install emoji --upgrade
 
@@ -87,17 +81,25 @@ def contains_unwanted(token):
     return False
 
 
-vi_chars = {'ớ', 'ờ', 'ụ', 'ẫ', 'ổ', 'ậ', 'ẵ', 'â', 'ặ', 'ễ', 'ọ', 'ẩ', 'ỹ', 'ẽ', 'ủ', 'ạ', 'ấ', 'ư', 'ả', 'ỉ', 'ỗ', 'ồ', 'ứ', 'đ', 
-'ự', 'è', 'ý', 'ế', 'ỵ', 'ũ', 'ắ', 'ẻ', 'ể', 'ợ', 'ệ', 'ẳ', 'ộ', 'à', 'õ', 'ĩ', 'ằ', 'ẹ', 'ỳ', 'é', 'ử', 'ị', 'ở', 'ỡ', 'ê', 
-'ầ', 'ò', 'ề', 'ố', 'ỷ', 'ă', 'ì', 'ữ', 'ơ', 'ã', 'ỏ', 'ừ', 'ù', 'ú', 'á', 'ô', 'í', 'ó',
-'a', 'b', 'c', 'd', 'e', 'g', 'h', 'i', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', ' ',
-'"', "'", ".", ",", ";" }
+vi_chars = { 'ớ', 'ờ', 'ụ', 'ẫ', 'ổ', 'ậ', 'ẵ', 'â', 'ặ', 'ễ', 'ọ', 'ẩ', 'ỹ', 'ẽ', 'ủ', 'ạ', 'ấ', 'ư', 'ả', 'ỉ', 
+'ỗ', 'ồ', 'ứ', 'đ', 'ự', 'è', 'ý', 'ế', 'ỵ', 'ũ', 'ắ', 'ẻ', 'ể', 'ợ', 'ệ', 'ẳ', 'ộ', 'à', 'õ', 'ĩ', 'ằ', 'ẹ', 'ỳ', 
+'é', 'ử', 'ị', 'ở', 'ỡ', 'ê', 'ầ', 'ò', 'ề', 'ố', 'ỷ', 'ă', 'ì', 'ữ', 'ơ', 'ã', 'ỏ', 'ừ', 'ù', 'ú', 'á','ô', 'í', 'ó', 
+'a', 'b', 'c', 'd', 'e', 'g', 'h', 'i', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y',
+' ', '"', "'", ".", ",", ";" }
 
 def canbe_vietnamese(token):
     for c in token.lower():
         if c not in vi_chars:
             return False
     return True
+'''
+def canbe_vietnamese(token):
+    count = 0
+    for c in token.lower():
+        if c in vi_chars:
+            count += 1
+    return count / len(token) >= 0.8
+'''
 
 '''
 The 4E00—9FFF range covers CJK Unified Ideographs (CJK=Chinese, Japanese and Korean). 

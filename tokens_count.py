@@ -1,7 +1,5 @@
 import os, sys, lzma, glob, json
 from multiprocessing import Pool
-from functools import partial
-from threading import Thread
 import re
 
 from utils import *
