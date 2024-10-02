@@ -39,9 +39,9 @@
   - [x] Giữ lại tokens chứa ký tự tiếng Việt
   - [x] Giữ lại ascii tokens
 
-- [ ] Tạo final vocab
-  - kept tokens @ `tokens_kept.txt`
-  - [ ] special tokens (token điều khiển ...)
+- [ ] Tạo final vocab từ `qwen__800__20000`
+  - [ ] Lọc tay kept tokens @ `tokens_kept__*.jsonl`
+  - [ ] Thêm special tokens (token điều khiển ...)
 
 650GB text Việt, Anh, Code (100b tokens)
 https://huggingface.co/datasets/Symonsters/NAM-005_436G_Vi-En-Code

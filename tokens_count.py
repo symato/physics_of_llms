@@ -1,6 +1,6 @@
 import os, sys, lzma, glob, json
 from multiprocessing import Pool
-import re
+import re, subprocess
 
 from utils import *
 from unicode_utils import *
@@ -45,18 +45,15 @@ def ok(x):
 
     token = tokenizer.decode(tid)
 
-    if count < min_count:
+    if contains_unwanted(token):
+        return False
 
-        if contains_unwanted(token):
-            return False
+    if count < min_count:
 
         if contains_emoji(token):
             return True
 
     elif count < max_count:
-
-        if contains_unwanted(token):
-            return False
 
         if canbe_vietnamese(token):
             return True
@@ -215,20 +212,72 @@ for tid, count in x:
         print(pretty(tid, count))
 
 
+def pretty_token(token, tid, count):
+    s = json.dumps([ token, tid, count ], ensure_ascii = False)
+    s = "[  " + s[1:]
+    a, b = s.split(", ", 1)
+    return f"{a}{spaces[:50 - len(a)]}, {b}" + "\n"
+
+
 def pretty_json(tid, count):
     tid = int(tid)
     token = tokenizer.decode(tid)
-    return json.dumps({"tid": tid, "token": token, "count": count}, ensure_ascii = False) + "\n"
+    return pretty_token(token, tid, count)
 
 
-with open("data/tokens_removed.jsonl", "wt") as f:
-    for tid, count in removed:
-        f.write(pretty_json(tid, count))
- 
+subprocess.run("rm data/tokens_*.jsonl", shell = True)
 
-with open("data/tokens_kept.jsonl", "wt") as f:
-    for tid, count in kept:
-        f.write(pretty_json(tid, count))
+_oa = ord('a')
+_oz = ord('z')
+_os = ord(' ')
+###
+def is_alphabet(token):
+    for c in token.lower():
+        o = ord(c)
+        if o != _os and (_oa > o or o > _oz):
+            return False
+    return True
+
+import nltk # pip install nltk
+nltk.download('words')
+en_words = set( nltk.corpus.words.words() )
+
+for tid, count in removed:
+    tid = int(tid)
+    token = tokenizer.decode(tid)
+
+    p_token = pretty_token(token, tid, count)
+    if is_ascii(token):
+        if is_alphabet(token):
+            if token.strip().lower() in en_words: # is English word
+                with open("data/tokens_kept__alphabet.jsonl", "at") as f:
+                    f.write(p_token)
+            else:
+                with open("data/tokens_removed__alphabet.jsonl", "at") as f:
+                    f.write(p_token)
+        else:
+            with open("data/tokens_removed__ascii.jsonl", "at") as f:
+                f.write(p_token)
+    else:
+        with open("data/tokens_removed__others.jsonl", "at") as f:
+            f.write(p_token)
+
+
+for tid, count in kept:
+    tid = int(tid)
+    token = tokenizer.decode(tid)
+
+    p_token = pretty_token(token, tid, count)
+    if is_ascii(token):
+        if is_alphabet(token):
+            with open("data/tokens_kept__alphabet.jsonl", "at") as f:
+                f.write(p_token)
+        else:
+            with open("data/tokens_kept__ascii.jsonl", "at") as f:
+                f.write(p_token)
+    else:
+        with open("data/tokens_kept__others.jsonl", "at") as f:
+            f.write(p_token)
 
 
 remains = set(wanted_tids)
@@ -236,6 +285,7 @@ for tid, _ in removed:
     tid = int(tid)
     if tid in remains:
         remains.remove(tid)
+
 
 print(f"kept    / total = {len(kept)} / {tokenizer.vocab_size}")
 print(f"remains / total = {len(remains)} / {tokenizer.vocab_size}")

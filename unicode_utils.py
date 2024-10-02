@@ -136,6 +136,9 @@ if __name__ ==  "__main__":
 拓
 見
 嘆
+有
+县
+は
 """.strip().split("\n")
 
     for x in unwanted:
