@@ -33,11 +33,12 @@
 - [x] Cần kết hợp với lọc theo bảng mã unicode
   - giữ lại emoji
   - loại bỏ cjk, thailand, chữ tượng hình ...
-- [x] Target bộ từ vựng ~96k
+- [x] Target bộ từ vựng ~96k (63%)
 
-- [ ] Lọc sâu hơn nữa, target bộ từ vựng ~64k
+- [ ] Lọc sâu hơn nữa, target bộ từ vựng ~64k-80k (40% - 50%)
   - [ ] Giữ lại token chứa ký tự tiếng Việt
   - [ ] Bỏ đi tokens của các ngôn ngữ Latin không phổ biến ...
+  - [ ] ...
 
 650GB text Việt, Anh, Code (100b tokens)
 https://huggingface.co/datasets/Symonsters/NAM-005_436G_Vi-En-Code
