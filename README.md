@@ -41,8 +41,6 @@
 
 - [x] Tạo final vocab từ `qwen__800__20000`
   - [x] Lọc tay kept tokens @ `tokens_kept__*.jsonl` (84065 giảm xuống 76116)
-  - [ ] Thêm special tokens (token điều khiển ...)
-
 
 ```
 python3 tokens_count.py 800 20000
@@ -72,37 +70,6 @@ wc -l tokens_kept__*
   76116 total
 ```
 
-650GB text Việt, Anh, Code (100b tokens)
-https://huggingface.co/datasets/Symonsters/NAM-005_436G_Vi-En-Code
-```
- 75.4G    100_book
- 34.8G    100_code
- 66.7G    100_slimpajama
-- - - - - - - - - - - -
-176.8G    English (40%)
-
-118.9G    100_c4-vi
- 11.3G    100_news_2020-2021
- 15.1G    100_news_2022-2023
-  2.6G    100_others
-  2.0G    500_wiki
- 20.3G    600_laws
- 78.3G    800_epub
- 11.3G    999_gov
-- - - - - - - - - - 
-259.8G    Vietnamese (60%)
-    
-Total 436.6GB, 100b tokens (Bloom tokenizer)
-
-Theo thể loại:
- 43%  187.6G   slimpajama, c4_vi, wiki
- 35%  153.7G   book, epub
-  8%   34.7G   code
-  6%   26.4G   news
-  5%   20.3G   laws
-  3%   11.4G   gov
-```
-
 **Đối tượng thực hành**
 - qwen2.5 có 0.5b, 1.5b, 3b, 7b, 14b, `32b`, `72b` models
 - llama3.x có 1b, 3b, 8b, `70b`, 405b models
@@ -113,6 +80,10 @@ Theo thể loại:
   - `qwen2.5` https://huggingface.co/Qwen/Qwen2.5-14B-Instruct
   - `qwen2.0` https://huggingface.co/SeaLLMs/SeaLLMs-v3-7B-Chat
   - `qwen1.5` https://huggingface.co/5CD-AI/Viet-Sailor-4B-Instruct
+
+- [ ] Thêm special tokens vào `qwen__800__20000/tokens_kept__*` để tạo new vocab
+
+- [ ] Thử cắt tỉa qwen2.5 1.5b và chạy inference
 
 - [ ] Sửa code llama.cpp python hoặc exllama để có thể chạy đc model đã sửa vocab
 
@@ -137,4 +108,3 @@ Theo thể loại:
 ## Physics of LMs: làm lại thí nghiệm về  Knowledge Storage, Extraction and Manipulation
 
 ## Physics of LMs: cách tạo dữ liệu để chuyển giao knowledge từ En => Vi
-
