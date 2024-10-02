@@ -204,7 +204,7 @@ for tid, count in x:
         print(f"{tid}{spaces[:10 - len(tid)]} {token}{spaces[:maxx - n]}\t{count:10.0f}")
 
 remains = tokenizer.vocab_size - len(removed)
-print(f"{len(remain_pairs)} / {tokenizer.vocab_size}")
+print(f"{remains} / {tokenizer.vocab_size}")
 
 
 '''
