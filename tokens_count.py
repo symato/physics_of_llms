@@ -192,20 +192,27 @@ x = \
 maxx = 25
 spaces = " " * 100
 
-print("\n= = = Một số removed tokens = = =\n")
+def pretty(tid, count):
+    token = json.dumps(tokenizer.decode(int(tid)), ensure_ascii = False)
+    n = len(token)
+    return f"{tid}{spaces[:10 - len(tid)]} {token}{spaces[:maxx - n]}\t{count:10.0f}"
+
+
+print("\n=== Một số removed tokens ===\n")
 for tid, count in x:
+
     if count == 0:
         print("\n")
-        continue
+    else:
+        print(pretty(tid, count))
 
-    if tid != "last_line_idx":
-        token = json.dumps(tokenizer.decode(int(tid)), ensure_ascii = False)
-        n = len(token)
-        print(f"{tid}{spaces[:10 - len(tid)]} {token}{spaces[:maxx - n]}\t{count:10.0f}")
 
 remains = tokenizer.vocab_size - len(removed)
 print(f"{remains} / {tokenizer.vocab_size}")
 
+with open("tokens_removed.txt", "wt") as f:
+    for tid, count in removed:
+        f.write(pretty(tid, count) + "\n")
 
 '''
 
