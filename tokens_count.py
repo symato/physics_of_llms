@@ -244,7 +244,13 @@ nltk.download('words')
 en_words = set( nltk.corpus.words.words() )
 ###
 def is_english_word(token):
-    return token.strip().lower() in en_words
+    x = token.strip().lower()
+    if x in en_words: return True
+    if len(x) > 1 and x[-1] == 's' and x[:-1] in en_words: return True # số nhiều
+    return False
+
+assert(is_english_word("car"))
+assert(is_english_word("cars"))
 
 
 for tid, count in removed:
@@ -279,11 +285,19 @@ for tid, count in kept:
                 with open("data/tokens_kept__english.jsonl", "at") as f:
                     f.write(p_token)
             else:
-                with open("data/tokens_kept__alphabet.jsonl", "at") as f:
-                    f.write(p_token)
+                if len(token) > 12:
+                    with open("data/tokens_kept__alphabet_long.jsonl", "at") as f:
+                        f.write(p_token)
+                else:
+                    with open("data/tokens_kept__alphabet_short.jsonl", "at") as f:
+                        f.write(p_token)
         else:
-            with open("data/tokens_kept__ascii.jsonl", "at") as f:
-                f.write(p_token)
+            if len(token) > 12:
+                with open("data/tokens_kept__ascii_long.jsonl", "at") as f:
+                    f.write(p_token)
+            else:
+                with open("data/tokens_kept__ascii_short.jsonl", "at") as f:
+                    f.write(p_token)
     else:
         with open("data/tokens_kept__others.jsonl", "at") as f:
             f.write(p_token)
