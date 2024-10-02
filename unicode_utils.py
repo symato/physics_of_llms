@@ -64,22 +64,12 @@ unwanted_langs = '''
 unwanted_langs = "".join(unwanted_langs)
 unwanted_langs_re = regex.compile(f'[{unwanted_langs}]+')
 
-'''
-https://stackoverflow.com/questions/64509631/is-there-a-regex-to-match-all-unicode-emojis
-/(\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/g
-'''
-'''
-import re
-emoji_re = r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])'
 
-def is_emoji(token):
-    for c in token:
-        m = re.match(emoji_re, c)
-        if not m:
-            print(m, c, ord(c))
-            return False
-    return True
-'''
+# https://emoji-python.readthedocs.io/en/stable/
+from emoji import emoji_count # python -m pip install emoji --upgrade
+
+def contains_emoji(token):
+    return emoji_count(token) > 0
 
 def contains_unwanted(token):
     if contains_cjk(token):
@@ -136,3 +126,45 @@ if __name__ ==  "__main__":
          print(min_cjk, max_cjk)
          for c in x:
             print(ord(c), c)
+
+
+    emoji_samples = """
+🈯
+🈲
+🈹
+🌇
+🌓
+🍘
+🎑
+🎿
+🏏
+🏒
+🏩
+🏯
+🐀
+👝
+💹
+💺
+📟
+📪
+📼
+🔀🔂
+🔃
+🔇
+🔓
+🔢
+🔤🔩
+🕖
+🕚
+🕜
+🕝
+🕞
+🕠🕢
+🌍,
+ 😂, 😃,
+ 😂
+""".strip().split("\n")
+    
+    for x in emoji_samples:
+        if not contains_emoji(x):
+            print(x, emoji_count(x))
