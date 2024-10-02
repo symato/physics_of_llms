@@ -63,3 +63,49 @@ Ví dụ Lily, 2.5m không thể reasoning, lặp lại dog vì nó xuất hiệ
 
 Ví dụ Alice & Jact, 2.5m is dumb, 33m hiểu ngữ cảnh và trả lời đúng, 1.5b don't get it.
 
+![](img/tiny-stories-09.jpg)
+Mỗi model thể hiện năng lực ở các prompt là khác nhau.
+- Câu trả lời sai màu đỏ
+- Câu trả lời đúng màu xanh
+- Kind of in the middle, màu vàng
+
+![](img/tiny-stories-10.jpg)
+
+## Dùng GPT-4 để eval
+![](img/tiny-stories-11.jpg)
+
+![](img/tiny-stories-12.jpg)
+
+![](img/tiny-stories-13.jpg)
+Điểm kỹ năng của models tăng trưởng tỉ lệ thuận với loss
+
+![](img/tiny-stories-14.jpg)
+Grammar là dễ học nhất?
+
+![](img/tiny-stories-15.jpg)
+
+Grammar dễ học nhất, tăng trước tới bão hòa nhanh nhất, sau đó là consistency rồi creativity.
+Tăng theo cả 2 hướng, model size và training step.
+
+Có dấu hiệu của emergence giữa 1m và 3m. 1m không bao giờ consistency, 
+3m đã có sự xuất hiện của consistency.
+
+- - -
+
+![](img/tiny-stories-16.jpg)
+
+![](img/tiny-stories-17.jpg)
+
+- l#7 n#1 activate We, I, I, I
+- l#7 n#2 activate push, ran, pushed, pulled, come, pushed
+- l#7 n#54 activate Amy, Sue, Tim, Sue, Freddy.
+
+n#54 là neuron có sự kích hoạt nhiều nhất trong toàn bộ model.
+
+![](img/tiny-stories-18.jpg)
+
+GPT-2 không được như thế => có lẽ model nhỏ hơn dễ interpreable hơn!
+
+![](img/tiny-stories-19.jpg)
+
+![](img/tiny-stories-20.jpg)
