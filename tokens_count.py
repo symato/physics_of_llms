@@ -32,12 +32,18 @@ PATH = f"data/{model_path}"
 mkdirs(PATH)
 
 
+latin_tids = [ json.loads(line)["tid"] for line in open("data/tokens_by_lang/Latin.jsonl", "rt") ]
+latin_tids = set(latin_tids)
 ###
 def ok(x):
 
     tid, count = x
-    token = tokenizer.decode(int(tid))
+    tid = int(tid)
 
+    if tid in latin_tids:
+        return False
+
+    token = tokenizer.decode(tid)
 
     if count < min_count:
 
@@ -209,14 +215,20 @@ for tid, count in x:
         print(pretty(tid, count))
 
 
-with open("data/tokens_removed.txt", "wt") as f:
+def pretty_json(tid, count):
+    tid = int(tid)
+    token = tokenizer.decode(tid)
+    return json.dumps({"tid": tid, "token": token, "count": count}, ensure_ascii = False) + "\n"
+
+
+with open("data/tokens_removed.jsonl", "wt") as f:
     for tid, count in removed:
-        f.write(pretty(tid, count) + "\n")
+        f.write(pretty_json(tid, count))
+ 
 
-
-with open("data/tokens_kept.txt", "wt") as f:
+with open("data/tokens_kept.jsonl", "wt") as f:
     for tid, count in kept:
-        f.write(pretty(tid, count) + "\n")
+        f.write(pretty_json(tid, count) + "\n")
 
 
 remains = set(wanted_tids)
@@ -238,4 +250,5 @@ remains / total = 80147 / 151643
 ( remains = wanted - removed )
 
 Final = kept + special tokens
+
 """
