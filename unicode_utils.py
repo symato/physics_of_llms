@@ -69,37 +69,6 @@ for x in unwanted_langs:
     unwanted_lang_re_pairs[x[3 : -1]] = regex.compile(f'[{x}]+')
 # print(unwanted_lang_re_pairs)
 
-def check_check(reg, token):
-    m = regex.findall(reg, token)
-    for x in m:
-        for c in x:
-            if ord(c) > 255: # not ascii
-                return True
-    return False
-
-
-def write_to_lang_file(lang, token):
-    filename = f"data/langs/{lang}.txt"
-    with open(filename, "at") as f:
-        f.write(token + "\n")
-
-
-def check_lang(token):
-    belongs_to_at_least_one_lang = False
-
-    for lang, reg in unwanted_lang_re_pairs.items():
-        if check_check(reg, token):
-            belongs_to_at_least_one_lang = True
-            write_to_lang_file(lang, token)
-
-    if not belongs_to_at_least_one_lang:
-        if contains_cjk(token):
-            write_to_lang_file("CJK", token)
-        else:
-            write_to_lang_file("Others", token)
-
-
-
 # https://emoji-python.readthedocs.io/en/stable/
 from emoji import emoji_count # python -m pip install emoji --upgrade
 
