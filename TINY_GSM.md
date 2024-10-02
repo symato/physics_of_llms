@@ -66,7 +66,11 @@ model reaches 68.2% accuracy. We use the Adam optimizer with FP16 during trainin
 and a maximum learning rate of 1e-4, a weight decay of 0.01, and an effective `batch size of 1024`. The finetuning
 phase takes up to 20k steps in total.
 
-=> Tại sao ko pre-train từ đầu mà lại finetune từ Phi?
+![](img/tiny-gsm-03.jpg)
+Tại sao ko pre-train từ đầu mà lại finetune từ Phi?
+Câu trả lời là finetune cho kết quả tốt hơn (+10% accuracy)
+
+- - -
 
 ![](img/tiny-gsm-02.jpg)
 Nhận thấy best-of-n generation cho kết quả tốt, nên huấn luyện verifier để bọn best-of-n.
