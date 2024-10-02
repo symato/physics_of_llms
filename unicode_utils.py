@@ -12,11 +12,11 @@ def contains_cjk(token):
             return True
     return False
 
-def not_ascii(token):
+def is_ascii(token):
     for char in token:
         if ord(char) > 255:
-            return True
-    return False
+            return False
+    return True
 
 unwanted_langs = '''
 \p{Arabic}

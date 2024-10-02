@@ -35,10 +35,13 @@
   - loại bỏ cjk, thailand, chữ tượng hình ...
 - [x] Target bộ từ vựng ~96k (63%)
 
-- [ ] Lọc sâu hơn nữa, target bộ từ vựng ~64k-80k (40% - 50%)
-  - [ ] Giữ lại token chứa ký tự tiếng Việt
-  - [ ] Bỏ đi tokens của các ngôn ngữ Latin không phổ biến ...
-  - [ ] ...
+- [x] Lọc sâu hơn nữa, target bộ từ vựng ~80k (50%)
+  - [x] Giữ lại tokens chứa ký tự tiếng Việt
+  - [x] Giữ lại ascii tokens
+
+- [ ] Tạo final vocab
+  - kept tokens @ `tokens_kept.txt`
+  - [ ] special tokens (token điều khiển ...)
 
 650GB text Việt, Anh, Code (100b tokens)
 https://huggingface.co/datasets/Symonsters/NAM-005_436G_Vi-En-Code
