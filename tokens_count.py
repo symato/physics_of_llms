@@ -36,23 +36,34 @@ mkdirs(PATH)
 
 ###
 def ok(x):
-    tid, count = x
 
+    tid, count = x
     token = tokenizer.decode(int(tid))
 
+    # Ưu tiên mọi token có chứa dù chỉ 1 ký tự đặc trưng tiếng Việt
+    if canbe_vietnamese(token):
+        return True
+
+    # Nếu chứa những ký tự của ngôn ngữ lạ như cjk, thailand ... loại
+    if contains_unwanted(token):
+        return False
+
     if count < min_count:
-        if not contains_emoji(token):
+        if contains_emoji(token):
+            return True
+        else:
             return False
 
-    if count >= max_count:
-        if contains_unwanted(token):
-            return False            
+    elif count < max_count:
+        if contains_emoji(token):
+            return True
+        else:
+            if not_ascii(token):
+                return False
+            else:
+                return True
     else:
-        # Loại nếu không phải ascii
-        if not_ascii(token):
-            return False
-
-    return True
+        return True
 
 
 def count_tokens(texts):
@@ -121,16 +132,6 @@ def get_uniq_tokens(infile):
     if "last_line_idx" in count:
         count.pop("last_line_idx")
 
-    # Loại bỏ unwanted và count < 10 & not_ascii
-    for k, v in list(count.items()):
-        token = tokenizer.decode(int(k))
-
-        if contains_unwanted(token):
-            count.pop(k)
-
-        elif v < 10 and not_ascii(token):
-            count.pop(k)
-
     return count
 
 
@@ -168,17 +169,17 @@ def remove_not_ok_pairs(pairs):
 chunk_size = 1024*2
 chunks = [tid_count_pairs[i:i + chunk_size] for i in range(0, len(tid_count_pairs), chunk_size)]
 
-# remain_pairs = []
+kept = []
 removed = []
 
 print("remove_not_ok_pairs ...")
 with Pool( processes = num_procs() ) as pool:
     for keep, remove in pool.imap_unordered(remove_not_ok_pairs, chunks):
-        # remain_pairs += keep
+        kept += keep
         removed += remove
 
-print("sort remain_pairs and removed ...")
-# remain_pairs.sort( key = lambda x: -x[1] )
+print("sort kept pairs and removed pairs ...")
+kept.sort( key = lambda x: -x[1] )
 removed.sort( key = lambda x: -x[1] )
 mid = len(removed) // 2
 x = \
@@ -207,338 +208,347 @@ for tid, count in x:
         print(pretty(tid, count))
 
 
+with open("tokens_removed.txt", "wt") as f:
+    for tid, count in removed:
+        f.write(pretty(tid, count) + "\n")
+
+
+with open("tokens_kept.txt", "wt") as f:
+    for tid, count in kept:
+        f.write(pretty(tid, count) + "\n")
+
+
 remains = set(wanted_tids)
 for tid, _ in removed:
     tid = int(tid)
     if tid in remains:
         remains.remove(tid)
 
-print(f"{len(remains)} / {tokenizer.vocab_size}")
+print(f"kept / total {len(kept)} / {tokenizer.vocab_size}")
+print(f"remains / total {len(remains)} / {tokenizer.vocab_size}")
 
-with open("tokens_removed.txt", "wt") as f:
-    for tid, count in removed:
-        f.write(pretty(tid, count) + "\n")
 
 '''
 
-python3 tokens_count.py 380
+python3 tokens_count.py 1000
 wanted 105377 / 151643
 stats_mode
-380 0
+1000 0
 mkdir -p data
 mkdir -p data/Qwen
 mkdir -p data/Qwen/Qwen2.5-14B-Instruct
 get_final_count ...
 remove_not_ok_pairs ...
-sort remain_pairs and removed ...
+sort kept pairs and removed pairs ...
 
 === Một số removed tokens ===
 
-65756      "\tIterator"                        379
-79408      "CLLocation"                        379
-83172      "ADX"                               379
-67254      " Produto"                          379
-37064      " �"                                379
-79086      "praak"                             379
-92444      " ActivityCompat"                   379
-79951      "_sta"                              379
-54642      "�"                                 379
-75782      ".parseFloat"                       379
-77107      "_DET"                              379
-86428      "']*"                               379
-68082      " AutoMapper"                       379
-98853      "(rowIndex"                         379
-46269      "$name"                             379
-76093      " ise"                              379
-50897      ".ibatis"                           379
-87586      "']))\n\n"                          379
-45705      "(\"\")]\n"                         379
-38001      "VERRIDE"                           379
-45521      " }}>"                              379
-91703      "_UPPER"                            379
-99264      "�"                                 379
-71332      " DRV"                              379
-96619      "_pedido"                           379
-72361      ":host"                             379
-147668     "ŵ"                                 379
-54013      "ESSAGES"                           379
-81071      "perfil"                            378
-57073      "!\");\n\n"                         378
-85735      "typings"                           378
-131519     " tầ"                               378
-91868      "(accounts"                         378
-90350      ";left"                             378
-83163      " onPostExecute"                    378
-89259      "@Bean"                             378
-59831      "_WHITE"                            378
-76689      "(vehicle"                          378
-66936      "_DEN"                              378
-93104      "_ped"                              378
-61008      " Qgs"                              378
-56768      " bcm"                              378
-68388      "_WS"                               378
-71436      " BrowserAnimationsModule"                                                                                                                  378
-97673      "_COMPANY"                          377
-90066      "ıkl"                               377
-86458      " McCart"                           377
-57384      "(MSG"                              377
-91896      " schöne"                           377
-68474      " FirebaseDatabase"                 377
-40503      "_DEFIN"                            377
-92787      "_DRIVE"                            377
-51387      " },{\n"                            377
-92700      "[char"                             377
-79443      " erót"                             377
-88265      ".toolbox"                          377
-96421      "\tbl"                              377
-84193      " selber"                           377
-30409      "__(("                              377
-27042      " *);\n"                            377
-49310      "setPosition"                       377
-92837      "InputDialog"                       377
-64026      "_Timer"                            377
-56817      "removeAttr"                        377
-88674      "_DISPATCH"                         377
-48697      " svens"                            376
-89607      "_WRONG"                            376
-68555      " DataAccess"                       376
-96205      " equipe"                           376
-87567      "//------------------------------------------------------------------------------\n\n"                                                      376
-77348      "_USED"                             376
-81175      "textAlign"                         376
-52016      "[contains"                         376
-45659      ".userInfo"                         376
-62374      "TexParameteri"                     376
-75688      "_UNICODE"                          376
-56206      " modificar"                        376
-98302      "(guess"                            376
-90132      "_LOWER"                            376
-20979      "******/"                           376
-71212      ".Roll"                             376
-97360      "_ATOM"                             376
-87843      "_ATOMIC"                           376
-36417      "_PAY"                              375
-74912      "\tmask"                            375
-60902      "UGC"                               375
-77299      "_MIX"                              375
-87183      "toolbox"                           375
-77634      " freund"                           375
-59315      "_userdata"                         375
-133893     " milhões"                          375
-97342      "(dw"                               375
-87260      " \".\");\n"                        375
-76605      "\tExt"                             375
-99073      ".JWT"                              375
-51873      " treffen"                          375
-97214      "InnerHTML"                         375
-135321     " própria"                          375
-90323      "autoplay"                          375
-63552      ",email"                            375
+70726      " bloque"                           999
+96575      "emploi"                            999
+77944      "Menus"                             999
+71223      "plaintext"                         999
+51648      ".deepcopy"                         999
+73650      "(lo"                               999
+40562      "='',"                              999
+90094      "(rules"                            999
+135972     " Glück"                            999
+78955      "######\n"                          999
+51423      "(pd"                               999
+59100      "_Line"                             999
+86632      " ------------------------------------------------------------"                                                                             999
+13756      " tableView"                        999
+4838       "semb"                              999
+60288      "___\n\n"                           999
+80915      ".logs"                             998
+14039      "_NE"                               998
+83686      "CONDITION"                         998
+17560      " ;\r\n"                            998
+49953      "_End"                              998
+77784      " concatenate"                      998
+68752      ")=\""                              998
+28758      ".deltaTime"                        998
+80612      "efeller"                           998
+55735      "_segments"                         998
+91578      "_resolver"                         998
+79535      "(Group"                            998
+83281      " wegen"                            998
+74813      "\tpop"                             998
+88387      "-pill"                             998
+63645      " edx"                              998
+62853      "TOKEN"                             997
+76693      " vezes"                            997
+30329      " prze"                             997
+44765      ".ObjectId"                         997
+57572      "_nm"                               997
+47076      " progressBar"                      997
+79790      "_First"                            997
+70777      " Fragen"                           997
+73999      " textbox"                          997
+50732      "<Button"                           997
+71381      "AsStream"                          997
+49981      "erala"                             997
+41472      "BUFFER"                            997
+21672      " \\\r\n"                           997
+87288      "_slices"                           997
+21560      "(jPanel"                           997
+93307      "ENTIC"                             996
+85626      " requestBody"                      996
+87220      " Tecn"                             996
+36513      "_nr"                               996
+98364      "(internal"                         996
+35910      " BeautifulSoup"                    996
+60623      " indexOf"                          996
+46770      "DateString"                        996
+67915      "=\\\"#"                            996
+47135      "(reverse"                          996
+60668      "_seen"                             996
+65961      "/general"                          996
+95538      " Chore"                            996
+21668      " */\n\n\n"                         996
+55033      "ADED"                              996
+51288      " rowspan"                          996
+76163      "ordova"                            996
+69876      " gemacht"                          996
+97158      "RenderingContext"                  996
+80066      ".CurrentCulture"                   996
+52894      " getters"                          996
+61575      " numOf"                            996
+78165      "entionPolicy"                      996
+76077      ".hr"                               995
+63448      " Hibernate"                        995
+56246      "Signup"                            995
+64206      " Laravel"                          995
+62188      ".album"                            995
+88737      " verifier"                         995
+77397      " submenu"                          995
+49527      "_MEDIA"                            995
+75226      "HandlerContext"                    995
+74354      " gemeins"                          995
+43357      "_mc"                               995
+56709      "EFI"                               995
+50495      "_RULE"                             995
+39219      "iveau"                             995
+61373      "enqueue"                           995
+51867      "_gallery"                          995
+74239      ".band"                             995
+57037      "_handlers"                         995
+28148      "FXML"                              995
+31068      "interop"                           994
+28781      ".BorderStyle"                      994
+63854      " także"                            994
+88994      "ikut"                              994
+35773      "_CALLBACK"                         994
+34174      " TOD"                              994
+72402      "xFFFFFF"                           994
+97856      "(Unknown"                          994
+64038      "_checksum"                         994
+89567      " EventBus"                         994
 
 
-81063      "edith"                             165
-59747      " CGPointMake"                      165
-145626     "➠"                                 165
-77005      ".dateTimePicker"                   165
-96463      "\\Catalog"                         165
-96285      "pesan"                             165
-148306     "ḏ"                                 165
-62005      "�"                                 165
-61707      "¯¯¯¯"                              165
-27367      " helicopt"                         164
-8032       "�"                                 164
-148595     "ℜ"                                 164
-49348      ":^{\n"                             164
-81956      "))];\n"                            164
-88841      "mensagem"                          164
-34811      "��"                                164
-56980      "+=("                               164
-32109      " antibiot"                         164
-147196     "Į"                                 164
-126763     "ladı"                              164
-35668      "\">'.$"                            164
-77855      "SelfPermission"                    164
-98196      "UIImagePickerController"           164
-90552      " pinMode"                          164
-42303      "(__('"                             164
-85447      " \"\"\"\",\n"                      164
-64579      "érience"                           164
-66994      "_MUTEX"                            164
-41800      " }}\">"                            164
-83795      "\t\t\t\t\t\t\t\t\t\t "             164
-40599      " millenn"                          164
-84839      " sağ"                              163
-129947     " üzerinde"                         163
-95005      "SectionsIn"                        163
-145253     "▰"                                 163
-58868      "kontakte"                          163
-62661      "$array"                            163
-73162      " ()=>{\n"                          163
-88650      "\tmkdir"                           163
-93795      "：%"                               163
-98817      "_Panel"                            163
-65035      "ecedor"                            163
-96980      "[$_"                               163
-95345      "\"]=="                             163
-96359      "@PostMapping"                      163
-128659     "łam"                               163
-127860     "ędzi"                              163
-99220      "�"                                 163
-99100      "idUser"                            163
-61810      "uvw"                               163
-95047      "+\"<"                              163
-97877      " conexao"                          163
-93699      " gridColumn"                       163
-90483      " QTableWidgetItem"                 163
-83367      " nilai"                            163
-86695      "categorie"                         163
-41226      "VERTISEMENT"                       162
-63485      "(HWND"                             162
-97236      ">');"                              162
-53995      " ''){\n"                           162
-91751      " SpringApplication"                162
-60868      " onChangeText"                     162
-145584     "∠"                                 162
-45256      "\\HttpFoundation"                  162
-94335      " '\"';\n"                          162
-76150      " didFinish"                        162
-73062      "/*------------------------------------------------"                                                                                        162
-84252      "_VC"                               162
-91051      "Tambah"                            162
-61851      "$field"                            162
-136800     " Gerät"                            162
-50459      "_PWM"                              162
-72002      "(Gtk"                              162
-59544      ")localObject"                      162
-35146      "��"                                162
-145327     "𝑜"                                 162
-73445      "DevExpress"                        162
-24904      ";?>"                               162
-37913      "�"                                 162
-49905      ".XtraPrinting"                     162
-82672      " }}\r\n"                           162
-58007      "/****************************************************************************\n"                                                           161
-140299     "gänge"                             161
-21885      "\\Eloquent"                        161
-87103      ".contentOffset"                    161
-98751      "AdminController"                   161
-55811      "<count"                            161
-35361      ".XtraGrid"                         161
-146992     "Ő"                                 161
-61573      "ImplOptions"                       161
-85289      " setFrame"                         161
-83849      "�"                                 161
-123867     "�"                                 161
-129245     " açık"                             161
-41951      " damer"                            161
-95365      "Periph"                            161
-76268      "contenido"                         161
-65049      " QRect"                            161
-66108      " GtkWidget"                        161
-93424      "bersome"                           161
+72649      ".ModelSerializer"                  457
+73718      "oldem"                             457
+70731      "��"                                457
+125030     "ıyor"                              457
+92116      " PropertyChangedEventArgs"                                                                                                                 457
+48080      "_para"                             457
+97720      "_REPLACE"                          457
+79829      " restTemplate"                     457
+75470      "_WIFI"                             457
+98762      "\tInit"                            456
+76772      ".clientWidth"                      456
+43018      "+\"</"                             456
+48078      "ują"                               456
+65731      "getWidth"                          456
+91518      " ApplicationContext"               456
+74942      "_IDS"                              456
+44753      " scrollView"                       456
+95435      ".checkbox"                         456
+93775      " tileSize"                         456
+99043      "_ATTRIB"                           456
+86106      "HttpStatus"                        456
+95727      ":''"                               456
+26686      "htable"                            456
+79769      "Arduino"                           456
+75202      "QtCore"                            456
+136443     " włas"                             456
+83674      " createContext"                    456
+94900      "_loan"                             456
+49618      "\r\n\t\r\n"                        456
+93190      "getRoot"                           456
+79366      "_plate"                            456
+50816      ":white"                            456
+80320      " Gst"                              456
+45432      "    \r\n    \r\n"                  456
+67666      "_iface"                            456
+93256      "ndx"                               455
+90525      "setBackground"                     455
+42925      " omp"                              455
+63477      "\n    \n    \n"                    455
+20355      "\\Controller"                      455
+83697      "}}>"                               455
+64265      "=\"\"\""                           455
+71128      "\tloc"                             455
+84237      " itm"                              455
+79163      "basePath"                          455
+76706      "=Math"                             455
+90279      "_REDIRECT"                         455
+99552      "�"                                 455
+8150       "iminal"                            455
+71630      " ()=>"                             455
+80327      " menggunakan"                      455
+63308      "getImage"                          455
+57785      " removeFrom"                       455
+81866      "(userid"                           455
+93873      " ');\n\n"                          455
+96803      " -------------"                    455
+48402      "\tsetTimeout"                      455
+90014      ".fits"                             455
+87151      "kaar"                              455
+83628      "\trandom"                          455
+44401      "��"                                454
+74833      "infile"                            454
+83846      "/ros"                              454
+18384      "@\","                              454
+142037     " gehören"                          454
+46013      " calloc"                           454
+96428      " Mitarbeiter"                      454
+93555      " Vaults"                           454
+8803       " �"                                454
+71739      "aporan"                            454
+145109     "⦁"                                 454
+62318      "(INFO"                             454
+96869      ".ADMIN"                            454
+55293      "PointerType"                       454
+68714      ",obj"                              454
+87161      "_Success"                          453
+90873      "\tevents"                          453
+144312     "◄"                                 453
+43671      "ltk"                               453
+89575      "WebHost"                           453
+14048      "LOAT"                              453
+48163      "_SR"                               453
+83407      "_gps"                              453
+75781      ":]:\n"                             453
+57911      "(INPUT"                            453
+89187      "_SUBJECT"                          453
+82194      "GBK"                               453
+76193      "ButtonType"                        453
+80533      "LineStyle"                         453
+75591      "nilai"                             453
+75065      "GetEnumerator"                     453
+88617      " ePub"                             452
+95789      "_male"                             452
+144979     "✈"                                 452
+72469      ".clientX"                          452
+45212      " StartCoroutine"                   452
+93577      "_True"                             452
+92932      "_MATERIAL"                         452
+94883      "]){"                               452
+140729     " täglich"                          452
 
 
+70237      "+lsi"                                3
+91599      "\"urls"                              3
+87257      "_Printf"                             3
+24338      "\r\r\r\n"                            3
+76035      " datingside"                         3
+65878      " thaimassage"                        3
+143547     " mük"                                3
 71195      " sexle"                              3
 89637      "HomeAs"                              3
+41864      "(EIF"                                3
 89832      " analsex"                            3
 96835      " sextreffen"                         3
-142468     " porówna"                            3
-23394      "SequentialGroup"                     3
-138968     " móg"                                3
-70237      "+lsi"                                3
-141399     " yönetici"                           3
-143555     " müdah"                              3
-76035      " datingside"                         3
-47357      " pornô"                              3
-143547     " mük"                                3
-81712      " beurette"                           3
 95585      "]=]"                                 3
-74887      " odense"                             3
+51796      "__(/*!"                              3
+141399     " yönetici"                           3
+143837     " vüc"                                3
+82384      "_icall"                              3
+92149      "();\r\r\n"                           3
+97697      "APolynomial"                         3
+81712      " beurette"                           3
+143555     " müdah"                              3
+14278      " /*<<<"                              2
+61902      " sexdate"                            2
+39957      " bakeca"                             2
+139530     " günl"                               2
+97971      "-cmpr"                               2
+72128      "_InternalArray"                      2
+86289      "\tUObject"                           2
+127545     " düzenle"                            2
 143839     " yayg"                               2
-56669      "LIBINT"                              2
-139210     " ülkem"                              2
-84047      "Ubergraph"                           2
-91239      "<UFunction"                          2
+78508      "[MAXN"                               2
+70270      " pornofil"                           2
+24094      ":UIControl"                          2
 90196      "CppI"                                2
 142092     " pobli"                              2
-76889      " \\<^"                               2
-143452     " tecrübe"                            2
-133118     " mücade"                             2
-86289      "\tUObject"                           2
-137728     "légi"                                2
-127545     " düzenle"                            2
-140873     " jednocze"                           2
 83804      "gMaps"                               2
 37735      "_StaticFields"                       2
-39957      " bakeca"                             2
-143855     " vazge"                              2
-93552      "BracketAccess"                       2
-143447     " proprié"                            2
-14278      " /*<<<"                              2
-139530     " günl"                               2
-61902      " sexdate"                            2
-85791      " sidl"                               2
-97971      "-cmpr"                               2
-128171     "lararas"                             2
-72128      "_InternalArray"                      2
-140324     " düzenlenen"                         2
+140873     " jednocze"                           2
+56669      "LIBINT"                              2
+91239      "<UFunction"                          2
 138173     "Cumhur"                              2
 142582     " bölgesinde"                         2
 98068      "SmartyHeaderCode"                    2
+128171     "lararas"                             2
+143855     " vazge"                              2
+93552      "BracketAccess"                       2
 84369      "/tinyos"                             2
-70270      " pornofil"                           2
-24094      ":UIControl"                          2
-78508      "[MAXN"                               2
-52209      "arsimp"                              1
-44046      "%timeout"                            1
-140071     " gündem"                             1
-138155     " seçen"                              1
-136454     " sürek"                              1
-143783     " uçu"                                1
-56622      " ;;="                                1
-90297      " [=["                                1
-74161      "lbrakk"                              1
-74084      "rbrakk"                              1
-88887      "lparr"                               1
-88920      "rparr"                               1
-50245      ")paren"                              1
-133697     " Üniversites"                        1
-139890     " sürecin"                            1
-70290      " PodsDummy"                          1
-143838     " vücud"                              1
-39170      "wcsstore"                            1
-64792      " vivastreet"                         1
-49511      "VMLINUX"                             1
-137583     "géni"                                1
-31283      " neuken"                             1
-137548     "fício"                               1
-84962      "GameObjectWithTag"                   1
-71507      "DECREF"                              1
-23086      " [-]:"                               1
-58739      "ConstraintMaker"                     1
-81368      " uLocal"                             1
-62685      " RTWF"                               1
-56319      "_Statics"                            1
-70266      "drFc"                                1
-96481      " JSName"                             1
-44694      ">tagger"                             1
-91154      " XPAR"                               1
-23543      "<lemma"                              1
-78042      "\">';\r\n"                           1
-52646      "yyval"                               1
-65509      "_hresult"                            1
-126390     "maktad"                              1
-89234      " pornofilm"                          1
-128133     "prowadzi"                            1
-143269     "pósito"                              1
-86278      " sexkontakte"                        1
-132815     " mümk"                               1
+76889      " \\<^"                               2
+143452     " tecrübe"                            2
+133118     " mücade"                             2
+85791      " sidl"                               2
+139210     " ülkem"                              2
+84047      "Ubergraph"                           2
+140324     " düzenlenen"                         2
 139914     " Müdürü"                             1
 78593      "_:*"                                 1
 71918      " StreamLazy"                         1
 24962      "methodVisitor"                       1
 98372      " *}\n\n"                             1
+23086      " [-]:"                               1
+58739      "ConstraintMaker"                     1
+81368      " uLocal"                             1
+65509      "_hresult"                            1
+126390     "maktad"                              1
+89234      " pornofilm"                          1
+128133     "prowadzi"                            1
+52209      "arsimp"                              1
+62685      " RTWF"                               1
+56319      "_Statics"                            1
+143838     " vücud"                              1
+39170      "wcsstore"                            1
+64792      " vivastreet"                         1
+86278      " sexkontakte"                        1
+132815     " mümk"                               1
+88887      "lparr"                               1
+88920      "rparr"                               1
+44046      "%timeout"                            1
+84962      "GameObjectWithTag"                   1
+71507      "DECREF"                              1
+56622      " ;;="                                1
+90297      " [=["                                1
+74161      "lbrakk"                              1
+74084      "rbrakk"                              1
+23543      "<lemma"                              1
+78042      "\">';\r\n"                           1
+52646      "yyval"                               1
+50245      ")paren"                              1
+133697     " Üniversites"                        1
+139890     " sürecin"                            1
+70290      " PodsDummy"                          1
+140071     " gündem"                             1
+138155     " seçen"                              1
+136454     " sürek"                              1
+143783     " uçu"                                1
+49511      "VMLINUX"                             1
+31283      " neuken"                             1
+70266      "drFc"                                1
+96481      " JSName"                             1
+44694      ">tagger"                             1
+91154      " XPAR"                               1
 
 
-95625 / 151643
+kept / total 79605 / 151643
+remains / total 82388 / 151643
 '''

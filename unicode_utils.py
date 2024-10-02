@@ -83,6 +83,18 @@ def contains_unwanted(token):
     return False
 
 
+vi_chars = {'ớ', 'ờ', 'ụ', 'ẫ', 'ổ', 'ậ', 'ẵ', 'â', 'ặ', 'ễ', 'ọ', 'ẩ', 'ỹ', 'ẽ', 'ủ', 'ạ', 'ấ', 'ư', 'ả', 'ỉ', 'ỗ', 'ồ', 'ứ', 'đ', 
+'ự', 'è', 'ý', 'ế', 'ỵ', 'ũ', 'ắ', 'ẻ', 'ể', 'ợ', 'ệ', 'ẳ', 'ộ', 'à', 'õ', 'ĩ', 'ằ', 'ẹ', 'ỳ', 'é', 'ử', 'ị', 'ở', 'ỡ', 'ê', 
+'ầ', 'ò', 'ề', 'ố', 'ỷ', 'ă', 'ì', 'ữ', 'ơ', 'ã', 'ỏ', 'ừ', 'ù', 'ú', 'á', 'ô', 'í', 'ó',
+'a', 'b', 'c', 'd', 'e', 'g', 'h', 'i', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', ' ',
+'"', "'", ".", ",", ";" }
+
+def canbe_vietnamese(token):
+    for c in token.lower():
+        if c not in vi_chars:
+            return False
+    return True
+
 '''
 The 4E00—9FFF range covers CJK Unified Ideographs (CJK=Chinese, Japanese and Korean). 
 There are a number of lower ranges that relate, to some degree, to CJK:
@@ -163,8 +175,20 @@ if __name__ ==  "__main__":
 🌍,
  😂, 😃,
  😂
-""".strip().split("\n")
+    """.strip().split("\n")
     
     for x in emoji_samples:
         if not contains_emoji(x):
             print(x, emoji_count(x))
+
+
+    vi_samples = """
+    hê hê
+    an
+    " VIỆT
+
+    """.strip().split("\n")
+
+    for x in vi_samples:
+        if not canbe_vietnamese(x):
+            print(x)
