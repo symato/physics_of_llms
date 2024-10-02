@@ -211,12 +211,12 @@ for tid, count in x:
         print(pretty(tid, count))
 
 
-with open("tokens_removed.txt", "wt") as f:
+with open("data/tokens_removed.txt", "wt") as f:
     for tid, count in removed:
         f.write(pretty(tid, count) + "\n")
 
 
-with open("tokens_kept.txt", "wt") as f:
+with open("data/tokens_kept.txt", "wt") as f:
     for tid, count in kept:
         f.write(pretty(tid, count) + "\n")
 
