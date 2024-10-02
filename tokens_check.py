@@ -12,7 +12,8 @@ tokenizer = AutoTokenizer.from_pretrained(
 
 wanted = open("tokens_wanted.txt", "wt")
 unwanted = open("tokens_unwanted.txt", "wt")
-wanted_count = 0
+
+wanted_tids = []
 
 for tid in range(0, tokenizer.vocab_size):
 	token = tokenizer.decode(tid)
@@ -20,7 +21,7 @@ for tid in range(0, tokenizer.vocab_size):
 	if contains_unwanted(token):
 		unwanted.write(token + "\n")
 	else:
-		wanted_count += 1
+		wanted_tids.append(tid)
 		wanted.write(token + "\n")
 
-print(f"wanted {wanted_count} / {tokenizer.vocab_size}")
+print(f"wanted {len(wanted_tids)} / {tokenizer.vocab_size}")

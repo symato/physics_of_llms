@@ -1,6 +1,6 @@
 ## Tỉa và mapping vocab sao cho model chỉ sinh ra tiếng Anh và Việt
 - Các open source LLMs hiện tại khi dịch Anh, Việt thi thoảng model output tiếng Tàu
-- Bộ từ vựng Anh Việt có lẽ chỉ chiếm 1/4 - 1/2 trong tổng số 100k - 200k vocab size.
+- Bộ từ vựng Anh Việt có lẽ chỉ chiếm 1/2 trong tổng số 100k - 200k vocab size.
   Khi tỉa gọn lại thì sẽ giúp:
   - Không thể ouptut tokens nào khác ngoài En hoặc Vi
   - Giảm vram khi infer và finetune embeddings
@@ -30,10 +30,14 @@
 - [x] Dataset
 - [x] Lọc theo thống kê mới giảm được gần một nửa 86k / 151k (qwen vocab)
   - bị mất một số emoji
-- [ ] Cần kết hợp với lọc theo bảng mã unicode
+- [x] Cần kết hợp với lọc theo bảng mã unicode
   - giữ lại emoji
   - loại bỏ cjk, thailand, chữ tượng hình ...
-- [ ] Target bộ từ vựng <= 64k
+- [x] Target bộ từ vựng ~96k
+
+- [ ] Lọc sâu hơn nữa, target bộ từ vựng ~64k
+  - [ ] Giữ lại token chứa ký tự tiếng Việt
+  - [ ] Bỏ đi tokens của các ngôn ngữ Latin không phổ biến ...
 
 650GB text Việt, Anh, Code (100b tokens)
 https://huggingface.co/datasets/Symonsters/NAM-005_436G_Vi-En-Code
