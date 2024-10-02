@@ -1,3 +1,4 @@
+## 18 tháng trước tinystories đã có những insights rất tốt về cách tạo data và huấn luyện models
 - https://www.youtube.com/watch?v=iNhrW0Nt7zs
 - https://arxiv.org/abs/2305.07759
 - https://huggingface.co/datasets/roneneldan/TinyStories
@@ -8,7 +9,7 @@
 - https://arxiv.org/pdf/2312.09241
 
 
-What does it mean to understand language? what does it take to speak fluent English?
+## What does it mean to understand language? what does it take to speak fluent English?
 - vocab
 - grammar
 - không cần reasoning?
