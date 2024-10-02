@@ -52,3 +52,14 @@ Nhỏ nhưng tập trung hơn!
 
 ![](img/tiny-stories-06.jpg)
 
+![](img/tiny-stories-07.jpg)
+28M make senses hơn 1.5B (vì được đào tạo trên dữ liệu "tốt" hơn)
+
+![](img/tiny-stories-08.jpg)
+
+ví dụ Alice, 33m thể hiện được tích cấp bách của tình huống (so tired => traight to bed), 1.5b outof context
+
+Ví dụ Lily, 2.5m không thể reasoning, lặp lại dog vì nó xuất hiện nhiều trong prompt (context), 33m thể hiện được. Again, 1.5b don't get it.
+
+Ví dụ Alice & Jact, 2.5m is dumb, 33m hiểu ngữ cảnh và trả lời đúng, 1.5b don't get it.
+

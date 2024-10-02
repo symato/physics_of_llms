@@ -107,4 +107,4 @@ wc -l tokens_kept__*
 
 ## Physics of LMs: làm lại thí nghiệm về Knowledge Storage, Extraction and Manipulation
 
-## Physics of LMs: làm thí nghiệm TinyStories để học language và chuyển giao knowledge từ En => Vi
+## Physics of LMs: làm thí nghiệm [TinyStories](./TINY_STORIES.md) để học language và chuyển giao knowledge từ En => Vi
