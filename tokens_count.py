@@ -238,9 +238,14 @@ def is_alphabet(token):
             return False
     return True
 
+
 import nltk # pip install nltk
 nltk.download('words')
 en_words = set( nltk.corpus.words.words() )
+###
+def is_english_word(token):
+    return token.strip().lower() in en_words
+
 
 for tid, count in removed:
     tid = int(tid)
@@ -249,8 +254,8 @@ for tid, count in removed:
     p_token = pretty_token(token, tid, count)
     if is_ascii(token):
         if is_alphabet(token):
-            if token.strip().lower() in en_words: # is English word
-                with open("data/tokens_kept__alphabet.jsonl", "at") as f:
+            if is_english_word(token):
+                with open("data/tokens_kept__english.jsonl", "at") as f:
                     f.write(p_token)
             else:
                 with open("data/tokens_removed__alphabet.jsonl", "at") as f:
@@ -270,8 +275,12 @@ for tid, count in kept:
     p_token = pretty_token(token, tid, count)
     if is_ascii(token):
         if is_alphabet(token):
-            with open("data/tokens_kept__alphabet.jsonl", "at") as f:
-                f.write(p_token)
+            if is_english_word(token):
+                with open("data/tokens_kept__english.jsonl", "at") as f:
+                    f.write(p_token)
+            else:
+                with open("data/tokens_kept__alphabet.jsonl", "at") as f:
+                    f.write(p_token)
         else:
             with open("data/tokens_kept__ascii.jsonl", "at") as f:
                 f.write(p_token)
