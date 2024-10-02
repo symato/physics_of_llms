@@ -39,36 +39,8 @@
   - [x] Giữ lại tokens chứa ký tự tiếng Việt
   - [x] Giữ lại ascii tokens
 
-- [x] Tạo final vocab từ `qwen__800__20000`
+- [x] Tạo final vocab từ [qwen__800__20000](./qwen__800__20000/README.md)
   - [x] Lọc tay kept tokens @ `tokens_kept__*.jsonl` (84065 giảm xuống 76116)
-
-```
-python3 tokens_count.py 800 20000
-cd qwen__800__20000
-
-wc -l tokens_kept__*
-
-    570 tokens_kept__alphabet_long.jsonl
-  27227 tokens_kept__alphabet_short.jsonl
-    343 tokens_kept__ascii_long.jsonl
-  18297 tokens_kept__ascii_short.jsonl
-  35092 tokens_kept__english.jsonl
-   2536 tokens_kept__others.jsonl
-  84065 total
-
-
-## Sau khi cắt tỉa bằng tay
-
-wc -l tokens_kept__*
-
-    214 tokens_kept__alphabet_long.jsonl
-  27227 tokens_kept__alphabet_short.jsonl
-      0 tokens_kept__ascii_long.jsonl
-  11047 tokens_kept__ascii_short.jsonl
-  35092 tokens_kept__english.jsonl
-   2536 tokens_kept__others.jsonl
-  76116 total
-```
 
 **Đối tượng thực hành**
 - qwen2.5 có 0.5b, 1.5b, 3b, 7b, 14b, `32b`, `72b` models
