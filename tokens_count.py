@@ -38,10 +38,11 @@ mkdirs(PATH)
 def ok(x):
     tid, count = x
 
-    if count < min_count:
-        return False
-
     token = tokenizer.decode(int(tid))
+
+    if count < min_count:
+        if not contains_emoji(token):
+            return False
 
     if count >= max_count:
         if contains_unwanted(token):
