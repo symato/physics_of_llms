@@ -228,7 +228,7 @@ with open("data/tokens_removed.jsonl", "wt") as f:
 
 with open("data/tokens_kept.jsonl", "wt") as f:
     for tid, count in kept:
-        f.write(pretty_json(tid, count) + "\n")
+        f.write(pretty_json(tid, count))
 
 
 remains = set(wanted_tids)
