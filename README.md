@@ -43,6 +43,18 @@
   - [ ] Lọc tay kept tokens @ `tokens_kept__*.jsonl`
   - [ ] Thêm special tokens (token điều khiển ...)
 
+
+```
+python3 tokens_count.py 800 20000
+qwen__800__20000$ wc -l tokens_kept__*
+
+  33375 tokens_kept__alphabet.jsonl
+  18640 tokens_kept__ascii.jsonl
+  29369 tokens_kept__english.jsonl
+   2536 tokens_kept__others.jsonl
+  83920 total
+```
+
 650GB text Việt, Anh, Code (100b tokens)
 https://huggingface.co/datasets/Symonsters/NAM-005_436G_Vi-En-Code
 ```
