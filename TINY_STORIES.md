@@ -5,9 +5,6 @@
 - https://huggingface.co/datasets/roneneldan/TinyStoriesInstruct
 - https://huggingface.co/datasets/nampdn-ai/tinystories-vietnamese
 
-- https://huggingface.co/datasets/TinyGSM/TinyGSM
-- https://arxiv.org/pdf/2312.09241
-
 Tác giả đặt vấn đề về việc liệu có thể tạo ra các mô hình ngôn ngữ nhỏ nhưng vẫn có khả năng nói chuyện một cách mạch lạc và tự nhiên hay không. Họ đặt vấn đề này vì nhận thấy rằng các mô hình ngôn ngữ hiện đại thường đòi hỏi số lượng tham số lớn để học cách sinh văn tự nhiên và nhất quán.
 
 ## What does it mean to understand language? what does it take to speak fluent English?
