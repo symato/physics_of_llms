@@ -121,5 +121,5 @@ Vì bộ vocab mới chỉ hỗ trợ tiếng Anh và Việt là chính nên qwe
 - Build dataset theo một hướng khác? TinyFantasy? TinyFunny?
 - Mở rộng: xây bộ data để chuyển knowledge đã học từ Vi => En
 - Mở rộng: Từ hiểu ngôn ngữ tới làm thơ và làm thơ thuận nghịch độc
-  - 750 BÀI THƠ THUẬN NGHỊCH ĐỘC https://vantholieuxuyencom.blog/about
+  - 750 BÀI THƠ THUẬN NGHỊCH ĐỘC https://vantholieuxuyencom.blog/about/
 ![](img/tho-thuan-nghich-doc.jpg)
