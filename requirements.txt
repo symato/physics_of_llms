@@ -1,0 +1,6 @@
+torch
+transformers
+nltk
+emoji
+pyvi
+fasttext
