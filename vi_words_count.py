@@ -156,7 +156,7 @@ spaces = " " * 100
 with open("data/vi_words_count.txt", "wt") as f:
     for w, c in word_count_pairs:
         if "_" in w:
-            f.write(f"{w}{spaces[maxx - len(w)]} {c}\n")
+            f.write(f"{w}{spaces[:maxx - len(w)]} {c}\n")
 
 
 '''
