@@ -2,6 +2,8 @@ import os, sys, lzma, glob, json
 from multiprocessing import Pool
 import re, subprocess
 
+import sys; sys.path.append('../'); from unicode_utils import *
+
 inputfile = "wikihow_filtered.jsonl"
 min_chars = int(sys.argv[1])
 
@@ -24,15 +26,17 @@ for line in open(inputfile, "rt"):
 			# Loại bỏ citation marks. Ví dụ: [16]
 			data["en"] = remove_citation(data["en"])
 			data["vi"] = remove_citation(data["vi"])
-			print(json.dumps(data, ensure_ascii = False))
+			line = json.dumps(data, ensure_ascii = False)
+			if not contains_unwanted(line):
+				print(line)
 
 '''
 
 # Xem trước
-python3 wikihow_more_filtered.py 10000 | head -n 10 | jq
+python3 prepare_wikihow_data.py 10000 | head -n 10 | jq
 
 # Xuất dữ liệu ra file
-python3 wikihow_more_filtered.py 10000 > wikihow_more_filtered.jsonl
+python3 prepare_wikihow_data.py 10000 > wikihow_more_filtered.jsonl
 
 wc -l wikihow_more_filtered.jsonl
 # 2938 samples
