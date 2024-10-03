@@ -26,7 +26,7 @@ try:
 except:
     input_files = ["data/test.jsonl.xz"]
 
-print(input_files)
+print(input_files, min_count)
 
 
 PATH = f"data/vi_words"
@@ -164,5 +164,7 @@ with open("data/vi_words_count.txt", "wt") as f:
 python3 vi_words_count.py 1000
 
 wc -l data/vi_words_count.txt
+
+tail data/vi_words_count.txt
 
 '''
