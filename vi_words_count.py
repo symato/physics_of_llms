@@ -34,9 +34,9 @@ subprocess.run(f"mkdir -p {PATH}", shell = True)
 
 
 ## Fasttext detect lang
-langid_model = 'data/lid.176.bin'
-if not os.path.exists(langid_model):
-    cmd = f"wget https://dl.fbaipublicfiles.com/fasttext/supervised-models/{langid_model}"
+langid_model = 'lid.176.bin'
+if not os.path.exists('data/' + langid_model):
+    cmd = f"wget https://dl.fbaipublicfiles.com/fasttext/supervised-models/{langid_model}; mv {langid_model} data"
     subprocess.run(cmd, shell=True)
 FASTTEXT_MODEL = fasttext.load_model(langid_model)
 
