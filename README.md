@@ -60,6 +60,8 @@
 
 - [x] Thử cắt tỉa qwen2.5 1.5b và chạy inference
 
+- [ ] Sửa code llama.cpp python hoặc exllama để có thể chạy đc model đã sửa vocab
+
 ```sh
 huggingface-cli download Qwen/Qwen2.5-1.5B-Instruct --local-dir Qwen2.5-0.5B-Instruct
 
@@ -91,9 +93,6 @@ Mr. Tran: My name is Le Quoc Dan.
 qwenchat: timespent 0.98 seconds
 ```
 Vì bộ vocab mới chỉ hỗ trợ tiếng Anh và Việt nên qwen không thể nói tiếng Trung được nữa
-
-- [ ] Sửa code llama.cpp python hoặc exllama để có thể chạy đc model đã sửa vocab
-
 
 - - -
 
