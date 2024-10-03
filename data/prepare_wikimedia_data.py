@@ -6,15 +6,15 @@ import sys; sys.path.append('../'); from unicode_utils import *
 import sys; sys.path.append('../'); from utils import *
 
 filenames = """
-wikipedia__20231101.vi__train-02.jsonl
-wikisource__20231201.vi__train-00.jsonl
+wikipedia__20231101.vi__train-02.jsonl.xz
+wikisource__20231201.vi__train-00.jsonl.xz
 """.strip().split("\n")
 
 min_chars = int(sys.argv[1])
 
 texts = []
 for filename in filenames:
-	for line in open(filename):
+	for line in lzma.open(filename):
 		if len(line) > min_chars:
 			text = json.loads(line)["text"]
 			texts.append( text )
@@ -37,11 +37,11 @@ for text in final_texts:
 
 '''
 
-python3 prepare_wikimedia_data.py 3000 | shuf > wikimedia_vi.jsonl
+python3 prepare_wikimedia_data.py 3000 | shuf > wikimedia_vi_filtered.jsonl
 
-cat wikimedia_vi.jsonl | head -n 10 | jq
+cat wikimedia_vi_filtered.jsonl | head -n 10 | jq
 
-du -sh wikimedia_vi.jsonl
+du -sh wikimedia_vi_filtered.jsonl
 
 '''
 '''
@@ -49,7 +49,6 @@ du -sh wikimedia_vi.jsonl
 ```sh
 
 wget https://huggingface.co/datasets/Symato/KB_wikimedia/resolve/main/wikisource__20231201.vi__train-00.jsonl.xz
-
 wget https://huggingface.co/datasets/Symato/KB_wikimedia/resolve/main/wikipedia__20231101.vi__train-02.jsonl.xz
 
 xz -d wikisource__20231201.vi__train-00.jsonl.xz

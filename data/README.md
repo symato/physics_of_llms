@@ -4,9 +4,11 @@
 python3 python3 prepare_wikihow_data.py 10000 > wikihow_more_filtered.jsonl
 
 # Lọc 76mb text tiếng Việt từ wikipedia và wikisource
-python3 prepare_wikimedia_data.py 3000 | shuf > wikimedia_vi.jsonl
+wget https://huggingface.co/datasets/Symato/KB_wikimedia/resolve/main/wikisource__20231201.vi__train-00.jsonl.xz
+wget https://huggingface.co/datasets/Symato/KB_wikimedia/resolve/main/wikipedia__20231101.vi__train-02.jsonl.xz
+python3 prepare_wikimedia_data.py 3000 | shuf > wikimedia_vi_filtered.jsonl
 
 # xem thử vài samples
 head -n 10 wikihow_more_filtered.jsonl | jq
-head -n 10 wikimedia_vi.jsonl | jq
+head -n 10 wikimedia_vi_filtered.jsonl | jq
 ```
