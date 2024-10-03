@@ -97,8 +97,8 @@ def get_uniq_words(infile):
             text = json.loads(line)["text"]
             texts.append( text )
 
-            # 10k samples ghi lại kết quả đếm 1 lần
-            if idx % 10000 == 9999:
+            # 1k samples ghi lại kết quả đếm 1 lần
+            if idx % 1000 == 999:
                 merge_count(count, count_words(texts))
                 count["last_line_idx"] = idx
 
