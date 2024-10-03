@@ -99,7 +99,7 @@ def get_uniq_words(infile):
 
             # 10k samples ghi lại kết quả đếm 1 lần
             if idx % 10000 == 9999:
-                merge_count(count, count_tokens(count, texts))
+                merge_count(count, count_words(texts))
                 count["last_line_idx"] = idx
 
                 with lzma.open(outfile, "wt") as f:
