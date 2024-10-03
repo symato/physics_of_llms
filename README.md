@@ -17,7 +17,7 @@
 
 - Dồn embedding bằng cách map `used_token_ids[i] => i` (original token id => new token id)
 
-**Tham khảo**
+**Tham khảo tác dụng của giảm tải vocab và can thiệp vào inference**
 - https://github.com/huggingface/transformers/pull/31292
   - Llama3 8B -> MIND-BLOWING 3.62 memory usage reduction factor (due to large vocabulary)
 
@@ -65,6 +65,9 @@
 ```sh
 huggingface-cli download Qwen/Qwen2.5-1.5B-Instruct --local-dir Qwen2.5-0.5B-Instruct
 
+python3 qwen_edit.py
+
+python3 qwen_chat.py
 ```
 
 - - -
