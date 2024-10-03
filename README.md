@@ -119,11 +119,7 @@ Vì bộ vocab mới chỉ hỗ trợ tiếng Anh và Việt là chính nên qwe
 
 ## Physics of LMs: làm thí nghiệm [TinyStories](TinyStories.md) về học language
 - Build dataset theo một hướng khác? TinyFantasy? TinyFunny?
-- Mở rộng: xây bộ data để chuyển knowledge đã học từ En => Vi
-
-**Prompt**: viết truyện cười về xe ô tô và người lập trình viên
-
-**Response**: Một lập trình viên mua chiếc xe ô tô mới và rất tự hào. Anh ta quyết định đưa nó đến khoe với đồng nghiệp tại công ty phần mềm.
-Khi đến nơi làm việc, anh ta hào hứng nói với mọi người: "Này các bạn, tôi vừa mua một chiếc xe mới toanh! Nó có thể tự động lái, tự đỗ xe, và thậm chí còn có thể nói chuyện với tôi nữa!"
-Một đồng nghiệp tò mò hỏi: "Ồ, vậy bạn đã thử nói chuyện với nó chưa?"
-Lập trình viên trả lời: "Rồi, nhưng nó cứ báo lỗi 'Syntax Error' mỗi khi tôi nói tiếng người!"
+- Mở rộng: xây bộ data để chuyển knowledge đã học từ Vi => En
+- Mở rộng: Từ hiểu ngôn ngữ tới làm thơ và làm thơ thuận nghịch độc
+  - 750 BÀI THƠ THUẬN NGHỊCH ĐỘC https://vantholieuxuyencom.blog/about
+![](img/tho-thuan-nghich-doc.jpg)
