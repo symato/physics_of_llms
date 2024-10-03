@@ -117,8 +117,6 @@ Vì bộ vocab mới chỉ hỗ trợ tiếng Anh và Việt là chính nên qwe
 
 ## Physics of LMs: làm thí nghiệm về Knowledge Storage, Extraction and Manipulation
 
-## Physics of LMs: làm thí nghiệm [TinyStories](./TINY_STORIES.md) để học language
+## Physics of LMs: làm thí nghiệm [TinyStories](TinyStories.md) về học language
+- Build dataset theo một hướng khác? TinyFantasy?
 - Mở rộng: xây bộ data để chuyển knowledge đã học từ En => Vi
-
-## Physics of LMs: làm thí nghiệm [TinyGSM](./TINY_GSM.md) để học cách làm toán
-- Mở rộng: kết hợp với các thử nghiệm về reasoning trong physics of LMs part 2.
