@@ -38,7 +38,7 @@ langid_model = 'lid.176.bin'
 if not os.path.exists('data/' + langid_model):
     cmd = f"wget https://dl.fbaipublicfiles.com/fasttext/supervised-models/{langid_model}; mv {langid_model} data"
     subprocess.run(cmd, shell=True)
-FASTTEXT_MODEL = fasttext.load_model(langid_model)
+FASTTEXT_MODEL = fasttext.load_model('data/' + langid_model)
 
 def detect_lang(text):
     word_re = r'\w+\s'
