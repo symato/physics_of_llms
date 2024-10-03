@@ -144,7 +144,7 @@ count = get_final_count(input_files)
 
 word_count_pairs = list( count.items() )
 
-word_count_pairs.sort(key = lambda x: -x[1]) # sắp xếp giảm đần theo count
+word_count_pairs.sort(key = lambda x: -x[1]) # sắp xếp giảm dần theo count
 
 for w, c in word_count_pairs[:1000]:
     print(w, c)
