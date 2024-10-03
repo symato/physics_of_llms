@@ -19,8 +19,8 @@ try:
         input_files = "stats_mode"
         min_count = int(x)
     else:
-        input_files = 
-            glob.glob(f"{x}/*.lzma") + 
+        input_files = \
+            glob.glob(f"{x}/*.lzma") + \ 
             glob.glob(f"{x}/*.xz")
 
 except:
