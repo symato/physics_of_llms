@@ -59,6 +59,10 @@
 
 - [ ] Sửa code llama.cpp python hoặc exllama để có thể chạy đc model đã sửa vocab
 
+```sh
+huggingface-cli download Qwen/Qwen2.5-1.5B-Instruct --local-dir Qwen2.5-0.5B-Instruct
+
+```
 
 - - -
 
