@@ -81,10 +81,10 @@ while True:
     try: q = input(f"Bạn: {GREEN}").encode('utf-8', 'ignore').decode('utf-8', 'ignore')
     except Exception as e: print(e); q = ""
 
-    reset_timer()
+    reset_timer(timer="qwenchat")
     a = get_answer(q)
     print(f"{RED}{a}{RESET}")
-    measure_time("")
+    measure_time("timespent", timer="qwenchat")
 
 
 '''

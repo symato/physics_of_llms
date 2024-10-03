@@ -56,11 +56,9 @@
   - `qwen2.0` https://huggingface.co/SeaLLMs/SeaLLMs-v3-7B-Chat
   - `qwen1.5` https://huggingface.co/5CD-AI/Viet-Sailor-4B-Instruct
 
-- [ ] Thêm special tokens vào `qwen__800__20000/tokens_kept__*` để tạo new vocab
+- [x] Thêm special tokens vào `qwen__800__20000/tokens_kept__*` để tạo new vocab
 
-- [ ] Thử cắt tỉa qwen2.5 1.5b và chạy inference
-
-- [ ] Sửa code llama.cpp python hoặc exllama để có thể chạy đc model đã sửa vocab
+- [x] Thử cắt tỉa qwen2.5 1.5b và chạy inference
 
 ```sh
 huggingface-cli download Qwen/Qwen2.5-1.5B-Instruct --local-dir Qwen2.5-0.5B-Instruct
@@ -69,6 +67,33 @@ python3 qwen_edit.py
 
 python3 qwen_chat.py
 ```
+```
+new_vocab 76138
+Bạn: bạn tên gì?
+
+Tôi là một trợ lý ảo, không có tên riêng.
+qwenchat: timespent 0.65 seconds
+
+Bạn: dịch đoạn văn sau sang tiếng Anh: tôi tên là Lý Quốc Dân
+
+Here's the English translation of the Vietnamese text:
+
+"My name is Ly Quoc Dan."
+
+This directly translates the given Vietnamese sentence into English, maintaining its original meanriginal meaning and structure.
+qwenchat: timespent 1.15 seconds
+
+Bạn: dịch đoạn văn sau sang tiếng Trung: tôi tên là Lý Quốc Dân
+
+Here's the English translation of the Vietnamese text:
+
+Mr. Tran: My name is Le Quoc Dan.
+qwenchat: timespent 0.98 seconds
+```
+Vì bộ vocab mới chỉ hỗ trợ tiếng Anh và Việt nên qwen không thể nói tiếng Trung được nữa
+
+- [ ] Sửa code llama.cpp python hoặc exllama để có thể chạy đc model đã sửa vocab
+
 
 - - -
 
