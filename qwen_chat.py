@@ -4,7 +4,6 @@ import transformers
 
 try: mode_path = sys.argv[1]
 except: mode_path = "../Qwen2.5-1.5B-Instruct__trimmed_vocab"
-# mode_path = "../Qwen2.5-0.5B-Instruct"
 
 model = transformers.AutoModelForCausalLM.from_pretrained(
     mode_path, 

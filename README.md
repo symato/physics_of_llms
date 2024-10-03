@@ -31,7 +31,7 @@
 
 **Triển khai**
 - [x] Dataset
-- [x] Lọc theo thống kê mới giảm được gần một nửa 86k / 151k (qwen vocab)
+- [x] Lọc theo thống kê mới giảm được gần một nửa (qwen vocab)
   - bị mất một số emoji
 - [x] Cần kết hợp với lọc theo bảng mã unicode
   - giữ lại emoji
@@ -63,7 +63,7 @@
 - [ ] Sửa code llama.cpp python hoặc exllama để có thể chạy đc model đã sửa vocab
 
 ```sh
-huggingface-cli download Qwen/Qwen2.5-1.5B-Instruct --local-dir Qwen2.5-0.5B-Instruct
+huggingface-cli download Qwen/Qwen2.5-1.5B-Instruct --local-dir ../Qwen2.5-1.5B-Instruct
 
 python3 qwen_edit.py
 
@@ -92,7 +92,7 @@ Here's the English translation of the Vietnamese text:
 Mr. Tran: My name is Le Quoc Dan.
 qwenchat: timespent 0.98 seconds
 ```
-Vì bộ vocab mới chỉ hỗ trợ tiếng Anh và Việt nên qwen không thể nói tiếng Trung được nữa
+Vì bộ vocab mới chỉ hỗ trợ tiếng Anh và Việt là chính nên qwen không thể nói tiếng Trung được nữa
 
 - - -
 
@@ -102,10 +102,9 @@ Vì bộ vocab mới chỉ hỗ trợ tiếng Anh và Việt nên qwen không th
 - tạo bộ từ điển từ ghép tiếng Việt thông dụng, chỉ cần khoảng 2k - 8k từ
 - dùng một bộ lọc trước lúc tknz để lọc và map từ ghép này vào token id mới
 - dùng một cách thông minh để khởi tạo embedding values của tokens mới
-  - Zero-Shot Tokenizer Transfer https://github.com/bminixhofer/zett
-- dùng lora finetune để refine new embeddings
+- refine new embeddings
   - freeze all layers, finetune embeddings trước
-  - sau đó finetune all models
+  - sau đó finetune models (lora + embedding or full finetune)
   - build datasets và giáo án huấn luyện phù hợp
   - ...
 - ...
