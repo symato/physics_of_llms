@@ -53,5 +53,3 @@ Rae, Jack W., et al. "Scaling language models: Methods, analysis & insights from
 https://www.microsoft.com/en-us/research/blog/phi-2-the-surprising-power-of-small-language-models
 
 ![](img/textbooks-16.jpg)
-
-![](img/textbooks-17.jpg)

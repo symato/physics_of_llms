@@ -54,12 +54,13 @@ def get_answer(q):
 {q}<|im_end|>
 <|im_start|>assistant"""
 
-    input_ids = tokenizer(prompt, return_tensors="pt").to(model.device)["input_ids"]
-    map_tids(old2new, input_ids[0])
+    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+    map_tids(old2new, inputs["input_ids"][0])
 
     with torch.no_grad():
         output_ids = model.generate(
-            input_ids=input_ids,
+            **inputs,
+            # input_ids=input_ids,
             max_new_tokens=1024,
             temperature=0.3,
             top_p=1.0, top_k=30, do_sample=True,
@@ -68,7 +69,7 @@ def get_answer(q):
             pad_token_id=tokenizer.pad_token_id,
         )
 
-    answer_tids = output_ids[0][len(input_ids[0]) : ] # bỏ đi prompt tokens
+    answer_tids = output_ids[0][len(inputs["input_ids"][0]) : ] # bỏ đi prompt tokens
     map_tids(new2old, answer_tids)
 
     return tokenizer.decode(answer_tids).split("<|im_end|>")[0]

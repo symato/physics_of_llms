@@ -65,9 +65,9 @@
 ```sh
 huggingface-cli download Qwen/Qwen2.5-1.5B-Instruct --local-dir ../Qwen2.5-1.5B-Instruct
 
-python3 qwen_edit.py
+python3 qwen_edit.py ../Qwen2.5-1.5B-Instruct
 
-python3 qwen_chat.py
+python3 qwen_chat.py ../Qwen2.5-1.5B-Instruct
 ```
 ```
 new_vocab 76138

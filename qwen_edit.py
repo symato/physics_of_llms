@@ -1,8 +1,12 @@
 import torch
 import transformers
+import sys
 
-model_path = "../Qwen2.5-1.5B-Instruct"
-new_mode_path = "../Qwen2.5-1.5B-Instruct__trimmed_vocab"
+try: model_path = sys.argv[1]
+except: model_path = "../Qwen2.5-3B-Instruct"
+# bỏ / ở cuối model_path
+model_path = re.sub(r'/*$', "", model_path.strip())
+new_mode_path = f"{model_path}__trimmed_vocab"
 
 if True:
     model = transformers.AutoModelForCausalLM.from_pretrained(
