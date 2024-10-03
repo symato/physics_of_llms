@@ -122,6 +122,10 @@ def get_uniq_words(infile):
     if "last_line_idx" in count:
         count.pop("last_line_idx")
 
+    for w, c in list( count.items() ):
+        if "_" not in w or c < min_count:
+            count.pop(w)
+
     return count
 
 
@@ -146,7 +150,11 @@ word_count_pairs = list( count.items() )
 
 word_count_pairs.sort(key = lambda x: -x[1]) # sắp xếp giảm dần theo count
 
-for w, c in word_count_pairs[:1000]:
-    if "_" in w:
-        print(w, c)
+maxx = 25
+spaces = " " * 100
+
+with open("data/vi_words_count.txt", "wt"):
+    for w, c in word_count_pairs:
+        if "_" in w:
+            f.write(f"{w}{spaces[maxx - len(w)]} {c}\n")
 
