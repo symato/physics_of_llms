@@ -25,25 +25,28 @@ for new_tid, old_tid in enumerate( kept_tids ):
 
 
 def map_tids(map_dict, tids):
-    for idx, x in enumerate(tids.tolist()):
-        # print(tids, idx, x) # DEBUF
+    try: tids_ = tids.tolist()
+    except: tids_ = tids
+
+    for idx, x in enumerate(tids_):
+        # print(tids, idx, x) # DEBUG
         tids[idx] = map_dict[x]
 
 
-STOP_WORDS = "<|im_end|> </s> <|endoftext|>".split()
+STOP_WORDS = "<|im_end|> <|endoftext|>".split()
 class KeywordsStoppingCriteria(transformers.StoppingCriteria):
     def __init__(self, str):
         self.keyword_ids = tokenizer(str).input_ids
-        self.keyword_ids = self.keyword_ids[1:]
-        # map_tids(old2new, self.keyword_ids)
+        map_tids(old2new, self.keyword_ids)
         self.keyword_len = len(self.keyword_ids)
 
     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs) -> bool:
         last_token_ids = input_ids[0][-self.keyword_len:]
         return last_token_ids.tolist() == self.keyword_ids
 
-x = [KeywordsStoppingCriteria(xx) for xx in STOP_WORDS]
-stop_criteria_list = transformers.StoppingCriteriaList(x)
+stop_criteria_list = transformers.StoppingCriteriaList(
+    [ KeywordsStoppingCriteria(x) for x in STOP_WORDS ]
+)
 
 
 def get_answer(q):
@@ -57,7 +60,7 @@ def get_answer(q):
     with torch.no_grad():
         output_ids = model.generate(
             input_ids=input_ids,
-            max_new_tokens=64,
+            max_new_tokens=1024,
             temperature=0.5,
             top_p=1.0, top_k=30, do_sample=True,
             repetition_penalty=1.1,
@@ -79,5 +82,5 @@ while True:
 
     reset_timer()
     a = get_answer(q)
-    print(f"{RED}{a}{RESET}", end="")
+    print(f"{RED}{a}{RESET}")
     measure_time("")
