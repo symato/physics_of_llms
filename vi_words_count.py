@@ -139,4 +139,11 @@ def get_final_count(input_files):
 
 print("get_final_count ...")
 count = get_final_count(input_files)
-print(count)
+# print(count)
+
+word_count_pairs = count.items()
+
+word_count_pairs.sort(key = lambda x: -x[1]) # sắp xếp giảm đần theo count
+
+for w, c in word_count_pairs[:1000]:
+    print(w, c)
