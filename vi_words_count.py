@@ -33,7 +33,7 @@ subprocess.run(f"mkdir -p {PATH}", shell = True)
 
 
 ## Fasttext detect lang
-langid_model = 'lid.176.bin'
+langid_model = 'data/lid.176.bin'
 if not os.path.exists(langid_model):
     cmd = f"wget https://dl.fbaipublicfiles.com/fasttext/supervised-models/{langid_model}"
     subprocess.run(cmd, shell=True)
@@ -141,7 +141,7 @@ print("get_final_count ...")
 count = get_final_count(input_files)
 # print(count)
 
-word_count_pairs = count.items()
+word_count_pairs = list( count.items() )
 
 word_count_pairs.sort(key = lambda x: -x[1]) # sắp xếp giảm đần theo count
 
