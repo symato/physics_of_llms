@@ -10,14 +10,18 @@ min_count = 0
 max_count = 0
 
 try:
+    # bỏ / ở cuối tham số đầu vào
     x = re.sub(r'/*$', "", sys.argv[1].strip())
+
     if re.match(r"\d+", x):
         input_files = "stats_mode"
         min_count = int(x)
     else:
         input_files = glob.glob(f"{x}/*.lzma")
+
 except:
     input_files = ["data/test.jsonl.xz"]
+
 print(input_files)
 
 

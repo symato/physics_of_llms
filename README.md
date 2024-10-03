@@ -94,19 +94,21 @@ qwenchat: timespent 0.98 seconds
 ```
 Vì bộ vocab mới chỉ hỗ trợ tiếng Anh và Việt là chính nên qwen không thể nói tiếng Trung được nữa
 
+
 - - -
 
 
 ## Sau khi tỉa gọn rồi từng bước một mở rộng bộ vocab
 
-- tạo bộ từ điển từ ghép tiếng Việt thông dụng, chỉ cần khoảng 2k - 8k từ
+- [ ] tạo bộ từ điển từ ghép tiếng Việt thông dụng, chỉ cần khoảng 2k - 8k từ thông dụng nhất
+  - Dùng https://github.com/trungtv/pyvi để tách từ ghép
+
 - dùng một bộ lọc trước lúc tknz để lọc và map từ ghép này vào token id mới
 - dùng một cách thông minh để khởi tạo embedding values của tokens mới
-- refine new embeddings
+- Vỗ về new embeddings
   - freeze all layers, finetune embeddings trước
   - sau đó finetune models (lora + embedding or full finetune)
   - build datasets và giáo án huấn luyện phù hợp
-  - ...
 - ...
 
 
@@ -120,5 +122,3 @@ Vì bộ vocab mới chỉ hỗ trợ tiếng Anh và Việt là chính nên qwe
 
 ## Physics of LMs: làm thí nghiệm [TinyGSM](./TINY_GSM.md) để học cách làm toán
 - Mở rộng: kết hợp với các thử nghiệm về reasoning trong physics of LMs part 2.
-
-
