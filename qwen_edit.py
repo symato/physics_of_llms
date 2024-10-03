@@ -1,8 +1,8 @@
 import torch
 import transformers
 
-model_path = "../Qwen2.5-0.5B-Instruct"
-new_mode_path = "../Qwen2.5-0.5B-Instruct__trimmed_vocab"
+model_path = "../Qwen2.5-1.5B-Instruct"
+new_mode_path = "../Qwen2.5-1.5B-Instruct__trimmed_vocab"
 
 if True:
     model = transformers.AutoModelForCausalLM.from_pretrained(

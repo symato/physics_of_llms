@@ -202,7 +202,6 @@ added_tokens = [
 
 def get_kept_tids():
     kept_tids = [ x["id"] for x in added_tokens ]
-    print("added_tokens", len(kept_tids))
 
     import os, sys, glob, json
 
@@ -215,6 +214,7 @@ def get_kept_tids():
             kept_tids.append(tid)
 
     kept_tids.sort()
+    print("new_vocab", len(kept_tids))
     return kept_tids
 
 

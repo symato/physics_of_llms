@@ -1,16 +1,17 @@
-import torch
+import torch, sys
 import transformers
 # from unsloth import FastLanguageModel
 
-new_mode_path = "../Qwen2.5-0.5B-Instruct__trimmed_vocab"
-# new_mode_path = "../Qwen2.5-0.5B-Instruct"
+try: mode_path = sys.argv[1]
+except: mode_path = "../Qwen2.5-1.5B-Instruct__trimmed_vocab"
+# mode_path = "../Qwen2.5-0.5B-Instruct"
 
 model = transformers.AutoModelForCausalLM.from_pretrained(
-    new_mode_path, 
+    mode_path, 
     device_map = "auto",
     torch_dtype = torch.bfloat16,
 )
-tokenizer = transformers.AutoTokenizer.from_pretrained(new_mode_path)
+tokenizer = transformers.AutoTokenizer.from_pretrained(mode_path)
 
 from qwen_vocab import get_kept_tids
 kept_tids = get_kept_tids()
@@ -25,12 +26,12 @@ for new_tid, old_tid in enumerate( kept_tids ):
 
 
 def map_tids(map_dict, tids):
-    try: tids_ = tids.tolist()
-    except: tids_ = tids
+    if "trimmed_vocab" in mode_path:
+        try: tids_ = tids.tolist()
+        except: tids_ = tids
 
-    for idx, x in enumerate(tids_):
-        # print(tids, idx, x) # DEBUG
-        tids[idx] = map_dict[x]
+        for idx, x in enumerate(tids_):
+            tids[idx] = map_dict[x]
 
 
 STOP_WORDS = "<|im_end|> <|endoftext|>".split()
@@ -61,7 +62,7 @@ def get_answer(q):
         output_ids = model.generate(
             input_ids=input_ids,
             max_new_tokens=1024,
-            temperature=0.5,
+            temperature=0.3,
             top_p=1.0, top_k=30, do_sample=True,
             repetition_penalty=1.1,
             stopping_criteria=stop_criteria_list,
@@ -84,3 +85,14 @@ while True:
     a = get_answer(q)
     print(f"{RED}{a}{RESET}")
     measure_time("")
+
+
+'''
+python3 qwen_chat.py ../Qwen2.5-1.5B-Instruct__trimmed_vocab
+
+python3 qwen_chat.py ../Qwen2.5-1.5B-Instruct
+
+số tuổi của An trừ đi số tuổi của Lan là 3, An 10 tuổi hỏi Lan mấy tuổi?
+
+ai tạo ra bạn 
+'''
