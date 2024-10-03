@@ -20,7 +20,7 @@ try:
         min_count = int(x)
     else:
         input_files = \
-            glob.glob(f"{x}/*.lzma") + \ 
+            glob.glob(f"{x}/*.lzma") + \
             glob.glob(f"{x}/*.xz")
 
 except:
