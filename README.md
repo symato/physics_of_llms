@@ -26,6 +26,9 @@
 - https://huggingface.co/5CD-AI/visocial-T5-base
   trimmed vocabulary size to 50,589 and continually pretrained google/mt5-base on a merged 20GB dataset
 
+- https://github.com/sam-paech/antislop-sampler given a list of words & phrases to avoid like 
+  "a tapestry of", "a testament to", etc., and it will backtrack and try something else if it hits that phrase.
+
 **Triển khai**
 - [x] Dataset
 - [x] Lọc theo thống kê mới giảm được gần một nửa 86k / 151k (qwen vocab)

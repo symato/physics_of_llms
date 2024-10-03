@@ -1,9 +1,12 @@
 import torch
-from safetensors import safe_open
-from safetensors.torch import save_file
-from pprint import pprint
+import transformers
 
 model_path = "../Qwen2.5-0.5B-Instruct"
+new_mode_path = "../Qwen2.5-0.5B-Instruct__trimmed_vocab"
+
+'''
+from safetensors import safe_open
+from safetensors.torch import save_file
 
 tensors = {}
 with safe_open(f"{model_path}/model.safetensors", framework="pt", device="cpu") as f:
@@ -12,32 +15,37 @@ with safe_open(f"{model_path}/model.safetensors", framework="pt", device="cpu") 
 
 embeddings = tensors["model.embed_tokens.weight"]
 print(embeddings, embeddings.shape) # torch.Size([151936, 1536])
-# for x in tensors.keys(): print(x)
+for x in tensors.keys(): print(x)
+'''
 
-import transformers
-model = transformers.AutoModelForCausalLM.from_pretrained(model_path, device_map="cpu")
+model = transformers.AutoModelForCausalLM.from_pretrained(
+   model_path,
+   torch_dtype = torch.bfloat16, # dtype gốc của qwen
+   device_map = "cpu"
+)
+tokenizer = transformers.AutoTokenizer.from_pretrained(model_path)
 
-print(model.lm_head) # Linear(in_features=1536, out_features=151936, bias=False)
-print(model.model.embed_tokens) # Embedding(151936, 1536)
+print("lm_head", model.lm_head) # Linear(in_features=1536, out_features=151936, bias=False)
+print("embed_tokens", model.model.embed_tokens) # Embedding(151936, 1536) ~= 233m params
 
-is_tied_embedding = model.lm_head.weight == model.model.embed_tokens.weight
-print("is_tied_embedding", is_tied_embedding)
+x = model.lm_head.weight == model.model.embed_tokens.weight
+is_tied_embedding = torch.all(x)
+
+if is_tied_embedding:
+   # https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct/blob/main/config.json
+   # embeddings chiếm 233m (~15%)
+   print("tie_word_embeddings", "=> chỉ cần tỉa model.model.embed_tokens")
+
+else:
+   # https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/blob/main/config.json
+   # embeddings chiếm 1b (~15%)
+   pass
+
+model.save_pretrained(new_mode_path)
+tokenizer.save_pretrained(new_mode_path)
 
 '''
-Qwen's 1.5b gồm 28 layers, với embeddings là embed_tokens.weight (model.norm.weight là RMS Norm)
-
-Xem https://github.com/huggingface/transformers/blob/main/src/transformers/models/qwen2/modeling_qwen2.py
-
-self.embed_tokens = nn.Embedding(config.vocab_size, config.hidden_size, self.padding_idx)
-=> vocab_size, hidden_size = 151936, 1536
-
-_tied_weights_keys = ["lm_head.weight"]
-self.lm_head = nn.Linear(config.hidden_size, config.vocab_size, bias=False)
-
- def set_output_embeddings(self, new_embeddings):
-     self.lm_head = new_embeddings
-
-- - -
+Qwen's 1.5b gồm 28 layers, với tied embeddings là embed_tokens.weight (model.norm.weight là RMS Norm)
 
 Qwen2Model(
   (embed_tokens): Embedding(151936, 1536)
