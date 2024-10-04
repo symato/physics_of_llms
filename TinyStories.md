@@ -1,5 +1,6 @@
 ## 18 tháng trước tinystories đã có những insights rất tốt về cách tạo data và huấn luyện models
-- https://www.youtube.com/watch?v=iNhrW0Nt7zs
+- https://youtu.be/iNhrW0Nt7zs
+- https://youtu.be/wTQH6mRDXhw?t=116
 - https://arxiv.org/abs/2305.07759
 - https://huggingface.co/datasets/roneneldan/TinyStories
 - https://huggingface.co/datasets/roneneldan/TinyStoriesInstruct
