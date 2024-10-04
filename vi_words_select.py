@@ -22,7 +22,7 @@ if __name__ == "__main__":
 	print(df)
 
 	plt.bar(df.words, df.impact)
-	plt.xlabel('CHOOSEN WORDS')
-	plt.ylabel('TOTAL SCRORES')
+	plt.xlabel('CHOSEN WORDS')
+	plt.ylabel('TOTAL SCORES')
 	# plt.yscale('log')
 	plt.show()
