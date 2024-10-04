@@ -158,8 +158,8 @@ xzcat data/vi_words_score.jsonl.xz | tail -n 10
       - lấy trung bình cộng của toàn bộ embedding values của các từ gần nghĩa với nó trong TV và các ngôn ngữ khác
       - ...
   - làm thế nào để đo lường được *hiệu quả*?
-    - tính sự khác biệt của output (logits / perpelexity ...) trong các phép thay thế, diff ít nhất => hiệu quả nhất?
-
+    - tính sự khác biệt của output (logits diff / perpelexity ...) trong các phép thay thế,
+    khác biệt thấp nhất => hiệu quả nhất?
 
 - [ ] Mát xa new embeddings (and old embeddings too)
   - freeze all layers, finetune embeddings trước
@@ -175,15 +175,28 @@ Transfers LMs to a new tokenizer by initializing embedding parameters via a heur
 - init new embeddings value = mean old decoded embeddings 
   (the mean of the sequence of embeddings the new token is decomposed into by the previous tokenizer)
 
-- RAMEN, WECHSEL, OFA require auxiliary embeddings `Eaux : Vaux → Rdaux` ...
+- RAMEN, WECHSEL, OFA require auxiliary embeddings ...
 
-- FOCUS initializes embeddings of tokens in Vb \ Va as a weighted combination of the overlapping
-tokens `Va ∩ Vb`, and **copies the embeddings of the overlapping tokens**. Weights are again computed
-using an auxiliary embedding matrix `Eaux`, but the only requirement is `|Vaux ∩ Vb| !≪ |Vb|`.  
+- FOCUS initializes embeddings of tokens in `Vb \ Va` as a weighted combination of the overlapping
+tokens `Va ∩ Vb`, and **copies the embeddings of the overlapping tokens** ...
 
 FOCUS obtains better performance without any training (i.e., zero-shot) than other heuristics.
 
 Marchisio et al. (2023) show that forward- and backward-propagating through a `subset of the model layers` is sufficient for learning embeddings for a new tokenizer. Chen et al. (2023) find that `regularly resetting the embedding parameters during pretraining` boosts the speed at which they are relearnt upon transfer.
+
+- - -
+
+FOCUS key idea is to use overlapping tokens between both tokenizers as anchor points and represent
+`new target language tokens` as a `weighted mean of over-lapping tokens' embeddings`.
+
+Finding an initialization in the same semantic space as the pretrained embeddings is not as easy
+for the set of `non-overlapping (“additional”) tokens`. To initialize embeddings for the 
+additional tokens, we first train `auxiliary embeddings`for `all target tokens`.
+
+We apply fastText on target language data pre-tokenized with the target tokenizer. Next, we compute the pairwise cosine similarities between the auxiliary embeddings of tokens in “additional” and “overlap”.
+Then `convert the similarity scores to weights by applying sparsemax`.
+
+> key idea là tính độ tương đồng giữa new tokens với existing tokens và dùng độ tương đồng đó và existing tokens' embeddings để khởi tạo.
 
 - - -
 
