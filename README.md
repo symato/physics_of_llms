@@ -141,6 +141,9 @@ xzcat data/vi_words_score.jsonl.xz | tail -n 10
 {"word": "Man_City",       "score": 1000, "qwen_tokens": [" Man", " City"], "freq": 500, "qwen_tokens_count": 2}
 
 ```
+![](img/vi-words-impact-00.jpg)
+
+=> **Chọn 3k - 4k từ ghép để mở rộng vocab là hợp lý, trên 4k độ impact không cao.**
 
 - dùng lọc và map từ ghép này vào token id mới
 - dùng một cách thông minh để khởi tạo embedding values của tokens mới

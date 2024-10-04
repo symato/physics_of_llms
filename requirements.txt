@@ -3,3 +3,4 @@ transformers
 nltk
 emoji
 fasttext
+matplotlib
