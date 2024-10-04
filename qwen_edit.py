@@ -54,20 +54,12 @@ if True:
     else:
        # https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/blob/main/config.json
        # embeddings chiếm 1b (~15%)
-       pass
+       print("separte embeddings", "=> cần tỉa cả embed_tokens và lm_head")
+       # TODO, apply tỉa lm_head giống embedding ở phần trên
 
     model.save_pretrained(new_mode_path)
     tokenizer.save_pretrained(new_mode_path)
 
-
-from safetensors import safe_open
-from safetensors.torch import save_file
-
-tensors_filename = f"{new_mode_path}/model.safetensors"
-with safe_open(tensors_filename, framework="pt", device="cpu") as f:
-    print(f.metadata())
-    for key in f.keys():
-        print(key)
 
 '''
 Qwen's 1.5b gồm 28 layers, với tied embeddings là embed_tokens.weight (model.norm.weight là RMS Norm)
@@ -97,35 +89,4 @@ Qwen2Model(
   (rotary_emb): Qwen2RotaryEmbedding()
 )
 
-- - -
-
-for x in tensors.keys(): print(x)
-
-model.embed_tokens.weight
-model.layers.0.input_layernorm.weight
-model.layers.0.mlp.down_proj.weight
-model.layers.0.mlp.gate_proj.weight
-model.layers.0.mlp.up_proj.weight
-model.layers.0.post_attention_layernorm.weight
-model.layers.0.self_attn.k_proj.bias
-model.layers.0.self_attn.k_proj.weight
-model.layers.0.self_attn.o_proj.weight
-model.layers.0.self_attn.q_proj.bias
-model.layers.0.self_attn.q_proj.weight
-model.layers.0.self_attn.v_proj.bias
-model.layers.0.self_attn.v_proj.weight
-...
-model.layers.27.input_layernorm.weight
-model.layers.27.mlp.down_proj.weight
-model.layers.27.mlp.gate_proj.weight
-model.layers.27.mlp.up_proj.weight
-model.layers.27.post_attention_layernorm.weight
-model.layers.27.self_attn.k_proj.bias
-model.layers.27.self_attn.k_proj.weight
-model.layers.27.self_attn.o_proj.weight
-model.layers.27.self_attn.q_proj.bias
-model.layers.27.self_attn.q_proj.weight
-model.layers.27.self_attn.v_proj.bias
-model.layers.27.self_attn.v_proj.weight
-model.norm.weight
 '''
