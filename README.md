@@ -98,7 +98,7 @@ Vì bộ vocab mới chỉ hỗ trợ tiếng Anh và Việt là chính nên qwe
 - - -
 
 
-## Sau khi tỉa gọn rồi từng bước một mở rộng bộ vocab
+## Physics of LMs: Sau khi tỉa gọn rồi từng bước một mở rộng bộ vocab
 
 - [x] tạo bộ từ điển từ ghép tiếng Việt thông dụng và chiếm nhiều tokens nhất, chỉ cần khoảng < 10k
   - Dùng https://github.com/trungtv/pyvi để tách từ
