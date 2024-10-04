@@ -153,7 +153,7 @@ words = []
 
 for word, freq in count.items():
 
-    text = word.replace("_", " ")
+    text = " " + word.replace("_", " ")
     tids = tokenizer.encode(text)
     qwen_tokens = [ tokenizer.decode(tid) for tid in tids ]
 
@@ -182,10 +182,10 @@ with open("data/vi_words_score.jsonl", "wt") as f:
 
 '''
 
-python3 vi_words_count.py 300
+python3 vi_words_count.py 500
 
-cat data/vi_words_count.txt
+cat data/vi_words_score.jsonl
 
-wc -l data/vi_words_count.txt
+wc -l data/vi_words_score.jsonl
 
 '''
