@@ -1,6 +1,7 @@
 import os, sys, lzma, glob, json
 from multiprocessing import Pool
 import re, subprocess
+import transformers
 
 from pyvi import ViTokenizer # pip install pyvi
 import fasttext # pip install fasttext
@@ -146,22 +147,42 @@ print("get_final_count ...")
 count = get_final_count(input_files)
 # print(count)
 
-word_count_pairs = list( count.items() )
 
-word_count_pairs.sort(key = lambda x: -x[1]) # sắp xếp giảm dần theo count
+tokenizer = transformers.AutoTokenizer.from_pretrained("Qwen/Qwen2.5-14B-Instruct")
+words = []
 
-maxx = 25
-spaces = " " * 100
+for word, freq in count.items():
 
-with open("data/vi_words_count.txt", "wt") as f:
-    for w, c in word_count_pairs:
-        if "_" in w:
-            f.write(f"{w}{spaces[:maxx - len(w)]} {c}\n")
+    text = word.replace("_", " ")
+    tids = tokenizer.encode(text)
+    qwen_tokens = [ tokenizer.decode(tid) for tid in tids ]
+
+    qwen_tokens_count = len(qwen_tokens)
+    score = freq * qwen_tokens_count
+
+    words.append({
+        "word": word,
+        "score": score,
+        "qwen_tokens": qwen_tokens, 
+        "freq": freq,
+        "qwen_tokens_count": qwen_tokens_count,
+    })
+
+
+words.sort(key = lambda x: -x["score"])
+
+maxx = 40
+spaces = " " * (maxx + 1)
+
+with open("data/vi_words_score.jsonl", "wt") as f:
+    for w in words:
+        a, b = json.dumps(w, ensure_ascii = False).split(", ", 1)
+        f.write(f"{a},{spaces[:maxx - len(a)]}{b}\n")
 
 
 '''
 
-python3 vi_words_count.py 600
+python3 vi_words_count.py 300
 
 cat data/vi_words_count.txt
 

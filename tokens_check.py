@@ -8,15 +8,6 @@ from multiprocessing import Pool
 import glob, json
 
 
-model_path = "Qwen/Qwen2.5-14B-Instruct"
-# model_path = "meta-llama/Llama-3.1-70B-Instruct"
-
-tokenizer = AutoTokenizer.from_pretrained(
-    model_path,
-    model_max_length = 1024 * 1024 * 4, # 4m ctxlen có thể chứa 1 cuốn sách
-)
-
-
 try: do_check_lang = sys.argv[1] == "bylang"
 except: do_check_lang = False
 print("do_check_lang", do_check_lang)
