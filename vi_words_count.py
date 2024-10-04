@@ -184,7 +184,7 @@ with open("data/vi_words_score.jsonl", "wt") as f:
 
 python3 vi_words_count.py 500
 
-cat data/vi_words_score.jsonl
+head -n 10 data/vi_words_score.jsonl
 
 wc -l data/vi_words_score.jsonl
 

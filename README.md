@@ -100,10 +100,13 @@ Vì bộ vocab mới chỉ hỗ trợ tiếng Anh và Việt là chính nên qwe
 
 ## Sau khi tỉa gọn rồi từng bước một mở rộng bộ vocab
 
-- [ ] tạo bộ từ điển từ ghép tiếng Việt thông dụng, chỉ cần khoảng 2k - 8k từ thông dụng nhất
-  - Dùng https://github.com/trungtv/pyvi để tách từ ghép
+- [x] tạo bộ từ điển từ ghép tiếng Việt thông dụng và chiếm nhiều tokens nhất, chỉ cần khoảng < 10k
+  - Dùng https://github.com/trungtv/pyvi để tách từ
 
-- dùng một bộ lọc trước lúc tknz để lọc và map từ ghép này vào token id mới
+![](img/most-uncompressed-vietnamese-words-00.jpg)
+`score = freq * qwen_tokens_count` (`freq` là tần suất sử dụng của từ đó trong corpus)
+
+- dùng lọc và map từ ghép này vào token id mới
 - dùng một cách thông minh để khởi tạo embedding values của tokens mới
 - Vỗ về new embeddings
   - freeze all layers, finetune embeddings trước
