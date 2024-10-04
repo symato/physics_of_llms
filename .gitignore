@@ -6,3 +6,5 @@ _git
 __pycache__/
 nohup.out
 lid.176.bin
+data/vi_words/
+data/meta-llama/
