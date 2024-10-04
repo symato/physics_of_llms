@@ -1,16 +1,16 @@
 import torch, sys
 import transformers
-# from unsloth import FastLanguageModel
+import config
 
-try: mode_path = sys.argv[1]
-except: mode_path = "../Qwen2.5-1.5B-Instruct__trimmed_vocab"
+try: model_path = sys.argv[1]
+except: model_path = config.MODIFIED_MODEL_PATH
 
 model = transformers.AutoModelForCausalLM.from_pretrained(
-    mode_path, 
+    model_path, 
     device_map = "auto",
     torch_dtype = torch.bfloat16,
 )
-tokenizer = transformers.AutoTokenizer.from_pretrained(mode_path)
+tokenizer = transformers.AutoTokenizer.from_pretrained(model_path)
 
 from qwen_vocab import get_kept_tids
 kept_tids = get_kept_tids()
@@ -25,7 +25,7 @@ for new_tid, old_tid in enumerate( kept_tids ):
 
 
 def map_tids(map_dict, tids):
-    if "trimmed_vocab" in mode_path:
+    if "trimmed_vocab" in model_path:
         try: tids_ = tids.tolist()
         except: tids_ = tids
 

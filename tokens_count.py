@@ -3,7 +3,7 @@ from multiprocessing import Pool
 import re, subprocess
 
 from utils import *
-from unicode_utils import *
+from utils_unicode import *
 from tokens_check import *
 
 min_count = 0
@@ -32,11 +32,12 @@ except:
 print(min_count, max_count)
 
 
+from config import ONLINE_MODEL_PATH as model_path
 PATH = f"data/{model_path}"
 mkdirs(PATH)
 
 
-latin_tids = [ json.loads(line)["tid"] for line in open("data/tokens_by_lang/Latin.jsonl", "rt") ]
+latin_tids = [ json.loads(line)["tid"] for line in lzma.open("data/Qwen/tokens_by_lang/Latin.jsonl.xz", "rt") ]
 latin_tids = set(latin_tids)
 ###
 def ok(x):

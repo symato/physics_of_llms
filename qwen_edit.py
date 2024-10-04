@@ -1,12 +1,15 @@
 import torch
 import transformers
 import sys
+import config
+import re
 
 try: model_path = sys.argv[1]
-except: model_path = "../Qwen2.5-3B-Instruct"
+except: model_path = config.OFFLINE_MODEL_PATH
+
 # bỏ / ở cuối model_path
 model_path = re.sub(r'/*$', "", model_path.strip())
-new_mode_path = f"{model_path}__trimmed_vocab"
+new_model_path = f"{model_path}__trimmed_vocab"
 
 if True:
     model = transformers.AutoModelForCausalLM.from_pretrained(
@@ -57,8 +60,8 @@ if True:
        print("separte embeddings", "=> cần tỉa cả embed_tokens và lm_head")
        # TODO, apply tỉa lm_head giống embedding ở phần trên
 
-    model.save_pretrained(new_mode_path)
-    tokenizer.save_pretrained(new_mode_path)
+    model.save_pretrained(new_model_path)
+    tokenizer.save_pretrained(new_model_path)
 
 
 '''

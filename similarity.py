@@ -1,8 +1,9 @@
 import re
 import torch
 import transformers
+import config
 
-model_path = "../Qwen2.5-1.5B-Instruct"
+model_path = config.OFFLINE_MODEL_PATH
 model = transformers.AutoModelForCausalLM.from_pretrained(
    model_path,
    torch_dtype = torch.bfloat16, # dtype gốc của qwen

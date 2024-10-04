@@ -1,7 +1,7 @@
 from transformers import AutoTokenizer
 import subprocess, os, sys
 
-from unicode_utils import *
+from utils_unicode import *
 from utils import num_procs
 
 from multiprocessing import Pool
@@ -12,6 +12,8 @@ try: do_check_lang = sys.argv[1] == "bylang"
 except: do_check_lang = False
 print("do_check_lang", do_check_lang)
 
+from config import ONLINE_MODEL_PATH as model_path
+tokenizer = AutoTokenizer.from_pretrained(model_path)
 
 if do_check_lang:
     subprocess.run("rm -rf data/tokens_by_lang", shell = True)

@@ -4,7 +4,6 @@ import re, subprocess
 import transformers
 
 from pyvi import ViTokenizer # pip install pyvi
-import fasttext # pip install fasttext
 from utils import *
 
 x = ViTokenizer.tokenize("Trường đại học bách khoa hà nội")
@@ -32,29 +31,6 @@ print(input_files, min_count)
 
 PATH = f"data/vi_words"
 subprocess.run(f"mkdir -p {PATH}", shell = True)
-
-
-## Fasttext detect lang
-langid_model = 'lid.176.bin'
-if not os.path.exists('data/' + langid_model):
-    cmd = f"wget https://dl.fbaipublicfiles.com/fasttext/supervised-models/{langid_model}; mv {langid_model} data"
-    subprocess.run(cmd, shell=True)
-FASTTEXT_MODEL = fasttext.load_model('data/' + langid_model)
-
-def detect_lang(text):
-    word_re = r'\w+\s'
-    words = re.findall(word_re, text)
-    words = " ".join(words)
-    # Chỉ kiểm tra tiếng Việt với những từ được phân tách rõ ràng
-
-    rs = FASTTEXT_MODEL.f.predict(words, 1, 0.0, 'strict')
-    ret = None
-    if rs: 
-        ret = rs[0][-1].split('__')[-1]
-    # print(words, ret); input() # DEBUG
-    return ret
-assert detect_lang("hello vietnam") == "en"
-assert detect_lang( "chào nước mỹ 123sfd http://adf4| tôi là ") == "vi"
 
 
 def count_words(texts):
