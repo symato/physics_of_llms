@@ -3,7 +3,7 @@ from multiprocessing import Pool
 import re, subprocess
 
 from utils import *
-from utils_unicode import *
+from utils_lang import *
 from tokens_check import *
 
 min_count = 0

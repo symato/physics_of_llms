@@ -1,7 +1,7 @@
 from transformers import AutoTokenizer
 import subprocess, os, sys
 
-from utils_unicode import *
+from utils_lang import *
 from utils import num_procs
 
 from multiprocessing import Pool

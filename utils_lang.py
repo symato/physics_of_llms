@@ -1,3 +1,31 @@
+import os, re
+from utils import LOCATION
+import fasttext # pip install fasttext
+
+## Fasttext detect lang
+LANGID_FILENAME = 'lid.176.bin'
+LANGID_FILEPATH = f"{LOCATION}/data/{LANGID_FILENAME}"
+
+if not os.path.exists(LANGID_FILEPATH):
+    cmd = f"wget https://dl.fbaipublicfiles.com/fasttext/supervised-models/{LANGID_FILENAME}; mv {LANGID_MODEL} {LANGID_FILEPATH}"
+    subprocess.run(cmd, shell=True)
+
+FASTTEXT_MODEL = fasttext.load_model(LANGID_FILEPATH)
+WORD_RE = re.compile(r'\w+\s')
+
+def detect_lang(text, check_words = False):
+    if check_words:
+        # Chỉ kiểm tra ngôn ngữ với những từ được phân tách rõ ràng
+        words = re.findall(WORD_RE, text)
+        text = " ".join(words)
+
+    rs = FASTTEXT_MODEL.f.predict(text, 1, 0.0, 'strict')
+    if rs: return rs[0][-1].split('__')[-1]
+    else:  return None
+
+assert detect_lang("hello vietnam") == "en"
+assert detect_lang( "chào nước mỹ 123sfd http://adf4| tôi là ") == "vi"
+
 '''
 https://www.regular-expressions.info/unicode.html
 https://stackoverflow.com/questions/38615740/regular-expression-to-accept-all-thai-characters-and-english-letters-in-python#answer-72440821
