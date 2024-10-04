@@ -145,17 +145,47 @@ xzcat data/vi_words_score.jsonl.xz | tail -n 10
 
 => **Chọn 3k - 4k từ ghép để mở rộng vocab là hợp lý, trên 4k độ impact không cao.**
 
-- dùng lọc và map từ ghép này vào token id mới
-- dùng một cách thông minh để khởi tạo embedding values của tokens mới
-- Vỗ về new embeddings
+- [ ] lọc và map những từ ghép này vào token ids mới
+
+- [ ] tìm các cách *hiệu quả* để khởi tạo embedding values của tokens mới
+  - Với 1 từ được chọn, tìm ra 1-3 câu liên quan tới từ đó:
+    - thay toàn bộ embedding values của từ được chọn băng 01 embedding value mới được init bằng nhiều cách:
+      - embedding value của từ đơn tương ứng trong tiếng Anh hoặc Trung
+      - lấy trung bình cộng của các embedding values của từ đó
+      - lấy trung bình cộng của toàn bộ embedding values (whole vocab)
+      - lấy trung bình cộng của toàn bộ embedding values của các từ trong ngôn ngữ đó
+      - lấy trung bình cộng của toàn bộ embedding values của các từ gần nghĩa với nó trong tiếng Việt
+      - lấy trung bình cộng của toàn bộ embedding values của các từ gần nghĩa với nó trong TV và các ngôn ngữ khác
+      - ...
+  - làm thế nào để đo lường được *hiệu quả*?
+    - tính sự khác biệt của output (logits / perpelexity ...) trong các phép thay thế, diff ít nhất => hiệu quả nhất?
+
+
+- [ ] Mát xa new embeddings (and old embeddings too)
   - freeze all layers, finetune embeddings trước
   - sau đó finetune models (lora + embedding or full finetune)
   - build datasets và giáo án huấn luyện phù hợp
-- ...
-
 
 - - -
 
+From https://arxiv.org/pdf/2405.07883
+
+Transfers LMs to a new tokenizer by initializing embedding parameters via a heuristic, then continuing to train the embeddings.
+
+- init new embeddings value = mean old decoded embeddings 
+  (the mean of the sequence of embeddings the new token is decomposed into by the previous tokenizer)
+
+- RAMEN, WECHSEL, OFA require auxiliary embeddings `Eaux : Vaux → Rdaux` ...
+
+- FOCUS initializes embeddings of tokens in Vb \ Va as a weighted combination of the overlapping
+tokens `Va ∩ Vb`, and **copies the embeddings of the overlapping tokens**. Weights are again computed
+using an auxiliary embedding matrix `Eaux`, but the only requirement is `|Vaux ∩ Vb| !≪ |Vb|`.  
+
+FOCUS obtains better performance without any training (i.e., zero-shot) than other heuristics.
+
+Marchisio et al. (2023) show that forward- and backward-propagating through a `subset of the model layers` is sufficient for learning embeddings for a new tokenizer. Chen et al. (2023) find that `regularly resetting the embedding parameters during pretraining` boosts the speed at which they are relearnt upon transfer.
+
+- - -
 
 ## Physics of LMs: làm thí nghiệm về Knowledge Storage, Extraction and Manipulation
 
