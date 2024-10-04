@@ -123,5 +123,7 @@ Vì bộ vocab mới chỉ hỗ trợ tiếng Anh và Việt là chính nên qwe
 - Mở rộng: Từ hiểu ngôn ngữ tới làm thơ và làm thơ thuận nghịch độc
   - 750 bài thơ thuận nghịch độc https://vantholieuxuyencom.blog/about/
   - Nên bắt đầu với dataset thuận nghịch độc, các câu ngắn đọc xuôi hay ngược đều có ý nghĩa
+- Ý tưởng: dùng kỹ thuật FIM (fill in middle) của code LLM để tạo thơ có vần
+  Yêu cầu chữ cuối phải rơi vào 1 từ hoặc 1 vần nào đó ...
 
 ![](img/tho-thuan-nghich-doc.jpg)

@@ -161,10 +161,10 @@ with open("data/vi_words_count.txt", "wt") as f:
 
 '''
 
-python3 vi_words_count.py 1000
+python3 vi_words_count.py 600
+
+cat data/vi_words_count.txt
 
 wc -l data/vi_words_count.txt
-
-tail data/vi_words_count.txt
 
 '''
