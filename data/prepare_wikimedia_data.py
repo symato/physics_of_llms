@@ -2,7 +2,7 @@ import os, sys, lzma, glob, json
 from multiprocessing import Pool
 import re, subprocess
 
-import sys; sys.path.append('../'); from unicode_utils import *
+import sys; sys.path.append('../'); from utils_lang import *
 import sys; sys.path.append('../'); from utils import *
 
 filenames = glob.glob("wiki*train*.jsonl.xz")
@@ -22,8 +22,8 @@ chunk_size = round( len(texts) / n )
 chunks = [ texts[i : i + chunk_size] for i in range(0, len(texts), chunk_size) ]
 
 def get_wanted_lang_texts(chunk):
-	return [ x for x in chunk if detect_lang(x) == "vi" \
-		and not contains_unwanted(x) and not contains_junks(x) and noise_ratio(x, 30) < 0.1 ]
+	return [ x for x in chunk if detect_lang(x) == "vi" and not contains_unwanted(x) and \
+		not contains_junks(x) and vietnamese_syllable_ratio(x) > 0.6 and short_line_ratio(x, 15) < 0.2 ]
 
 junks = """
 <div 
@@ -42,8 +42,9 @@ def contains_junks(x):
 		if junk in x: return True
 	return False
 
-def noise_ratio(x, min_line_len):
-	lines = x.split("\n")
+
+def short_line_ratio(x, min_line_len):
+	lines = re.split(r"[\s\n]*\n[\s\n]*", x)
 	count = 0
 	for line in lines:
 		if len(line) < min_line_len:
@@ -59,16 +60,24 @@ with Pool( processes = n ) as pool:
 for text in final_texts:
 	print(json.dumps({"text": text}, ensure_ascii = False))
 
+cutoff_patterns == """
+Tài liệu tham khảo
+Tham khảo
+"""
+
 '''
 
 wget https://huggingface.co/datasets/Symato/KB_wikimedia/resolve/main/wikisource__20231201.vi__train-00.jsonl.xz
+wget https://huggingface.co/datasets/Symato/KB_wikimedia/resolve/main/wikipedia__20231101.vi__train-00b.jsonl.xz
+wget https://huggingface.co/datasets/Symato/KB_wikimedia/resolve/main/wikipedia__20231101.vi__train-01.jsonl.xz
 wget https://huggingface.co/datasets/Symato/KB_wikimedia/resolve/main/wikipedia__20231101.vi__train-02.jsonl.xz
+wget https://huggingface.co/datasets/Symato/KB_wikimedia/resolve/main/wikipedia__20231101.vi__train-03b.jsonl.xz
 
-python3 prepare_wikimedia_data.py 6000 | shuf > wikimedia_vi_filtered.jsonl
+python3 prepare_wikimedia_data.py 3000 > wikimedia_vi_filtered.jsonl
 
-cat wikimedia_vi_filtered.jsonl | head -n 10 | jq
+shuf wikimedia_vi_filtered.jsonl | head -n 20 | jq
 
-head -n 2000 wikimedia_vi_filtered.jsonl | tail -n 20 | jq
+wc -l wikimedia_vi_filtered.jsonl
 
 du -sh wikimedia_vi_filtered.jsonl
 

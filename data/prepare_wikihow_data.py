@@ -2,7 +2,7 @@ import os, sys, lzma, glob, json
 from multiprocessing import Pool
 import re, subprocess
 
-import sys; sys.path.append('../'); from unicode_utils import *
+import sys; sys.path.append('../'); from utils_lang import *
 
 inputfile = "wikihow_filtered.jsonl"
 min_chars = int(sys.argv[1])
