@@ -13,6 +13,6 @@ wget https://huggingface.co/datasets/Symato/KB_wikimedia/resolve/main/wikipedia_
 python3 prepare_wikimedia_data.py 6000 | shuf > wikimedia_vi_filtered.jsonl
 
 # xem thử vài samples
-head -n 10 wikihow_more_filtered.jsonl | jq
-head -n 10 wikimedia_vi_filtered.jsonl | jq
+shuf wikihow_more_filtered.jsonl | head -n 10 | jq
+shuf wikimedia_vi_filtered.jsonl | head -n 10 | jq
 ```
