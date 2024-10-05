@@ -1,6 +1,6 @@
 import lzma, json
 
-most_uncompressed_vi_words = [ json.loads(line) for line in lzma.open("data/vi_words_score.jsonl.xz") ]
+most_uncompressed_vi_words = [ json.loads(line) for line in lzma.open("data/vi_words_impact.jsonl.xz") ]
 
 # print(most_uncompressed_vi_words)
 
@@ -8,9 +8,9 @@ most_uncompressed_vi_words = [ json.loads(line) for line in lzma.open("data/vi_w
 if __name__ == "__main__":
 
 	def impact(num_chosen_words):
-		total_score = sum( [ x["score"] for x in most_uncompressed_vi_words[ : num_chosen_words] ] )
-		# return total_score // num_chosen_words
-		return total_score
+		total_impact = sum( [ x["impact"] for x in most_uncompressed_vi_words[ : num_chosen_words] ] )
+		# return total_impact // num_chosen_words
+		return total_impact
 
 	import pandas as pd
 	import matplotlib.pyplot as plt
@@ -23,6 +23,6 @@ if __name__ == "__main__":
 
 	plt.bar(df.words, df.impact)
 	plt.xlabel('CHOSEN WORDS')
-	plt.ylabel('TOTAL SCORES')
+	plt.ylabel('TOTAL IMPACT')
 	# plt.yscale('log')
 	plt.show()

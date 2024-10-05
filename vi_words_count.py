@@ -139,23 +139,23 @@ for word, freq in count.items():
     qwen_tokens = [ tokenizer.decode(tid) for tid in tids ]
 
     qwen_tokens_count = len(qwen_tokens)
-    score = freq * (qwen_tokens_count - 1) # trừ đi 1 slot là tid mới thêm vào
+    impact = freq * (qwen_tokens_count - 1) # trừ đi 1 slot là tid mới thêm vào
 
     words.append({
         "word": word,
-        "score": score,
+        "impact": impact,
         "qwen_tokens": qwen_tokens, 
         "freq": freq,
         "qwen_tokens_count": qwen_tokens_count,
     })
 
 
-words.sort(key = lambda x: -x["score"])
+words.sort(key = lambda x: -x["impact"])
 
-maxx = 40
+maxx = 35
 spaces = " " * (maxx + 1)
 
-with open("data/vi_words_score.jsonl", "wt") as f:
+with open("data/vi_words_impact.jsonl", "wt") as f:
     for w in words:
         a, b = json.dumps(w, ensure_ascii = False).split(", ", 1)
         f.write(f"{a},{spaces[:maxx - len(a)]}{b}\n")
@@ -165,8 +165,8 @@ with open("data/vi_words_score.jsonl", "wt") as f:
 
 python3 vi_words_count.py 500
 
-head -n 10 data/vi_words_score.jsonl
+head -n 10 data/vi_words_impact.jsonl
 
-wc -l data/vi_words_score.jsonl
+wc -l data/vi_words_impact.jsonl
 
 '''
