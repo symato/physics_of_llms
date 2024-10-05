@@ -2,15 +2,70 @@ import re
 import torch
 import transformers
 import config
+import os, json, re, sys
+from pprint import pprint
 
 model_path = config.OFFLINE_MODEL_PATH
+tokenizer = transformers.AutoTokenizer.from_pretrained(model_path)
+
+sim0 = [ json.loads(line) for line in open("data/vi_words_similarity.jsonl") ]
+sim1 = [ json.loads(line) for line in open("data/vi_words_similarity_berua.jsonl") ]
+
+# pprint(sim0[0])
+# pprint(sim1[0]); input()
+
+
+def get_similiar_words():
+	words = {}
+
+	def get_uniq_token_ids(word, en_word):
+		if word not in words:
+			words[word] = {}
+
+		variants = [
+			en_word,
+			en_word.lower(),
+
+			" " + en_word,
+			" " + en_word.lower()
+		]
+
+		for en_word in variants:
+			tids = tokenizer.encode(en_word)
+			if len(tids) == 1:
+				words[word][en_word] = tids[0]
+
+
+	for x in sim0:
+		word = x["word"]
+		text = x["textbook"]
+		splits = re.split(r'\d. "(.+?)[/"]', text)
+		
+		for i in range(1, len(splits), 2):
+			en_word = splits[i].strip()
+			get_uniq_token_ids(word, en_word)
+
+
+	for x in sim1:
+		word = x["term"]
+		for e in x["example"]:
+			en_word = e["term"]
+			# get_uniq_token_ids(word, en_word)
+
+	return words
+
+
+if __name__ == "__main__":
+	words = get_similiar_words()
+	pprint(words)
+
+
+'''
 model = transformers.AutoModelForCausalLM.from_pretrained(
    model_path,
    torch_dtype = torch.bfloat16, # dtype gốc của qwen
    device_map = "cpu",
 )
-
-tokenizer = transformers.AutoTokenizer.from_pretrained(model_path)
 embeddings = model.model.embed_tokens.weight.detach()
 
 sim_words = """
@@ -56,15 +111,9 @@ for w in sim_words:
 		print(v, v.shape)
 	else:
 		print()
-
-''' Dùng umap để làm chiều không gian nhằm visualize cho dễ
-    reduced_embeddings = umap.UMAP(
-        n_neighbors=n_neighbors, n_components=dim, metric=metric
-    ).fit_transform(embeddings)
 '''
 
 '''
-
  conduct    1 tokens [6786]     embedding([ 0.0040,  0.0184, -0.0278,  ...,  0.0092, -0.0757, -0.0282],
  enforce    1 tokens [28162]    embedding([ 0.0532, -0.0021,  0.0154,  ...,  0.0167, -0.0152,  0.0198],
  execute    1 tokens [9026]     embedding([ 0.0342, -0.0303,  0.0291,  ...,  0.0410,  0.0142,  0.0124],
@@ -91,4 +140,9 @@ giờ ta để LLM tự điền vào chỗ trống 01 token thì liệu nó có 
 Hidden value (embedding) ở layer cuối, khi nhân với lm_head để tạo logits và chọn ra vị trí có logits cao nhất làm token_id, 
 lm_head value ở ví trí đó với qwen 1.5 chính là embedding value vì qwen 1.5 dùng tied embeddings.
 
+
+Dùng umap để làm chiều không gian nhằm visualize cho dễ
+reduced_embeddings = umap.UMAP(
+    n_neighbors=n_neighbors, n_components=dim, metric=metric
+).fit_transform(embeddings)
 '''
