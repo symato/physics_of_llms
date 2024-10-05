@@ -20,7 +20,12 @@ def get_similiar_words():
 
 	def get_uniq_token_ids(word, en_word):
 
-		tmp = {}
+		if word not in words:
+			words[word] = { }
+
+		if en_word not in words[word]:
+			words[word][en_word] = { }
+
 		variants = [
 			en_word,
 			en_word.lower(),
@@ -29,13 +34,9 @@ def get_similiar_words():
 			" " + en_word.lower()
 		]
 
-		for en_word in variants:
-			tids = tokenizer.encode(en_word)
-			if len(tids) == 1:
-				tmp[en_word] = tids[0]
+		for x in variants:
+			words[word][en_word][x] = tokenizer.encode(x)
 
-		if len(tmp) > 0:
-			words[word] = tmp
 
 	for x in sim0:
 		word = x["word"]
@@ -59,6 +60,13 @@ def get_similiar_words():
 if __name__ == "__main__":
 	words = get_similiar_words()
 	pprint(words)
+	print(len(words))
+	for word, en_words in words.items():
+		for variants in en_words.values():
+			for tids in variants.values():
+				if len(tids) == 1: break
+			if len(tids) == 1: break
+		if len(tids) > 1: print(word, en_words)
 
 
 '''
