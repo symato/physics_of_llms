@@ -81,7 +81,7 @@ def get_uniq_words(infile):
             texts.append( text )
 
             # 1k samples ghi lại kết quả đếm 1 lần
-            if idx % 1000 == 999:
+            if idx % 5000 == 4999:
                 merge_count(count, count_words(texts))
                 count["last_line_idx"] = idx
 
