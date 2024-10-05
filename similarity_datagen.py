@@ -114,7 +114,7 @@ except:
 
 for idx, line in enumerate( lzma.open(infile) ):
     # Thử trước với 100 words
-    if idx >= 100: break
+    if idx >= 128: break
 
     source = f"{infile}:{idx}"
 
