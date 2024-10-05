@@ -5,6 +5,7 @@ import transformers
 
 from pyvi import ViTokenizer # pip install pyvi
 from utils import *
+from utils_lang import *
 
 x = ViTokenizer.tokenize("Trường đại học bách khoa hà nội")
 x = re.findall(r'[_\w]+', x)
