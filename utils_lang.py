@@ -1,4 +1,4 @@
-import os, re
+import os, re, subprocess
 from utils import LOCATION
 import fasttext # pip install fasttext
 
