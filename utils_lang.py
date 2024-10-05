@@ -7,7 +7,7 @@ LANGID_FILENAME = 'lid.176.bin'
 LANGID_FILEPATH = f"{LOCATION}/data/{LANGID_FILENAME}"
 
 if not os.path.exists(LANGID_FILEPATH):
-    cmd = f"wget https://dl.fbaipublicfiles.com/fasttext/supervised-models/{LANGID_FILENAME}; mv {LANGID_MODEL} {LANGID_FILEPATH}"
+    cmd = f"wget https://dl.fbaipublicfiles.com/fasttext/supervised-models/{LANGID_FILENAME}; mv {LANGID_FILENAME} {LANGID_FILEPATH}"
     subprocess.run(cmd, shell=True)
 
 FASTTEXT_MODEL = fasttext.load_model(LANGID_FILEPATH)
