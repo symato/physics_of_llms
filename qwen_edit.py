@@ -12,8 +12,8 @@ parser.add_argument("-t", "--task", type = str, default = None, \
     help = "Tác vụ `trimm_vocab` để cắt tỉa, `extend_vocab` để mở rộng")
 
 args = parser.parse_args()
-
 assert args.task in "trimm_vocab extend_vocab".split()
+print(args)
 
 # bỏ / ở cuối model_path
 model_path = re.sub(r'/*$', "", args.model.strip())
@@ -40,24 +40,52 @@ kept_tids.sort()
 n = len(kept_tids)
 nn = round(n / 64) * 64
 
+old_embeddings = model.model.embed_tokens.weight.detach().clone()
+print(old_embeddings.shape) # torch.Size([151936, 1536])
+
 if is_tied_embedding:
     # https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct/blob/main/config.json
     # embeddings chiếm 233m (~15%)
-    print("tie_word_embeddings", "=> chỉ cần tỉa model.model.embed_tokens")
+    print("tie_word_embeddings", "=> chỉ cần thay đổi model.model.embed_tokens")
 
-    old_embeddings = model.model.embed_tokens.weight.detach().clone()
-    print(old_embeddings.shape) # torch.Size([151936, 1536])
+    if args.task == "trimm_vocab":
+        # Thay embeddings
+        model.resize_token_embeddings(nn)
+        new_embeddings = model.model.embed_tokens.weight.detach()
+        print(new_embeddings.shape) # torch.Size([76160, 1536])
 
-    # Thay embeddings
-    model.resize_token_embeddings(nn)
-    new_embeddings = model.model.embed_tokens.weight.detach()
-    print(new_embeddings.shape) # torch.Size([76160, 1536])
+        for idx, tid in enumerate(kept_tids):
+            new_embeddings[idx] = old_embeddings[tid]
 
-    for idx, tid in enumerate(kept_tids):
-        new_embeddings[idx] = old_embeddings[tid]
+        x = model.model.embed_tokens.weight == new_embeddings
+        assert torch.all(x), "Không thay được new_embeddings"
 
-    x = model.model.embed_tokens.weight == new_embeddings
-    assert torch.all(x), "Không thay được new_embeddings"
+
+    elif args.task == "extend_vocab":
+        
+        vocab_size, _ = old_embeddings.shape
+        assert vocab_size == 151936
+
+        from similarity import get_similiar_words
+        words = get_similiar_words()
+        added_tokens_count = len(words)
+
+        print(f"Adding {added_tokens_count} new tokens ...")
+        model.resize_token_embeddings(vocab_size + added_tokens_count)
+        new_embeddings = model.model.embed_tokens.weight.detach()
+
+        # input_embeddings_avg = input_embeddings[:-num_new_tokens].mean(dim=0, keepdim=True)
+        for idx, (k, v) in enumerate(words.items()):
+            print(v.values())
+            tid = list(v.values())[0] # lấy tid của 1 từ tiếng Anh tương ứng
+            new_embeddings[ vocab_size + idx ] = old_embeddings[tid]
+
+        x = model.model.embed_tokens.weight == new_embeddings
+        assert torch.all(x), "Không thay được new_embeddings"
+
+    else:
+        assert False, "Không hỗ trợ task này" 
+
 
     print("model.model.embed_tokens.weight", model.model.embed_tokens.weight.shape)
 

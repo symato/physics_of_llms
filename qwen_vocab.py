@@ -214,7 +214,7 @@ def get_kept_tids():
             kept_tids.append(tid)
 
     kept_tids.sort()
-    print("new_vocab", len(kept_tids))
+    # print("new_vocab", len(kept_tids))
     return kept_tids
 
 
