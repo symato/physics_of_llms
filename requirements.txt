@@ -4,3 +4,5 @@ nltk
 emoji
 fasttext
 matplotlib
+sklearn-crfsuite
+scikit-learn
