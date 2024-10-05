@@ -103,47 +103,46 @@ Vì bộ vocab mới chỉ hỗ trợ tiếng Anh và Việt là chính nên qwe
 - [x] tạo bộ từ điển từ ghép tiếng Việt thông dụng và chiếm nhiều tokens nhất, chỉ cần khoảng < 10k
   - Dùng https://github.com/trungtv/pyvi để tách từ
 ```sh
-# `score = freq * qwen_tokens_count` (`freq` là tần suất sử dụng của từ đó trong corpus)
-xzcat data/vi_words_score.jsonl.xz | head -n 10
-{"word": "có_thể",         "score": 6078676, "qwen_tokens": [" có", " thể"], "freq": 3039338, "qwen_tokens_count": 2}
-{"word": "Việt_Nam",       "score": 3821952, "qwen_tokens": [" Việt", " Nam"], "freq": 1910976, "qwen_tokens_count": 2}
-{"word": "thời_gian",      "score": 3292857, "qwen_tokens": [" thời", " g", "ian"], "freq": 1097619, "qwen_tokens_count": 3}
-{"word": "thực_hiện",      "score": 2946116, "qwen_tokens": [" thực", " hiện"], "freq": 1473058, "qwen_tokens_count": 2}
-{"word": "sử_dụng",        "score": 2707176, "qwen_tokens": [" sử", " dụng"], "freq": 1353588, "qwen_tokens_count": 2}
-{"word": "quy_định",       "score": 2670420, "qwen_tokens": [" quy", " định"], "freq": 1335210, "qwen_tokens_count": 2}
-{"word": "tổ_chức",        "score": 2597610, "qwen_tokens": [" tổ", " chức"], "freq": 1298805, "qwen_tokens_count": 2}
-{"word": "phát_triển",     "score": 2102212, "qwen_tokens": [" phát", " triển"], "freq": 1051106, "qwen_tokens_count": 2}
-{"word": "hoạt_động",      "score": 2099536, "qwen_tokens": [" hoạt", " động"], "freq": 1049768, "qwen_tokens_count": 2}
-{"word": "doanh_nghiệp",   "score": 2074725, "qwen_tokens": [" do", "anh", " nghiệp"], "freq": 691575, "qwen_tokens_count": 3}
+# `impact = freq * (qwen_tokens_count - 1)` (`freq` là tần suất sử dụng của từ đó trong corpus)
+xzcat data/vi_words_impact.jsonl.xz | head -n 10
+{"word": " có_thể",       "impact": 3155411, "qwen_tokens": [" có", " thể"], "freq": 3155411, "qwen_tokens_count": 2}
+{"word": " thời_gian",    "impact": 2239268, "qwen_tokens": [" thời", " g", "ian"], "freq": 1119634, "qwen_tokens_count": 3}      
+{"word": " Việt_Nam",     "impact": 1969804, "qwen_tokens": [" Việt", " Nam"], "freq": 1969804, "qwen_tokens_count": 2}
+{"word": " thực_hiện",    "impact": 1417257, "qwen_tokens": [" thực", " hiện"], "freq": 1417257, "qwen_tokens_count": 2}
+{"word": " kinh_doanh",   "impact": 1363467, "qwen_tokens": [" k", "inh", " do", "anh"], "freq": 454489, "qwen_tokens_count": 4}  
+{"word": " doanh_nghiệp", "impact": 1358574, "qwen_tokens": [" do", "anh", " nghiệp"], "freq": 679287, "qwen_tokens_count": 3}    
+{"word": " sử_dụng",      "impact": 1331852, "qwen_tokens": [" sử", " dụng"], "freq": 1331852, "qwen_tokens_count": 2}
+{"word": " kinh_tế",      "impact": 1255572, "qwen_tokens": [" k", "inh", " tế"], "freq": 627786, "qwen_tokens_count": 3}
+{"word": " tổ_chức",      "impact": 1253207, "qwen_tokens": [" tổ", " chức"], "freq": 1253207, "qwen_tokens_count": 2}
+{"word": " cơ_quan",      "impact": 1217440, "qwen_tokens": [" cơ", " qu", "an"], "freq": 608720, "qwen_tokens_count": 3}
 
-xzcat data/vi_words_score.jsonl.xz | head -n 3000 |  tail -n 10 
-{"word": "phê_phán",       "score": 42402, "qwen_tokens": [" phê", " ph", "án"], "freq": 14134, "qwen_tokens_count": 3}
-{"word": "miễn_cưỡng",     "score": 42399, "qwen_tokens": [" miễn", " c", "ưỡng"], "freq": 14133, "qwen_tokens_count": 3}
-{"word": "mưa_rào",        "score": 42378, "qwen_tokens": [" mưa", " r", "ào"], "freq": 14126, "qwen_tokens_count": 3}
-{"word": "định_nghĩa",     "score": 42340, "qwen_tokens": [" định", " nghĩa"], "freq": 21170, "qwen_tokens_count": 2}
-{"word": "ảm_đạm",         "score": 42335, "qwen_tokens": [" ", "ả", "m", " đ", "ạm"], "freq": 8467, "qwen_tokens_count": 5}
-{"word": "chủng_loại",     "score": 42306, "qwen_tokens": [" ch", "ủng", " loại"], "freq": 14102, "qwen_tokens_count": 3}
-{"word": "cực_kì",         "score": 42294, "qwen_tokens": [" cực", " kì"], "freq": 21147, "qwen_tokens_count": 2}
-{"word": "Giao_dịch",      "score": 42294, "qwen_tokens": [" G", "iao", " dịch"], "freq": 14098, "qwen_tokens_count": 3}
-{"word": "Thỏa_thuận",     "score": 42292, "qwen_tokens": [" Th", "ỏ", "a", " thuận"], "freq": 10573, "qwen_tokens_count": 4}
-{"word": "giao_diện",      "score": 42279, "qwen_tokens": [" g", "iao", " diện"], "freq": 14093, "qwen_tokens_count": 3}
+xzcat data/vi_words_impact.jsonl.xz | head -n 3000 |  tail -n 10 
+{"word": " phong_bì",     "impact": 23052, "qwen_tokens": [" ph", "ong", " b", "ì"], "freq": 7684, "qwen_tokens_count": 4}
+{"word": " Anh_em",       "impact": 23048, "qwen_tokens": [" An", "h", " em"], "freq": 11524, "qwen_tokens_count": 3}
+{"word": " lật_đổ",       "impact": 23034, "qwen_tokens": [" l", "ật", " đổ"], "freq": 11517, "qwen_tokens_count": 3}
+{"word": " sữa_chua",     "impact": 23032, "qwen_tokens": [" sữa", " ch", "ua"], "freq": 11516, "qwen_tokens_count": 3}
+{"word": " vững_mạnh",    "impact": 23012, "qwen_tokens": [" vững", " mạnh"], "freq": 23012, "qwen_tokens_count": 2}
+{"word": " thủ_công",     "impact": 23009, "qwen_tokens": [" thủ", " công"], "freq": 23009, "qwen_tokens_count": 2}
+{"word": " Điện_thoại",   "impact": 23000, "qwen_tokens": [" Điện", " thoại"], "freq": 23000, "qwen_tokens_count": 2}
+{"word": " Trường_Sa",    "impact": 22989, "qwen_tokens": [" Trường", " Sa"], "freq": 22989, "qwen_tokens_count": 2}
+{"word": " hiển_nhiên",   "impact": 22986, "qwen_tokens": [" hiển", " nhiên"], "freq": 22986, "qwen_tokens_count": 2}
+{"word": " Kỹ_năng",      "impact": 22982, "qwen_tokens": [" K", "ỹ", " năng"], "freq": 11491, "qwen_tokens_count": 3}
 
-xzcat data/vi_words_score.jsonl.xz | tail -n 10
-{"word": "tiêu_hoá",       "score": 1004, "qwen_tokens": [" tiêu", " hoá"], "freq": 502, "qwen_tokens_count": 2}
-{"word": "Tiến_độ",        "score": 1004, "qwen_tokens": [" Tiến", " độ"], "freq": 502, "qwen_tokens_count": 2}
-{"word": "Nhận_biết",      "score": 1004, "qwen_tokens": [" Nhận", " biết"], "freq": 502, "qwen_tokens_count": 2}
-{"word": "cơ_may",         "score": 1004, "qwen_tokens": [" cơ", " may"], "freq": 502, "qwen_tokens_count": 2}
-{"word": "bất_nhân",       "score": 1004, "qwen_tokens": [" bất", " nhân"], "freq": 502, "qwen_tokens_count": 2}
-{"word": "Bà_già",         "score": 1002, "qwen_tokens": [" Bà", " già"], "freq": 501, "qwen_tokens_count": 2}
-{"word": "Văn_kiện",       "score": 1002, "qwen_tokens": [" Văn", " kiện"], "freq": 501, "qwen_tokens_count": 2}
-{"word": "bàn_là",         "score": 1002, "qwen_tokens": [" bàn", " là"], "freq": 501, "qwen_tokens_count": 2}
-{"word": "A_c",            "score": 1000, "qwen_tokens": [" A", " c"], "freq": 500, "qwen_tokens_count": 2}
-{"word": "Man_City",       "score": 1000, "qwen_tokens": [" Man", " City"], "freq": 500, "qwen_tokens_count": 2}
-
+xzcat data/vi_words_impact.jsonl.xz | tail -n 10
+{"word": " Công_nhận",    "impact": 500, "qwen_tokens": [" Công", " nhận"], "freq": 500, "qwen_tokens_count": 2}
+{"word": " xuất_ngũ",     "impact": 500, "qwen_tokens": [" xuất", " ngũ"], "freq": 500, "qwen_tokens_count": 2}
+{"word": " Người_xưa",    "impact": 500, "qwen_tokens": [" Người", " xưa"], "freq": 500, "qwen_tokens_count": 2}
+{"word": " _",            "impact": 0, "qwen_tokens": ["  "], "freq": 53157, "qwen_tokens_count": 1}
+{"word": "_số",           "impact": 0, "qwen_tokens": [" số"], "freq": 804, "qwen_tokens_count": 1}
+{"word": "_tập",          "impact": 0, "qwen_tokens": [" tập"], "freq": 800, "qwen_tokens_count": 1}
+{"word": "_League",       "impact": 0, "qwen_tokens": [" League"], "freq": 7751, "qwen_tokens_count": 1}
+{"word": "_page",         "impact": 0, "qwen_tokens": [" page"], "freq": 3377, "qwen_tokens_count": 1}
+{"word": "_bộ",           "impact": 0, "qwen_tokens": [" bộ"], "freq": 760, "qwen_tokens_count": 1}
+{"word": "_T",            "impact": 0, "qwen_tokens": [" T"], "freq": 600, "qwen_tokens_count": 1}
 ```
 ![](img/vi-words-impact-00.jpg)
 
-=> **Chọn 3k - 4k từ ghép để mở rộng vocab là hợp lý, trên 4k độ impact không cao.**
+=> **Chọn khoảng 3k -> 4k từ ghép để mở rộng vocab là hợp lý, trên 4k độ impact không cao.**
 
 - [ ] lọc và map những từ ghép này vào token ids mới
 
