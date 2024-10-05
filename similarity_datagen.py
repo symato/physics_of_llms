@@ -104,16 +104,16 @@ import time
 import llm
 
 infile = "data/vi_words_score.jsonl.xz"
-outfile = "data/vi_words_similarity.jsonl.xz"
+outfile = "data/vi_words_similarity.jsonl"
 model = llm.MODEL_NAME
 
 try:
-    done = [ json.loads(line)["source"] for line in lzma.open(outfile) ]
+    done = [ json.loads(line)["source"] for line in open(outfile) ]
 except:
     done = []
 
 for idx, line in enumerate( lzma.open(infile) ):
-    # Thử trước với 20 words
+    # Thử trước với 100 words
     if idx >= 100: break
 
     source = f"{infile}:{idx}"
@@ -154,7 +154,7 @@ for idx, line in enumerate( lzma.open(infile) ):
                     # assert False, example
 
 
-            with lzma.open(outfile, "at") as f:
+            with open(outfile, "at") as f:
                 f.write(json.dumps({
                     "word": word.strip(),
                     "textbook": res.strip(),
