@@ -127,7 +127,7 @@ for idx, line in enumerate( lzma.open(infile) ):
         print(source)
         reset_timer()
 
-        res = llm.chat(prompt, model = model, temperature = 0.3)
+        res = llm.chat(prompt, model = model, temperature = 0.5)
 
         if res is not None:
 
