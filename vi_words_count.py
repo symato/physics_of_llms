@@ -73,7 +73,7 @@ def get_uniq_words(infile):
 
         texts = []
 
-        for idx, line in enumerate( open(infile) ):
+        for idx, line in enumerate( lzma.open(infile) ):
             if idx <= count["last_line_idx"]:
                 continue
 
