@@ -3,7 +3,9 @@ import transformers
 import config
 
 try: model_path = sys.argv[1]
-except: model_path = config.MODIFIED_MODEL_PATH
+except: model_path = config.TRIMMED_MODEL_PATH
+
+print(f"Loading {model_path} ...")
 
 model = transformers.AutoModelForCausalLM.from_pretrained(
     model_path, 
@@ -25,7 +27,7 @@ for new_tid, old_tid in enumerate( kept_tids ):
 
 
 def map_tids(map_dict, tids):
-    if "trimmed_vocab" in model_path:
+    if "trimm_vocab" in model_path:
         try: tids_ = tids.tolist()
         except: tids_ = tids
 
