@@ -38,7 +38,11 @@ def count_words(texts):
     for text in texts:
         if detect_lang(text) == "vi":
             x = ViTokenizer.tokenize(text)
-            for word in re.findall(r'[_\w]+', x):
+            
+            words_without_space_prefix = re.findall(r'(?<![ _\w])[_\w]+', x)
+            words_with_space_prefix    = re.findall(r' [_\w]+', x)
+
+            for word in words_without_space_prefix + words_with_space_prefix:
 
                 if word not in count:
                     count[word] = 0
@@ -129,12 +133,12 @@ words = []
 
 for word, freq in count.items():
 
-    text = " " + word.replace("_", " ")
+    text = word.replace("_", " ")
     tids = tokenizer.encode(text)
     qwen_tokens = [ tokenizer.decode(tid) for tid in tids ]
 
     qwen_tokens_count = len(qwen_tokens)
-    score = freq * qwen_tokens_count
+    score = freq * (qwen_tokens_count - 1) # trừ đi 1 slot là tid mới thêm vào
 
     words.append({
         "word": word,
