@@ -70,6 +70,28 @@ Từ tiếng Việt "có thể" có thể được dịch sang tiếng Anh với
 Nhận xét:
 "Có thể" trong tiếng Việt là một cụm từ đa năng, có thể được sử dụng để diễn đạt khả năng, sự cho phép, hoặc xác suất xảy ra. Khi dịch sang tiếng Anh, việc chọn từ thích hợp phụ thuộc vào ngữ cảnh và ý nghĩa cụ thể mà người nói muốn truyền đạt. "Can" thường được sử dụng nhiều nhất và phù hợp trong hầu hết các tình huống. "May" thích hợp khi nói về khả năng xảy ra của một sự kiện, đặc biệt là khi có sự không chắc chắn. "Be able to" thường được sử dụng để nhấn mạnh khả năng thực hiện một hành động, đặc biệt trong các câu phức tạp hoặc khi nói về khả năng trong tương lai.
 
+Ví dụ 3:
+<word>Hà Nội</word>
+<RESPONSE>
+- Tôi đã từng sống ở Hà Nội trước khi chuyển xuống thành phố Hồ Chí Minh.
+- Mỗi mùa xuân, tôi lại nhớ về hương hoa gạo rực rỡ trên đường phố Hà Nội.
+- Năm ngoái, chúng tôi đã tổ chức một chuyến du lịch tới thăm quan di tích lịch sử ở Hà Nội.
+- Món ăn nổi tiếng nhất ở Hà Nội có lẽ là phở gà.
+- Tôi yêu thích khí hậu mát mẻ và dễ chịu của mùa thu ở Hà Nội.
+
+Từ tiếng Việt "Hà Nội" có thể được dịch sang tiếng Anh với các lựa chọn sau:
+
+1. "Hanoi"
+ - Phù hợp vì: Đây là tên gọi thông dụng và chính thức của thủ đô Việt Nam trong tiếng Anh.
+ - Ví dụ tiếng Anh: I visited Hanoi last year and enjoyed its beautiful scenery.
+ - Ví dụ tiếng Việt: Năm ngoái tôi đã tới thăm Hà Nội và tận hưởng phong cảnh tuyệt đẹp.
+
+Không cần thêm lựa chọn nào khác vì đây là địa danh.
+Tuy nhiên, cũng cần lưu ý rằng trong quá khứ, thành phố này còn được gọi là Thăng Long (trước năm 1831) và Đông Kinh.     
+
+Nhận xét:
+"Hà Nội" là thủ đô của Việt Nam và là thành phố lớn thứ hai cả nước. Tên gọi này gắn liền với lịch sử lâu dài và phong phú của thành phố. Khi dịch sang tiếng Anh, chỉ đơn giản là giữ nguyên tên gọi thông dụng quốc tế "Hanoi".
+
 Tới lượt bạn
 <word>{word}</word>
 <RESPONSE>
