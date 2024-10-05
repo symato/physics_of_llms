@@ -72,7 +72,7 @@ def get_answer(q):
     answer_tids = output_ids[0][len(inputs["input_ids"][0]) : ] # bỏ đi prompt tokens
     map_tids(new2old, answer_tids)
 
-    return tokenizer.decode(answer_tids).split("<|im_end|>")[0]
+    return tokenizer.decode(answer_tids).split("<|im_end|>")[0].strip()
 
 
 from utils import *
@@ -82,7 +82,7 @@ while True:
     except Exception as e: print(e); q = ""
 
     reset_timer(timer="qwenchat")
-    a = get_answer(q)
+    a = get_answer(q).strip()
     print(f"{RED}{a}{RESET}")
     measure_time("timespent", timer="qwenchat")
 
@@ -94,5 +94,8 @@ python3 qwen_chat.py ../Qwen2.5-1.5B-Instruct
 
 số tuổi của An trừ đi số tuổi của Lan là 3, An 10 tuổi hỏi Lan mấy tuổi?
 
-ai tạo ra bạn 
+ai tạo ra bạn
+
+Bạn: tạo ra một câu hoàn chỉnh với từ "thực hiện"
+Thì ra, việc thực hiện kế hoạch của chúng ta cần được lên lịch cụ thể.
 '''

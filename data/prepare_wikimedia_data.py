@@ -33,6 +33,8 @@ class='
 <ref>
 http://
 https://
+/CSS-
+(CSS-
 """.strip().split("\n")
 
 
@@ -60,7 +62,7 @@ with Pool( processes = n ) as pool:
 for text in final_texts:
 	print(json.dumps({"text": text}, ensure_ascii = False))
 
-cutoff_patterns == """
+cutoff_patterns = """
 Tài liệu tham khảo
 Tham khảo
 """

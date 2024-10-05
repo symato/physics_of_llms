@@ -48,7 +48,7 @@ sim_words = [ x.split('.')[1].lower() for x in sim_words if re.match(r'\d\. ', x
 maxx = 20
 spaces = " " * ( maxx + 1 )
 
-for w in sim_words :
+for w in sim_words:
 	tids = tokenizer.encode(w)
 	print(f"{w}{spaces[:maxx - len(w)]}{len(tids)} tokens {tids}", end = "\t\t")
 	if len(tids) == 1:
@@ -76,5 +76,19 @@ for w in sim_words :
  establish  1 tokens [5695]     embedding([ 0.0498, -0.0374,  0.0038,  ...,  0.0073,  0.0166, -0.0083],
 
 Cần visualize để "nhìn" được sự giống nhau giứa các embeddings
+
+Bài toán: cho một từ (ví dụ "thực hiện") là thêm nào để tìm ra một embding value mà khi dùng nó để thay thế chuỗi tokens
+"qwen_tokens": [" thực", " hiện"] trong các đoạn text mà nó xuất hiện thì không làm thay đổi `đầu ra` của model.
+
+Đầu ra ở đây là một giá trị càng gần 0 càng tốt (0 = không thay đổi), có thể là logits diff hoặc perplexity, 
+
+Bạn: tạo ra một câu hoàn chỉnh với từ "thực hiện"
+Bot: "Tôi đã thực hiện kế hoạch của mình thành công."
+
+Giờ ta sẽ mask từ "thực hiện" và được "Tôi đã ___ kế hoạch của mình thành công.", 
+giờ ta để LLM tự điền vào chỗ trống 01 token thì liệu nó có tìm ra token có embedding value hợp lý nhất cho từ "thực hiện" không?
+
+Hidden value (embedding) ở layer cuối, khi nhân với lm_head để tạo logits và chọn ra vị trí có logits cao nhất làm token_id, 
+lm_head value ở ví trí đó với qwen 1.5 chính là embedding value vì qwen 1.5 dùng tied embeddings.
 
 '''
