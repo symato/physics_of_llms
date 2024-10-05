@@ -184,6 +184,11 @@ lm_head value ở ví trí đó với qwen 1.5 chính là embedding value vì qw
 
 ![](img/vocab-extend-00.jpg)
 
+![](img/vocab-extend-02.jpg)
+
+![](img/vocab-extend-03.jpg)
+https://dict.laban.vn/find?type=2&query=s%E1%BB%AD+d%E1%BB%A5ng
+
 - - -
 
 ## Physics of LMs: làm thí nghiệm về Knowledge Storage, Extraction and Manipulation
