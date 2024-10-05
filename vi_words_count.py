@@ -64,16 +64,16 @@ def merge_count(count, x):
 
 def get_uniq_words(infile):
     x = infile.split("/")[-1]
-    outfile = f"{PATH}/{x}_count.json.xz"
+    outfile = f"{PATH}/{x}_count.json"
 
-    try: count = json.load(lzma.open(outfile))
+    try: count = json.load(open(outfile))
     except: count = { "last_line_idx": 0 }
 
     if os.path.exists(infile) and "last_line_idx" in count: # DONE
 
         texts = []
 
-        for idx, line in enumerate( lzma.open(infile) ):
+        for idx, line in enumerate( open(infile) ):
             if idx <= count["last_line_idx"]:
                 continue
 
@@ -85,8 +85,8 @@ def get_uniq_words(infile):
                 merge_count(count, count_words(texts))
                 count["last_line_idx"] = idx
 
-                with lzma.open(outfile, "wt") as f:
-                    f.write(json.dumps(count))
+                with open(outfile, "wt") as f:
+                    f.write(json.dumps(count, ensure_ascii = False))
 
                 print(f'get_uniq_token {infile}:{count["last_line_idx"]} ...', flush = True)
                 texts = []
@@ -96,8 +96,8 @@ def get_uniq_words(infile):
         count.pop("last_line_idx") # DONE, ko cần ghi lại last_line_idx nữa
 
         # Ghi kết quả cuối cùng ra file
-        with lzma.open(outfile, "wt") as f:
-            f.write(json.dumps(count))
+        with open(outfile, "wt") as f:
+            f.write(json.dumps(count, ensure_ascii = False))
 
         print(f'get_uniq_token {infile} DONE.', flush = True)
 
