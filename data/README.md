@@ -1,4 +1,4 @@
-## Chuẩn bị data song ngữ Anh - Việt wikihow
+## Chuẩn bị data để tiếp tục training LLM
 ```sh
 # Lọc 93mb text song ngữ Anh - Việt, trong đó text tiếng Việt có độ dài lớn hơn 10k ký tự
 python3 python3 prepare_wikihow_data.py 10000 > wikihow_more_filtered.jsonl
