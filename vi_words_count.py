@@ -3,7 +3,7 @@ from multiprocessing import Pool
 import re, subprocess
 import transformers
 
-from pyvi import ViTokenizer # pip install pyvi
+from pyvi import ViTokenizer
 from utils import *
 from utils_lang import *
 
@@ -164,7 +164,7 @@ with open("data/vi_words_impact.jsonl", "wt") as f:
 
 '''
 
-python3 vi_words_count.py 1000
+python3 vi_words_count.py 600
 
 head -n 10 data/vi_words_impact.jsonl
 

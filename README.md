@@ -129,16 +129,16 @@ xzcat data/vi_words_impact.jsonl.xz | head -n 3000 |  tail -n 10
 {"word": " Kỹ_năng",      "impact": 22982, "qwen_tokens": [" K", "ỹ", " năng"], "freq": 11491, "qwen_tokens_count": 3}
 
 xzcat data/vi_words_impact.jsonl.xz | tail -n 10
-{"word": " Công_nhận",    "impact": 500, "qwen_tokens": [" Công", " nhận"], "freq": 500, "qwen_tokens_count": 2}
-{"word": " xuất_ngũ",     "impact": 500, "qwen_tokens": [" xuất", " ngũ"], "freq": 500, "qwen_tokens_count": 2}
-{"word": " Người_xưa",    "impact": 500, "qwen_tokens": [" Người", " xưa"], "freq": 500, "qwen_tokens_count": 2}
-{"word": " _",            "impact": 0, "qwen_tokens": ["  "], "freq": 53157, "qwen_tokens_count": 1}
-{"word": "_số",           "impact": 0, "qwen_tokens": [" số"], "freq": 804, "qwen_tokens_count": 1}
-{"word": "_tập",          "impact": 0, "qwen_tokens": [" tập"], "freq": 800, "qwen_tokens_count": 1}
-{"word": "_League",       "impact": 0, "qwen_tokens": [" League"], "freq": 7751, "qwen_tokens_count": 1}
-{"word": "_page",         "impact": 0, "qwen_tokens": [" page"], "freq": 3377, "qwen_tokens_count": 1}
-{"word": "_bộ",           "impact": 0, "qwen_tokens": [" bộ"], "freq": 760, "qwen_tokens_count": 1}
-{"word": "_T",            "impact": 0, "qwen_tokens": [" T"], "freq": 600, "qwen_tokens_count": 1}
+{"word": " tự_phụ",       "impact": 601, "qwen_tokens": [" tự", " phụ"], "freq": 601, "qwen_tokens_count": 2}
+{"word": " thành_tố",     "impact": 601, "qwen_tokens": [" thành", " tố"], "freq": 601, "qwen_tokens_count": 2}
+{"word": " viên_ngoại",   "impact": 601, "qwen_tokens": [" viên", " ngoại"], "freq": 601, "qwen_tokens_count": 2}
+{"word": " thánh_địa",    "impact": 601, "qwen_tokens": [" thánh", " địa"], "freq": 601, "qwen_tokens_count": 2}
+{"word": " mấy_khi",      "impact": 600, "qwen_tokens": [" mấy", " khi"], "freq": 600, "qwen_tokens_count": 2}
+{"word": " đậu_đen",      "impact": 600, "qwen_tokens": [" đậu", " đen"], "freq": 600, "qwen_tokens_count": 2}
+{"word": " tái_bản",      "impact": 600, "qwen_tokens": [" tái", " bản"], "freq": 600, "qwen_tokens_count": 2}
+{"word": " kéo_lại",      "impact": 600, "qwen_tokens": [" kéo", " lại"], "freq": 600, "qwen_tokens_count": 2}
+{"word": " e_sợ",         "impact": 600, "qwen_tokens": [" e", " sợ"], "freq": 600, "qwen_tokens_count": 2}
+{"word": " hồi_đáp",      "impact": 600, "qwen_tokens": [" hồi", " đáp"], "freq": 600, "qwen_tokens_count": 2}
 ```
 ![](img/vi-words-impact-00.jpg)
 
@@ -149,20 +149,19 @@ xzcat data/vi_words_impact.jsonl.xz | tail -n 10
 - [ ] tìm các cách *hiệu quả* để khởi tạo embedding values của tokens mới
   - Với 1 từ được chọn, tìm ra 1-3 câu liên quan tới từ đó:
     - thay toàn bộ embedding values của từ được chọn băng 01 embedding value mới được init bằng nhiều cách:
-      - embedding value của từ đơn tương ứng trong tiếng Anh hoặc Trung
-      - lấy trung bình cộng của các embedding values của từ đó
-      - lấy trung bình cộng của toàn bộ embedding values (whole vocab)
-      - lấy trung bình cộng của toàn bộ embedding values của các từ trong ngôn ngữ đó
-      - lấy trung bình cộng của toàn bộ embedding values của các từ gần nghĩa với nó trong tiếng Việt
-      - lấy trung bình cộng của toàn bộ embedding values của các từ gần nghĩa với nó trong TV và các ngôn ngữ khác
-      - ...
+      - embedding value của từ đơn tương ứng trong tiếng Anh
+      - lấy trung bình cộng của các embedding values của các tokens của từ đó
+      - lấy trung bình cộng của toàn bộ embedding values của các từ `gần` với nó (trong TV và các ngôn ngữ khác)
+        `gần` ở đây có thể là về ý nghĩa, về embdding values hoặc bất kỳ độ đo hợp lý nào ...
   - làm thế nào để đo lường được *hiệu quả*?
     - tính sự khác biệt của output (logits diff / perpelexity ...) trong các phép thay thế,
     khác biệt thấp nhất => hiệu quả nhất?
+  - Việc lựa chọn embedding values có thực sự quan trọng? Vì đằng nào cũng cần continue pretrain.
 
 - [ ] Mát xa new embeddings (and old embeddings too)
-  - freeze all layers, finetune embeddings trước
-  - sau đó finetune models (lora + embedding or full finetune)
+  - freeze *most* layers, finetune embeddings và vài low layers trước
+    - Lý do: từ vựng, ngữ pháp, các skills ngôn ngữ tập trung nhiều ở low layers
+  - sau đó finetune toàn bộ model (lora + embedding or full finetune)
   - build datasets và giáo án huấn luyện phù hợp
 
 - - -
@@ -184,9 +183,6 @@ lm_head value ở ví trí đó với qwen 1.5 chính là embedding value vì qw
 ![](img/vocab-extend-00.jpg)
 
 ![](img/vocab-extend-02.jpg)
-
-![](img/vocab-extend-03.jpg)
-https://dict.laban.vn/find?type=2&query=s%E1%BB%AD+d%E1%BB%A5ng
 
 - - -
 
