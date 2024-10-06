@@ -6,3 +6,7 @@ fasttext
 matplotlib
 sklearn-crfsuite
 scikit-learn
+
+accelerate
+liger_kernel
+flash-attn

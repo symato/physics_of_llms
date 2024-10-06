@@ -13,6 +13,7 @@ from transformers.trainer_utils import get_last_checkpoint
 from transformers.trainer_pt_utils import LabelSmoother
 from mydataset import make_supervised_data_module 
 from dataclasses import dataclass, field
+from liger_kernel.transformers import AutoLigerKernelForCausalLM
 
 @dataclass
 class ModelArguments:
@@ -143,7 +144,8 @@ config = transformers.AutoConfig.from_pretrained(
     cache_dir=training_args.cache_dir,
 )
 
-model = transformers.AutoModelForCausalLM.from_pretrained(
+# model = transformers.AutoModelForCausalLM.from_pretrained(
+model = AutoLigerKernelForCausalLM.from_pretrained(
     model_args.model_name_or_path,
     config=config,
     cache_dir=training_args.cache_dir,

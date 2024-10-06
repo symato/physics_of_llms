@@ -39,7 +39,7 @@ def get_similiar_words(n = None):
 
 	for x in sim0:
 		word = x["word"]
-		text = x["textbook"]
+		text = x["text"]
 		splits = re.split(r'\d. "(.+?)[/"]', text)
 		
 		for i in range(1, len(splits), 2):

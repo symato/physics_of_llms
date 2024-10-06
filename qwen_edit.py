@@ -7,7 +7,8 @@ import re
 import argparse
 
 parser = argparse.ArgumentParser(description = "Qwen2 Model Edit, cắt tỉa embedding và mở rộng vocab")
-parser.add_argument("-m", "--model", type = str, default = config.OFFLINE_MODEL_PATH, help = "Base model directory")
+parser.add_argument("-b", "--base_model", type = str, default = config.OFFLINE_MODEL_PATH, help = "Base model directory")
+parser.add_argument("-m", "--model", type = str, default = config.OFFLINE_MODEL_PATH, help = "Model directory to apply task")
 parser.add_argument("-t", "--task", type = str, default = None, \
     help = "Tác vụ `trimm_vocab` để cắt tỉa, `extend_vocab` để mở rộng")
 
@@ -17,7 +18,7 @@ assert args.task in "trimm_vocab extend_vocab".split()
 
 # bỏ / ở cuối model_path
 model_path = re.sub(r'/*$', "", args.model.strip())
-new_model_path = f"{model_path}__{args.task}"
+new_model_path = f'{model_path.replace("__trimm_vocab", "")}__{args.task}'
 
 model = transformers.AutoModelForCausalLM.from_pretrained(
    model_path,
@@ -41,7 +42,7 @@ n = len(kept_tids)
 nn = round(n / 64) * 64
 
 old_embeddings = model.model.embed_tokens.weight.detach().clone()
-print(old_embeddings.shape) # torch.Size([151936, 1536])
+print("old_embeddings", old_embeddings.shape) # torch.Size([151936, 1536])
 
 if is_tied_embedding:
     # https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct/blob/main/config.json
@@ -62,9 +63,28 @@ if is_tied_embedding:
 
 
     elif args.task == "extend_vocab":
-        
+
         vocab_size, _ = old_embeddings.shape
-        assert vocab_size == 151936
+
+        if args.base_model == args.model:
+
+            assert vocab_size == 151936
+            base_embeddings = old_embeddings # same model
+
+        else:
+
+            assert vocab_size == 76160
+
+            # load base embeddings
+            base_model = transformers.AutoModelForCausalLM.from_pretrained(
+               args.base_model,
+               torch_dtype = torch.bfloat16, # dtype gốc của qwen
+               device_map = "cpu"
+            )
+
+            base_embeddings = base_model.model.embed_tokens.weight.detach().clone()
+
+        print("base_embeddings", base_embeddings.shape)
 
         from similarity import get_similiar_words
         words = get_similiar_words(n = 128) # Thử nghiệm với 128 words trước
@@ -78,7 +98,7 @@ if is_tied_embedding:
         for idx, (k, v) in enumerate(words):
             print(v.values())
             tid = list(v.values())[0] # lấy tid của 1 từ tiếng Anh tương ứng
-            new_embeddings[ vocab_size + idx ] = old_embeddings[tid]
+            new_embeddings[ vocab_size + idx ] = base_embeddings[tid]
 
         x = model.model.embed_tokens.weight == new_embeddings
         assert torch.all(x), "Không thay được new_embeddings"
@@ -100,6 +120,12 @@ tokenizer.save_pretrained(new_model_path)
 
 
 '''
+
+python qwen_edit.py -m ../Qwen2.5-1.5B-Instruct/ -t trimm_vocab
+
+python qwen_edit.py -m ../Qwen2.5-1.5B-Instruct__trimm_vocab/ -t extend_vocab
+
+
 Qwen's 1.5b gồm 28 layers, với tied embeddings là embed_tokens.weight (model.norm.weight là RMS Norm)
 
 Qwen2Model(
