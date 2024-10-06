@@ -104,10 +104,6 @@ def get_uniq_words(infile):
     if "last_line_idx" in count:
         count.pop("last_line_idx")
 
-    for w, c in list( count.items() ):
-        if "_" not in w or c < min_count:
-            count.pop(w)
-
     return count
 
 
@@ -116,10 +112,22 @@ def get_final_count(input_files):
         input_files = glob.glob(f"{PATH}/*_count.json")
         input_files = [ x.replace("_count.json", "") for x in input_files ]
 
-    count = {}
-    with Pool( processes = num_procs() ) as pool:
-        for x in pool.imap_unordered(get_uniq_words, input_files):
-            merge_count(count, x)
+    filename = "data/vi_words_count.json.xz"
+    if os.path.exists(filename):
+        print(f"{filename} existed => fast load!")
+        count = json.load( lzma.open(filename) )
+    else:
+        count = {}
+        with Pool( processes = num_procs() ) as pool:
+            for x in pool.imap_unordered(get_uniq_words, input_files):
+                merge_count(count, x)
+
+        with lzma.open(filename, "wt") as f:
+            f.write(json.dumps(count, ensure_ascii = False))
+
+    for w, c in list( count.items() ):
+        if "_" not in w or c < min_count:
+            count.pop(w)
 
     return count
 
