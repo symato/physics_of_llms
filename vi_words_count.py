@@ -64,9 +64,10 @@ def merge_count(count, x):
 
 def get_uniq_words(infile):
     x = infile.split("/")[-1]
-    outfile = f"{PATH}/{x}_count.json"
+    outfile = f"{PATH}/{x}_count.json.xz"
+    print(outfile)
 
-    try: count = json.load(open(outfile))
+    try: count = json.load(lzma.open(outfile))
     except: count = { "last_line_idx": 0 }
 
     if os.path.exists(infile) and "last_line_idx" in count: # DONE
@@ -109,21 +110,13 @@ def get_uniq_words(infile):
 
 def get_final_count(input_files):
     if input_files == "stats_mode":
-        input_files = glob.glob(f"{PATH}/*_count.json")
-        input_files = [ x.replace("_count.json", "") for x in input_files ]
+        input_files = glob.glob(f"{PATH}/*_count.json.xz")
+        input_files = [ x.replace("_count.json.xz", "") for x in input_files ]
 
-    filename = "data/vi_words_count.json.xz"
-    if os.path.exists(filename):
-        print(f"{filename} existed => fast load!")
-        count = json.load( lzma.open(filename) )
-    else:
-        count = {}
-        with Pool( processes = num_procs() ) as pool:
-            for x in pool.imap_unordered(get_uniq_words, input_files):
-                merge_count(count, x)
-
-        with lzma.open(filename, "wt") as f:
-            f.write(json.dumps(count, ensure_ascii = False))
+    count = {}
+    with Pool( processes = num_procs() ) as pool:
+        for x in pool.imap_unordered(get_uniq_words, input_files):
+            merge_count(count, x)
 
     for w, c in list( count.items() ):
         if "_" not in w or c < min_count:
