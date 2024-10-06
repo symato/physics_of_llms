@@ -159,8 +159,9 @@ xzcat data/vi_words_impact.jsonl.xz | tail -n 10
   - Việc lựa chọn embedding values có thực sự quan trọng? Vì đằng nào cũng cần continue pretrain.
 
 - [ ] Mát xa new embeddings (and old embeddings too)
-  - freeze all layers, finetune embeddings trước
-  - sau đó finetune models (lora + embedding or full finetune)
+  - freeze *most* layers, finetune embeddings và vài low layers trước
+    - Lý do: từ vựng, ngữ pháp, các skills ngôn ngữ tập trung nhiều ở low layers
+  - sau đó finetune toàn bộ model (lora + embedding or full finetune)
   - build datasets và giáo án huấn luyện phù hợp
 
 - - -
