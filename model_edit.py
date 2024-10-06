@@ -6,7 +6,7 @@ import re
 
 import argparse
 
-parser = argparse.ArgumentParser(description = "Qwen2 Model Edit, cắt tỉa embedding và mở rộng vocab")
+parser = argparse.ArgumentParser(description = "LLM Model Edit, cắt tỉa embedding và mở rộng vocab")
 parser.add_argument("-b", "--base_model", type = str, default = config.OFFLINE_MODEL_PATH, help = "Base model directory")
 parser.add_argument("-m", "--model", type = str, default = config.OFFLINE_MODEL_PATH, help = "Model directory to apply task")
 parser.add_argument("-t", "--task", type = str, default = None, \
@@ -22,25 +22,36 @@ new_model_path = f'{model_path.replace("__trimm_vocab", "")}__{args.task}'
 
 model = transformers.AutoModelForCausalLM.from_pretrained(
    model_path,
-   torch_dtype = torch.bfloat16, # dtype gốc của qwen
+   torch_dtype = torch.bfloat16, # dtype gốc của qwen, gemma tự động convert f32 về bf16
    device_map = "cpu"
 )
 tokenizer = transformers.AutoTokenizer.from_pretrained(model_path)
 
+print(model.model)
 # print("lm_head", model.lm_head) # Linear(in_features=1536, out_features=151936, bias=False)
 # print("embed_tokens", model.model.embed_tokens) # Embedding(151936, 1536) ~= 233m params
 
 x = model.lm_head.weight == model.model.embed_tokens.weight
 is_tied_embedding = torch.all(x)
 
-from qwen_vocab import kept_tids
-import math
 
+x = model_path.lower()
+if "qwen" in x: 
+    from qwen_vocab import kept_tids
+elif "gemma" in x:
+    from gemma_vocab import kept_tids
+else:
+    assert False
+
+
+import math
 n = len(kept_tids)
 nn = math.ceil(n / 64) * 64
 
+
 old_embeddings = model.model.embed_tokens.weight.detach().clone()
 print("old_embeddings", old_embeddings.shape) # torch.Size([151936, 1536])
+
 
 if is_tied_embedding:
     # https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct/blob/main/config.json
@@ -119,9 +130,43 @@ tokenizer.save_pretrained(new_model_path)
 
 '''
 
-python qwen_edit.py -m ../Qwen2.5-1.5B-Instruct/ -t trimm_vocab
+python model_edit.py -m ../gemma-2-2b-it/ -t trimm_vocab
 
-python qwen_edit.py -m ../Qwen2.5-1.5B-Instruct__trimm_vocab/ -t extend_vocab
+python model_edit.py -m ../gemma-2-2b-it__trimm_vocab/ -t extend_vocab
+
+
+python model_edit.py -m ../Qwen2.5-1.5B-Instruct/ -t trimm_vocab
+
+python model_edit.py -m ../Qwen2.5-1.5B-Instruct__trimm_vocab/ -t extend_vocab
+
+
+Gemma2 2b gồm tied embeddings và 26 layers
+
+Gemma2Model(
+  (embed_tokens): Embedding(256000, 2304, padding_idx=0)
+  (layers): ModuleList(
+    (0-25): 26 x Gemma2DecoderLayer(
+      (self_attn): Gemma2SdpaAttention(
+        (q_proj): Linear(in_features=2304, out_features=2048, bias=False)
+        (k_proj): Linear(in_features=2304, out_features=1024, bias=False)
+        (v_proj): Linear(in_features=2304, out_features=1024, bias=False)
+        (o_proj): Linear(in_features=2048, out_features=2304, bias=False)
+        (rotary_emb): Gemma2RotaryEmbedding()
+      )
+      (mlp): Gemma2MLP(
+        (gate_proj): Linear(in_features=2304, out_features=9216, bias=False)
+        (up_proj): Linear(in_features=2304, out_features=9216, bias=False)
+        (down_proj): Linear(in_features=9216, out_features=2304, bias=False)
+        (act_fn): PytorchGELUTanh()
+      )
+      (input_layernorm): Gemma2RMSNorm((2304,), eps=1e-06)
+      (post_attention_layernorm): Gemma2RMSNorm((2304,), eps=1e-06)
+      (pre_feedforward_layernorm): Gemma2RMSNorm((2304,), eps=1e-06)
+      (post_feedforward_layernorm): Gemma2RMSNorm((2304,), eps=1e-06)
+    )
+  )
+  (norm): Gemma2RMSNorm((2304,), eps=1e-06)
+)
 
 
 Qwen's 1.5b gồm 28 layers, với tied embeddings là embed_tokens.weight (model.norm.weight là RMS Norm)

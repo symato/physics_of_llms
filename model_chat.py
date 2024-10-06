@@ -14,7 +14,16 @@ model = transformers.AutoModelForCausalLM.from_pretrained(
 )
 tokenizer = transformers.AutoTokenizer.from_pretrained(model_path)
 
-from qwen_vocab import old2new, new2old
+x = model_path.lower()
+
+if "qwen" in x: 
+    from qwen_vocab import old2new, new2old
+    STOP_WORDS = "<|im_end|> <|endoftext|>".split()
+elif "gemma" in x:
+    from gemma_vocab import old2new, new2old
+    STOP_WORDS = "<end_of_turn> <eos>".split()
+else:
+    assert False
 
 def map_tids(map_dict, tids):
     if "trimm_vocab" in model_path:
@@ -25,7 +34,6 @@ def map_tids(map_dict, tids):
             tids[idx] = map_dict[x]
 
 
-STOP_WORDS = "<|im_end|> <|endoftext|>".split()
 class KeywordsStoppingCriteria(transformers.StoppingCriteria):
     def __init__(self, str):
         self.keyword_ids = tokenizer(str).input_ids
@@ -42,18 +50,14 @@ stop_criteria_list = transformers.StoppingCriteriaList(
 
 
 def get_answer(q):
-    prompt = f"""<|im_start|>user
-{q}<|im_end|>
-<|im_start|>assistant"""
-
+    prompt = tokenizer.apply_chat_template([{"role": "user", "content": q}], tokenize=False)
     inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
     map_tids(old2new, inputs["input_ids"][0])
 
     with torch.no_grad():
         output_ids = model.generate(
             **inputs,
-            # input_ids=input_ids,
-            max_new_tokens=1024,
+            max_new_tokens=512,
             temperature=0.3,
             top_p=1.0, top_k=30, do_sample=True,
             repetition_penalty=1.1,
@@ -64,7 +68,7 @@ def get_answer(q):
     answer_tids = output_ids[0][len(inputs["input_ids"][0]) : ] # bỏ đi prompt tokens
     map_tids(new2old, answer_tids)
 
-    return tokenizer.decode(answer_tids).split("<|im_end|>")[0].strip()
+    return tokenizer.decode(answer_tids).split("<|im_end|>")[0].split("<end_of_turn>")[0].strip()
 
 
 from utils import *

@@ -59,14 +59,14 @@
 ```sh
 huggingface-cli download Qwen/Qwen2.5-1.5B-Instruct --local-dir ../Qwen2.5-1.5B-Instruct
 
-python3 qwen_edit.py -m ../Qwen2.5-1.5B-Instruct -t trimm_vocab
+python3 model_edit.py -m ../Qwen2.5-1.5B-Instruct -t trimm_vocab
 
-python3 qwen_chat.py ../Qwen2.5-1.5B-Instruct
+python3 model_chat.py ../Qwen2.5-1.5B-Instruct
 # Bạn: Translate following sentence into Chinese: tôi tên là Lý Quốc Dân
 # Bot: 我的名字是李国定
 # ../Qwen2.5-1.5B-Instruct: timespent 1.31 seconds
 
-python3 qwen_chat.py ../Qwen2.5-1.5B-Instruct__trimm_vocab
+python3 model_chat.py ../Qwen2.5-1.5B-Instruct__trimm_vocab
 # Bạn: Translate following sentence into Chinese: tôi tên là Lý Quốc Dân
 # Bot: My name is Li Guo Dan.
 # ../Qwen2.5-1.5B-Instruct__trimm_vocab: timespent 1.31 seconds

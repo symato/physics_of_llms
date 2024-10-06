@@ -200,21 +200,22 @@ added_tokens = [
 ]
 
 
-def get_kept_tids():
-    kept_tids = [ x["id"] for x in added_tokens ]
+import os, sys, glob, json
 
-    import os, sys, glob, json
+def get_kept_tids():
+    kept_tids = set( x["id"] for x in added_tokens )
 
     kept_filenames = glob.glob("qwen__1000__20000/tokens_kept__*.jsonl")
 
     for filename in kept_filenames:
         for line in open(filename, "rt"):
             token, tid, count = json.loads(line)
-            # print(token)
-            kept_tids.append(tid)
+            kept_tids.add(tid)
 
+    kept_tids = list( kept_tids )
     kept_tids.sort()
-    print("new_vocab", len(kept_tids))
+
+    print("new_qwen_vocab", len(kept_tids))
     return kept_tids
 
 
@@ -236,9 +237,8 @@ def old2new_tid(x, tokenizer):
     else:
         return old2new[x]
 
-if __name__ == "__main__":
 
-    kept_tids = get_kept_tids()
+if __name__ == "__main__":
 
     n = len(kept_tids)
     nn = round(n / 64) * 64
