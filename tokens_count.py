@@ -298,10 +298,15 @@ print("( remains = wanted - removed )")
 
 python3 tokens_count.py 1000 20000
 
+[ Gemma2 ]
+kept    / total = 117942 / 256000
+remains / total = 191746 / 256000
+
+[ Qwen ]
 kept    / total = 79719 / 151643
 remains / total = 80147 / 151643
-( remains = wanted - removed )
 
+( remains = wanted - removed )
 Final = kept + special tokens
 
 """
