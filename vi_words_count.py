@@ -105,7 +105,7 @@ def get_uniq_words(infile):
         count.pop("last_line_idx")
 
     for w, c in list( count.items() ):
-        if not canbe_vietnamese(w) or c < min_count:
+        if "_" not in w or c < min_count:
             count.pop(w)
 
     return count
@@ -164,7 +164,7 @@ with open("data/vi_words_impact.jsonl", "wt") as f:
 
 '''
 
-python3 vi_words_count.py 500
+python3 vi_words_count.py 1000
 
 head -n 10 data/vi_words_impact.jsonl
 
