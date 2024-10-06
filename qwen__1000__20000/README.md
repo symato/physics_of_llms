@@ -7,9 +7,6 @@ head -n 3 tokens_kept__alphabet_long.jsonl
 ```
 
 ```sh
-python3 tokens_count.py 800 20000
-cd qwen__800__20000
-
 ## Sau khi cắt tỉa bằng máy
 wc -l tokens_kept__*
 

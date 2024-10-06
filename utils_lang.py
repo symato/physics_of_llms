@@ -26,6 +26,33 @@ def detect_lang(text, check_words = False):
 assert detect_lang("hello vietnam") == "en"
 assert detect_lang( "chào nước mỹ 123sfd http://adf4| tôi là ") == "vi"
 
+
+_oa = ord('a')
+_oz = ord('z')
+_os = ord(' ')
+###
+def is_alphabet(token):
+    for c in token.lower():
+        o = ord(c)
+        if o != _os and (_oa > o or o > _oz):
+            return False
+    return True
+
+
+import nltk # pip install nltk
+nltk.download('words')
+en_words = set( nltk.corpus.words.words() )
+###
+def is_english_word(token):
+    x = token.strip().lower()
+    if x in en_words: return True
+    if len(x) > 1 and x[-1] == 's' and x[:-1] in en_words: return True # số nhiều
+    return False
+
+assert(is_english_word("car"))
+assert(is_english_word("cars"))
+
+
 '''
 https://www.regular-expressions.info/unicode.html
 https://stackoverflow.com/questions/38615740/regular-expression-to-accept-all-thai-characters-and-english-letters-in-python#answer-72440821

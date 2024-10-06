@@ -16,11 +16,20 @@ IGNORE_TOKEN_ID = LabelSmoother.ignore_index
 assert IGNORE_TOKEN_ID == -100
 
 ####################
+from qwen_vocab import old2new
+###
 def preprocess(sources, tokenizer, max_len):
+
+    def old2new_tid(x):
+        if x not in old2new:
+            print(x, tokenizer.decode(x))
+        else:
+            return old2new[x]
+
     def tknz(str):
         token_ids = tokenizer(str, add_special_tokens=False).input_ids
         ## không cần nữa bỏ qua first token nữa vì đã có add_special_tokens=False
-        # if tknz_name == "LlamaTokenizer": token_ids = token_ids[1:] # bỏ qua <s> ở đầu
+        token_ids = [ old2new_tid(x) for x in token_ids ]
         return token_ids
 
     def add_tokens(input_id, target, tokens, ignore=False):

@@ -42,7 +42,7 @@
   - [x] Giữ lại tokens chứa ký tự tiếng Việt
   - [x] Giữ lại ascii tokens
 
-- [x] Tạo final vocab từ [qwen__800__20000](./qwen__800__20000/README.md)
+- [x] Tạo final vocab từ [qwen__1000__20000](./qwen__1000__20000/README.md)
   - [x] Lọc tay kept tokens @ `tokens_kept__*.jsonl` (84065 giảm xuống 76116)
 
 **Đối tượng thực hành**
@@ -56,7 +56,7 @@
   - `qwen2.0` https://huggingface.co/SeaLLMs/SeaLLMs-v3-7B-Chat
   - `qwen1.5` https://huggingface.co/5CD-AI/Viet-Sailor-4B-Instruct
 
-- [x] Thêm special tokens vào `qwen__800__20000/tokens_kept__*` để tạo new vocab
+- [x] Thêm special tokens vào `qwen__1000__20000/tokens_kept__*` để tạo new vocab
 
 - [x] Thử cắt tỉa qwen2.5 1.5b và chạy inference
 

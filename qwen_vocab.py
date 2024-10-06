@@ -205,7 +205,7 @@ def get_kept_tids():
 
     import os, sys, glob, json
 
-    kept_filenames = glob.glob("qwen__800__20000/tokens_kept__*.jsonl")
+    kept_filenames = glob.glob("qwen__1000__20000/tokens_kept__*.jsonl")
 
     for filename in kept_filenames:
         for line in open(filename, "rt"):
@@ -217,6 +217,16 @@ def get_kept_tids():
     # print("new_vocab", len(kept_tids))
     return kept_tids
 
+
+kept_tids = get_kept_tids()
+
+# old vs new vocab mapping
+old2new = {}
+new2old = {}
+
+for new_tid, old_tid in enumerate( kept_tids ):
+    old2new[ old_tid ] = new_tid
+    new2old[ new_tid ] = old_tid
 
 if __name__ == "__main__":
 

@@ -14,17 +14,7 @@ model = transformers.AutoModelForCausalLM.from_pretrained(
 )
 tokenizer = transformers.AutoTokenizer.from_pretrained(model_path)
 
-from qwen_vocab import get_kept_tids
-kept_tids = get_kept_tids()
-kept_tids.sort()
-
-# old vs new vocab mapping
-old2new = {}
-new2old = {}
-for new_tid, old_tid in enumerate( kept_tids ):
-    old2new[ old_tid ] = new_tid
-    new2old[ new_tid ] = old_tid
-
+from qwen_vocab import old2new, new2old
 
 def map_tids(map_dict, tids):
     if "trimm_vocab" in model_path:

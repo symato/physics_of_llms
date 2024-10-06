@@ -33,11 +33,7 @@ print("embed_tokens", model.model.embed_tokens) # Embedding(151936, 1536) ~= 233
 x = model.lm_head.weight == model.model.embed_tokens.weight
 is_tied_embedding = torch.all(x)
 
-
-from qwen_vocab import get_kept_tids
-kept_tids = get_kept_tids()
-kept_tids.sort()
-
+from qwen_vocab import kept_tids
 n = len(kept_tids)
 nn = round(n / 64) * 64
 

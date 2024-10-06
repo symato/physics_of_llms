@@ -58,6 +58,9 @@ def ok(x):
         if contains_emoji(token):
             return True
 
+        if is_alphabet(token):
+            return True
+
     elif count < max_count:
 
         if canbe_vietnamese(token):
@@ -230,32 +233,7 @@ def pretty_json(tid, count):
     return pretty_token(token, tid, count)
 
 
-subprocess.run("rm data/tokens_*.jsonl", shell = True)
-
-_oa = ord('a')
-_oz = ord('z')
-_os = ord(' ')
-###
-def is_alphabet(token):
-    for c in token.lower():
-        o = ord(c)
-        if o != _os and (_oa > o or o > _oz):
-            return False
-    return True
-
-
-import nltk # pip install nltk
-nltk.download('words')
-en_words = set( nltk.corpus.words.words() )
-###
-def is_english_word(token):
-    x = token.strip().lower()
-    if x in en_words: return True
-    if len(x) > 1 and x[-1] == 's' and x[:-1] in en_words: return True # số nhiều
-    return False
-
-assert(is_english_word("car"))
-assert(is_english_word("cars"))
+subprocess.run("rm tokens_*.jsonl", shell = True)
 
 
 for tid, count in removed:
@@ -266,16 +244,16 @@ for tid, count in removed:
     if is_ascii(token):
         if is_alphabet(token):
             if is_english_word(token):
-                with open("data/tokens_kept__english.jsonl", "at") as f:
+                with open("tokens_kept__english.jsonl", "at") as f:
                     f.write(p_token)
             else:
-                with open("data/tokens_removed__alphabet.jsonl", "at") as f:
+                with open("tokens_removed__alphabet.jsonl", "at") as f:
                     f.write(p_token)
         else:
-            with open("data/tokens_removed__ascii.jsonl", "at") as f:
+            with open("tokens_removed__ascii.jsonl", "at") as f:
                 f.write(p_token)
     else:
-        with open("data/tokens_removed__others.jsonl", "at") as f:
+        with open("tokens_removed__others.jsonl", "at") as f:
             f.write(p_token)
 
 
@@ -287,24 +265,24 @@ for tid, count in kept:
     if is_ascii(token):
         if is_alphabet(token):
             if is_english_word(token):
-                with open("data/tokens_kept__english.jsonl", "at") as f:
+                with open("tokens_kept__english.jsonl", "at") as f:
                     f.write(p_token)
             else:
                 if len(token) > 12:
-                    with open("data/tokens_kept__alphabet_long.jsonl", "at") as f:
+                    with open("tokens_kept__alphabet_long.jsonl", "at") as f:
                         f.write(p_token)
                 else:
-                    with open("data/tokens_kept__alphabet_short.jsonl", "at") as f:
+                    with open("tokens_kept__alphabet_short.jsonl", "at") as f:
                         f.write(p_token)
         else:
             if len(token) > 12:
-                with open("data/tokens_kept__ascii_long.jsonl", "at") as f:
+                with open("tokens_kept__ascii_long.jsonl", "at") as f:
                     f.write(p_token)
             else:
-                with open("data/tokens_kept__ascii_short.jsonl", "at") as f:
+                with open("tokens_kept__ascii_short.jsonl", "at") as f:
                     f.write(p_token)
     else:
-        with open("data/tokens_kept__others.jsonl", "at") as f:
+        with open("tokens_kept__others.jsonl", "at") as f:
             f.write(p_token)
 
 
