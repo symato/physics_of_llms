@@ -149,16 +149,14 @@ xzcat data/vi_words_impact.jsonl.xz | tail -n 10
 - [ ] tìm các cách *hiệu quả* để khởi tạo embedding values của tokens mới
   - Với 1 từ được chọn, tìm ra 1-3 câu liên quan tới từ đó:
     - thay toàn bộ embedding values của từ được chọn băng 01 embedding value mới được init bằng nhiều cách:
-      - embedding value của từ đơn tương ứng trong tiếng Anh hoặc Trung
-      - lấy trung bình cộng của các embedding values của từ đó
-      - lấy trung bình cộng của toàn bộ embedding values (whole vocab)
-      - lấy trung bình cộng của toàn bộ embedding values của các từ trong ngôn ngữ đó
-      - lấy trung bình cộng của toàn bộ embedding values của các từ gần nghĩa với nó trong tiếng Việt
-      - lấy trung bình cộng của toàn bộ embedding values của các từ gần nghĩa với nó trong TV và các ngôn ngữ khác
-      - ...
+      - embedding value của từ đơn tương ứng trong tiếng Anh
+      - lấy trung bình cộng của các embedding values của các tokens của từ đó
+      - lấy trung bình cộng của toàn bộ embedding values của các từ `gần` với nó (trong TV và các ngôn ngữ khác)
+        `gần` ở đây có thể là về ý nghĩa, về embdding values hoặc bất kỳ độ đo hợp lý nào ...
   - làm thế nào để đo lường được *hiệu quả*?
     - tính sự khác biệt của output (logits diff / perpelexity ...) trong các phép thay thế,
     khác biệt thấp nhất => hiệu quả nhất?
+  - Việc lựa chọn embedding values có thực sự quan trọng? Vì đằng nào cũng cần continue pretrain.
 
 - [ ] Mát xa new embeddings (and old embeddings too)
   - freeze all layers, finetune embeddings trước
