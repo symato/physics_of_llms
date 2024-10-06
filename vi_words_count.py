@@ -3,7 +3,7 @@ from multiprocessing import Pool
 import re, subprocess
 import transformers
 
-from pyvi import ViTokenizer # pip install pyvi
+from pyvi import ViTokenizer
 from utils import *
 from utils_lang import *
 
