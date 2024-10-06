@@ -37,7 +37,7 @@ PATH = f"data/{model_path}"
 mkdirs(PATH)
 
 
-latin_tids = [ json.loads(line)["tid"] for line in lzma.open("data/Qwen/tokens_by_lang/Latin.jsonl.xz", "rt") ]
+latin_tids = [ json.loads(line)["tid"] for line in lzma.open("data/tokens_by_lang/Latin.jsonl.xz", "rt") ]
 latin_tids = set(latin_tids)
 ###
 def ok(x):
