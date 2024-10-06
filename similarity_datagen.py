@@ -158,6 +158,6 @@ for idx, line in enumerate( lzma.open(infile) ):
             with open(outfile, "at") as f:
                 f.write(json.dumps({
                     "word": word,
-                    "textbook": res.strip(),
+                    "text": res.strip(),
                 }, ensure_ascii = False) + "\n")
 
