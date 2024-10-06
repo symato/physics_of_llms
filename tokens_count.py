@@ -46,7 +46,7 @@ def ok(x):
     tid = int(tid)
 
     if tid in latin_tids:
-        return False
+        return True
 
     token = tokenizer.decode(tid)
 
