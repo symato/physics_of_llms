@@ -175,6 +175,7 @@ model = AutoLigerKernelForCausalLM.from_pretrained(
 model.config.use_cache = False
 
 
+# '''
 ## Finetune embeddings và layers được chọn
 # Tham khảo https://github.com/jondurbin/qlora/blob/e4c20638464e70becc212caa955efea378684473/train.py#L1133
 if "all" not in model_args.finetune_layers.lower():
@@ -190,7 +191,7 @@ if "all" not in model_args.finetune_layers.lower():
     for idx in finetune_layers:
         for param in model.model.layers[idx].parameters():
             param.requires_grad = True
-
+# '''
 
 ## Detecting last checkpoint
 last_checkpoint = None
@@ -209,10 +210,6 @@ print(f"{CYAN}>>> gpu used {torch.cuda.max_memory_allocated(device=None)} memory
 
 trainer.train(resume_from_checkpoint=last_checkpoint) # last_checkpoint is None là train từ đầu
 
+## Final save
 print(f"{CYAN}>>> gpu used {torch.cuda.max_memory_allocated(device=None)} memory{RESET}")
 trainer.save_state()
-
-## Final save
-# if trainer.args.should_save and trainer.args.local_rank == 0:
-#     state_dict = trainer.model.state_dict()
-#     trainer._save(training_args.output_dir, state_dict = state_dict)
