@@ -1,75 +1,73 @@
 import sys
 import os
-import codecs
 import pickle
 import re
 import string
 import unicodedata as ud
 
 class ViTokenizer:
+    # Init *_grams
     bi_grams = set()
     tri_grams = set()
-    '''
-    model_file = 'models/pyvi.pkl'
-    if sys.version_info[0] == 3:
-        model_file = 'models/pyvi3.pkl'
-    print(model_file); input() # => models/pyvi3.pkl
-    '''
-    model_file = 'models/pyvi3.pkl'
-    with codecs.open(os.path.join(os.path.dirname(__file__), 'models/words.txt'), 'r', encoding='utf-8') as fin:
-        for token in fin.read().split('\n'):
-            tmp = token.split(' ')
-            if len(tmp) == 2:
-                bi_grams.add(token)
-            elif len(tmp) == 3:
-                tri_grams.add(token)
-    with open(os.path.join(os.path.dirname(__file__), model_file), 'rb') as fin:
+
+    for token in open(os.path.join(os.path.dirname(__file__), 'words.txt'), 'rt'):
+        token = token.strip()
+        grams = token.split(' ')
+
+        if len(grams) == 2:
+            bi_grams.add(token)
+
+        elif len(grams) == 3:
+            tri_grams.add(token)
+
+    # Init model
+    with open(os.path.join(os.path.dirname(__file__), 'pyvi3.pkl'), 'rb') as fin:
         model = pickle.load(fin)
 
     @staticmethod
     def word2features(sent, i, is_training):
-        word = sent[i][0] if is_training else sent[i]
 
+        def get_word(x):
+            return sent[x][0] if is_training else sent[x]
+
+        word = get_word(i)
         features = {
             'bias': 1.0,
-            'word.lower()': word.lower(),
-            #   'word[-3:]': word[-3:],
-            #   'word[-2:]': word[-2:],
-            'word.isupper()': word.isupper(),
-            'word.istitle()': word.istitle(),
-            'word.isdigit()': word.isdigit(),
+            'word.lower()'   : word.lower(),
+            'word.isupper()' : word.isupper(),
+            'word.istitle()' : word.istitle(),
+            'word.isdigit()' : word.isdigit(),
         }
+
         if i > 0:
-            word1 = sent[i - 1][0] if is_training else sent[i - 1]
+            word1 = get_word(i - 1)
             features.update({
-                '-1:word.lower()': word1.lower(),
-                '-1:word.istitle()': word1.istitle(),
-                '-1:word.isupper()': word1.isupper(),
-                '-1:word.bi_gram()': ' '.join([word1, word]).lower() in ViTokenizer.bi_grams,
+                '-1:word.lower()'   : word1.lower(),
+                '-1:word.istitle()' : word1.istitle(),
+                '-1:word.isupper()' : word1.isupper(),
+                '-1:word.bi_gram()' : ' '.join([word1, word]).lower() in ViTokenizer.bi_grams,
             })
-            if i > 1:
-                word2 = sent[i - 2][0] if is_training else sent[i - 2]
-                features.update({
-                    '-2:word.tri_gram()': ' '.join([word2, word1, word]).lower() in ViTokenizer.tri_grams,
-                })
-                #    else:
-                #        features['BOS'] = True
+
+        if i > 1:
+            word2 = get_word(i - 2)
+            features.update({
+                '-2:word.tri_gram()': ' '.join([word2, word1, word]).lower() in ViTokenizer.tri_grams,
+            })
 
         if i < len(sent) - 1:
-            word1 = sent[i + 1][0] if is_training else sent[i + 1]
+            word1 = get_word(i + 1)
             features.update({
-                '+1:word.lower()': word1.lower(),
-                '+1:word.istitle()': word1.istitle(),
-                '+1:word.isupper()': word1.isupper(),
-                '+1:word.bi_gram()': ' '.join([word, word1]).lower() in ViTokenizer.bi_grams,
+                '+1:word.lower()'   : word1.lower(),
+                '+1:word.istitle()' : word1.istitle(),
+                '+1:word.isupper()' : word1.isupper(),
+                '+1:word.bi_gram()' : ' '.join([word, word1]).lower() in ViTokenizer.bi_grams,
             })
-            if i < len(sent) - 2:
-                word2 = sent[i + 2][0] if is_training else sent[i + 2]
-                features.update({
-                    '+2:word.tri_gram()': ' '.join([word, word1, word2]).lower() in ViTokenizer.tri_grams,
-                })
-                #    else:
-                #        features['EOS'] = True
+
+        if i < len(sent) - 2:
+            word2 = get_word(i + 2)
+            features.update({
+                '+2:word.tri_gram()': ' '.join([word, word1, word2]).lower() in ViTokenizer.tri_grams,
+            })
 
         return features
 
@@ -84,12 +82,7 @@ class ViTokenizer:
         specials = ["==>", "->", "\.\.\.", ">>",'\n']
         digit = "\d+([\.,_]\d+)+"
         email = "([a-zA-Z0-9_.+-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z0-9-]+)"
-        #web = "^(http[s]?://)?(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+$"
         web = "\w+://[^\s]+"
-        #datetime = [
-        #    "\d{1,2}\/\d{1,2}(\/\d{1,4})(^\dw. )+",
-        #    "\d{1,2}-\d{1,2}(-\d+)?",
-        #]
         word = "\w+"
         non_word = "[^\w\s]"
         abbreviations = [
@@ -103,72 +96,29 @@ class ViTokenizer:
         patterns.extend(abbreviations)
         patterns.extend(specials)
         patterns.extend([web, email])
-        #patterns.extend(datetime)
         patterns.extend([digit, non_word, word])
 
         patterns = "(" + "|".join(patterns) + ")"
-        if sys.version_info < (3, 0):
-            patterns = patterns.decode('utf-8')
         tokens = re.findall(patterns, text, re.UNICODE)
 
         return text, [token[0] for token in tokens]
 
     @staticmethod
     def tokenize(str):
-        text, tmp = ViTokenizer.sylabelize(str)
-        if len(tmp) == 0:
+        text, tokens = ViTokenizer.sylabelize(str)
+        if len(tokens) == 0:
             return str
-        labels = ViTokenizer.model.predict([ViTokenizer.sent2features(tmp, False)])
-        output = tmp[0]
+        labels = ViTokenizer.model.predict([ViTokenizer.sent2features(tokens, False)])
+        output = tokens[0]
         for i in range(1, len(labels[0])):
-            if labels[0][i] == 'I_W' and tmp[i] not in string.punctuation and\
-                            tmp[i-1] not in string.punctuation and\
-                    not tmp[i][0].isdigit() and not tmp[i-1][0].isdigit()\
-                    and not (tmp[i][0].istitle() and not tmp[i-1][0].istitle()):
-                output = output + '_' + tmp[i]
+            if labels[0][i] == 'I_W' and tokens[i] not in string.punctuation and\
+                            tokens[i-1] not in string.punctuation and\
+                    not tokens[i][0].isdigit() and not tokens[i-1][0].isdigit()\
+                    and not (tokens[i][0].istitle() and not tokens[i-1][0].istitle()):
+                output = output + '_' + tokens[i]
             else:
-                output = output + ' ' + tmp[i]
+                output = output + ' ' + tokens[i]
         return output
-
-    @staticmethod
-    def spacy_tokenize(str):
-        text, tmp = ViTokenizer.sylabelize(str)
-        if len(tmp) == 0:
-            return [], []
-        labels = ViTokenizer.model.predict([ViTokenizer.sent2features(tmp, False)])
-        token = tmp[0]
-        tokens = []
-        spaces = []
-        for i in range(1, len(labels[0])):
-            if labels[0][i] == 'I_W' and tmp[i] not in string.punctuation and\
-                            tmp[i-1] not in string.punctuation and\
-                    not tmp[i][0].isdigit() and not tmp[i-1][0].isdigit()\
-                    and not (tmp[i][0].istitle() and not tmp[i-1][0].istitle()):
-                token = token + '_' + tmp[i]
-            else:
-                tokens.append(token)
-                token = tmp[i]
-        tokens.append(token)
-#        text = re.sub("\s\s+" , " ", text)
-#        print(tmp)
-        i = 0
-        for token in tokens:
-            i = i + len(token)
-            
-#            print("{}:{}:{}".format(token,text[i], i))
-            if i < len(text) and text[i] == ' ':
-                spaces.append(True)
-                i += 1
-            else:
-                spaces.append(False)
-               
-        return tokens, spaces#[True]*len(tokens)
-
-
-def spacy_tokenize(str):
-    return ViTokenizer.spacy_tokenize(str)
-
 
 def tokenize(str):
     return ViTokenizer.tokenize(str)
-
