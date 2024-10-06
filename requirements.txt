@@ -8,5 +8,5 @@ sklearn-crfsuite
 scikit-learn
 
 accelerate
-liger_kernel
+liger-kernel
 flash-attn

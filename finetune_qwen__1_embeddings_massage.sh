@@ -5,6 +5,8 @@ export PACK_DATA=1
 data_path=vi_words_similarity
 rm -rf data_cached/$data_path
 
+  # --model_name_or_path "../Qwen2.5-1.5B-Instruct" \                             >>> gpu used 3558122496 memory
+  # --output_dir "../Qwen2.5-1.5B-Instruct__extend_vocab__1_embeddings_massage" \ >>> gpu used 3363546112 memory
 python finetune.py \
   --model_name_or_path "../Qwen2.5-1.5B-Instruct__extend_vocab" \
   --finetune_layers "" \

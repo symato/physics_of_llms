@@ -161,8 +161,8 @@ config = transformers.AutoConfig.from_pretrained(
     cache_dir=training_args.cache_dir,
 )
 
-model = transformers.AutoModelForCausalLM.from_pretrained(
-# model = AutoLigerKernelForCausalLM.from_pretrained(
+# model = transformers.AutoModelForCausalLM.from_pretrained(
+model = AutoLigerKernelForCausalLM.from_pretrained(
     model_args.model_name_or_path,
     config=config,
     cache_dir=training_args.cache_dir,
@@ -203,7 +203,13 @@ if last_checkpoint is not None:
 
 ## Start training
 trainer = transformers.Trainer(model=model, tokenizer=tokenizer, args=training_args, **data_module)
+
+# https://discuss.pytorch.org/t/how-to-calculate-the-gpu-memory-that-a-model-uses/157486/5
+print(f"{CYAN}>>> gpu used {torch.cuda.max_memory_allocated(device=None)} memory{RESET}")
+
 trainer.train(resume_from_checkpoint=last_checkpoint) # last_checkpoint is None là train từ đầu
+
+print(f"{CYAN}>>> gpu used {torch.cuda.max_memory_allocated(device=None)} memory{RESET}")
 trainer.save_state()
 
 ## Final save
