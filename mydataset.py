@@ -16,20 +16,15 @@ IGNORE_TOKEN_ID = LabelSmoother.ignore_index
 assert IGNORE_TOKEN_ID == -100
 
 ####################
-from qwen_vocab import old2new
+from qwen_vocab import old2new_tid
+
 ###
 def preprocess(sources, tokenizer, max_len):
-
-    def old2new_tid(x):
-        if x not in old2new:
-            print(x, tokenizer.decode(x))
-        else:
-            return old2new[x]
 
     def tknz(str):
         token_ids = tokenizer(str, add_special_tokens=False).input_ids
         ## không cần nữa bỏ qua first token nữa vì đã có add_special_tokens=False
-        token_ids = [ old2new_tid(x) for x in token_ids ]
+        token_ids = [ old2new_tid(x, tokenizer) for x in token_ids ]
         return token_ids
 
     def add_tokens(input_id, target, tokens, ignore=False):
@@ -41,11 +36,12 @@ def preprocess(sources, tokenizer, max_len):
 
     input_ids, targets, texts = [], [], []
     skips_count = 0
+
     for d in sources:
 
         if "text" in d:
             text_tokens = tknz(d['text']) + [ tokenizer.eos_token_id ]
-            if tokenizer.bos_token_id is not None:
+            if tokenizer.bos_token_id:
                 text_tokens = [ tokenizer.bos_token_id ] + text_tokens
             if PACK_DATA: # text sẽ được packing cùng instructs sau
                 while len(text_tokens) > 0:
@@ -288,11 +284,6 @@ class SupervisedDataset(Dataset):
 def make_supervised_data_module(
     tokenizer: PreTrainedTokenizer, data_args, max_len, rank0_print = None
 ) -> Dict:
-    ## Enhance tokenizer
-    if tokenizer.pad_token_id is None:
-        tokenizer.pad_token_id = tokenizer.eos_token_id
-    assert tokenizer.eos_token_id is not None
-    if tokenizer.bos_token_id is None: print("!!! bos_token_id is None")
 
     """Make dataset and collator for supervised fine-tuning."""
     cache_path = os.path.join("data_cached", data_args.data_path)

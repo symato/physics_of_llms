@@ -73,10 +73,10 @@ while True:
     try: q = input(f"Bạn: {GREEN}").encode('utf-8', 'ignore').decode('utf-8', 'ignore')
     except Exception as e: print(e); q = ""
 
-    reset_timer(timer="qwenchat")
+    reset_timer(timer=model_path)
     a = get_answer(q).strip()
-    print(f"{RED}{a}{RESET}")
-    measure_time("timespent", timer="qwenchat")
+    print(f"Bot: {RED}{a}{RESET}")
+    measure_time("timespent", timer=model_path)
 
 
 '''

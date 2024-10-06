@@ -51,6 +51,9 @@ ddp = world_size != 1
 PREPARE_DATA_ONLY = ( os.getenv("PREPARE_DATA", 0) == "1" or os.getenv("PREPARE_DATA_ONLY", 0) == "1" )
 if PREPARE_DATA_ONLY: rank0_print(">>> PREPARE_DATA_ONLY START")
 
+from qwen_vocab import new2old
+from qwen_vocab import old2new_tid
+
 if ( not PREPARE_DATA_ONLY ) or ( PREPARE_DATA_ONLY and local_rank == 0 ):
     ## Load tokenizer and data với trường hợp training bình thường (not PREPARE_DATA_ONLY) trên mọi processes
     # còn với PREPARE_DATA_ONLY is True thì chỉ load trên process đầu tiên để chuẩn bị dữ liệu
@@ -62,8 +65,18 @@ if ( not PREPARE_DATA_ONLY ) or ( PREPARE_DATA_ONLY and local_rank == 0 ):
         use_fast=False,
     )
 
+    if tokenizer.bos_token_id:
+        tokenizer.bos_token_id = old2new_tid(tokenizer.bos_token_id, tokenizer)
+
+    assert tokenizer.eos_token_id is not None
+    tokenizer.eos_token_id = old2new_tid(tokenizer.eos_token_id, tokenizer)
+
+    ## Enhance tokenizer
     if tokenizer.pad_token_id is None:
         tokenizer.pad_token_id = tokenizer.eos_token_id
+
+    tokenizer.pad_token_id = old2new_tid(tokenizer.pad_token_id, tokenizer)
+
 
     ## Load data
     # Dùng `training_args.main_process_first(...):` context manager để đảm bảo xử lý data lần đầu tiên
@@ -87,10 +100,14 @@ if True: # PREPARE_DATA_ONLY: # Show some sample data to double check
     train_dataset = data_module["train_dataset"]
     rank0_print(">>>", train_dataset)
 
+    def tknz_decode(tids):
+        tids = [ new2old[x] for x in tids.tolist() ]
+        return tokenizer.decode(tids)
+
     for idx in random.sample(range(len(train_dataset)), 1):
         for index in [idx]:
             pre_input_ids = train_dataset[index - 1]["input_ids"][-8:]
-            pre_text = tokenizer.decode(pre_input_ids)
+            pre_text = tknz_decode(pre_input_ids)
 
             input_ids = train_dataset[index]["input_ids"]
             labels    = train_dataset[index]["labels"]
@@ -108,7 +125,7 @@ if True: # PREPARE_DATA_ONLY: # Show some sample data to double check
 
                 if is_end_of_chunk:
                     chunk = input_ids[begin : curr]
-                    _text = tokenizer.decode(chunk)
+                    _text = tknz_decode(chunk)
 
                     if labels[begin] == IGNORE_TOKEN_ID:
                         _text = f"{_MARK}{RED}{_text}{RESET}{_MARK}"
@@ -144,8 +161,8 @@ config = transformers.AutoConfig.from_pretrained(
     cache_dir=training_args.cache_dir,
 )
 
-# model = transformers.AutoModelForCausalLM.from_pretrained(
-model = AutoLigerKernelForCausalLM.from_pretrained(
+model = transformers.AutoModelForCausalLM.from_pretrained(
+# model = AutoLigerKernelForCausalLM.from_pretrained(
     model_args.model_name_or_path,
     config=config,
     cache_dir=training_args.cache_dir,

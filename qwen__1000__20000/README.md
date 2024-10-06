@@ -7,28 +7,16 @@ head -n 3 tokens_kept__alphabet_long.jsonl
 ```
 
 ```sh
-## Sau khi cắt tỉa bằng máy
-wc -l tokens_kept__*
-
-    570 tokens_kept__alphabet_long.jsonl
-  27227 tokens_kept__alphabet_short.jsonl
-    343 tokens_kept__ascii_long.jsonl
-  18297 tokens_kept__ascii_short.jsonl
-  35092 tokens_kept__english.jsonl
-   2536 tokens_kept__others.jsonl
-  84065 total
-
-
-## Sau khi cắt tỉa bằng tay
+## Sau khi cắt tỉa bằng máy và lọc sơ bằng tay
 wc -l tokens_kept__*
 
     214 tokens_kept__alphabet_long.jsonl
-  27227 tokens_kept__alphabet_short.jsonl
+  32569 tokens_kept__alphabet_short.jsonl
       0 tokens_kept__ascii_long.jsonl
-  11047 tokens_kept__ascii_short.jsonl
+  18297 tokens_kept__ascii_short.jsonl
   35092 tokens_kept__english.jsonl
    2536 tokens_kept__others.jsonl
-  76116 total
+  88708 total
 ```
 
 Nhờ việc loại bỏ những tokens không thuộc hệ ngôn ngữ tiếng Anh + Việt (latin based), và loại bỏ những tokens có count thấp,

@@ -27,15 +27,17 @@ model = transformers.AutoModelForCausalLM.from_pretrained(
 )
 tokenizer = transformers.AutoTokenizer.from_pretrained(model_path)
 
-print("lm_head", model.lm_head) # Linear(in_features=1536, out_features=151936, bias=False)
-print("embed_tokens", model.model.embed_tokens) # Embedding(151936, 1536) ~= 233m params
+# print("lm_head", model.lm_head) # Linear(in_features=1536, out_features=151936, bias=False)
+# print("embed_tokens", model.model.embed_tokens) # Embedding(151936, 1536) ~= 233m params
 
 x = model.lm_head.weight == model.model.embed_tokens.weight
 is_tied_embedding = torch.all(x)
 
 from qwen_vocab import kept_tids
+import math
+
 n = len(kept_tids)
-nn = round(n / 64) * 64
+nn = math.ceil(n / 64) * 64
 
 old_embeddings = model.model.embed_tokens.weight.detach().clone()
 print("old_embeddings", old_embeddings.shape) # torch.Size([151936, 1536])
@@ -69,7 +71,7 @@ if is_tied_embedding:
 
         else:
 
-            assert vocab_size == 76160
+            assert vocab_size == 88768
 
             # load base embeddings
             base_model = transformers.AutoModelForCausalLM.from_pretrained(

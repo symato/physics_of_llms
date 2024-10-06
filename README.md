@@ -37,13 +37,7 @@
   - giữ lại emoji
   - loại bỏ cjk, thailand, chữ tượng hình ...
 - [x] Target bộ từ vựng ~96k (63%)
-
-- [x] Lọc sâu hơn nữa, target bộ từ vựng ~80k (50%)
-  - [x] Giữ lại tokens chứa ký tự tiếng Việt
-  - [x] Giữ lại ascii tokens
-
 - [x] Tạo final vocab từ [qwen__1000__20000](./qwen__1000__20000/README.md)
-  - [x] Lọc tay kept tokens @ `tokens_kept__*.jsonl` (84065 giảm xuống 76116)
 
 **Đối tượng thực hành**
 - qwen2.5 có 0.5b, 1.5b, 3b, 7b, 14b, `32b`, `72b` models
@@ -67,36 +61,19 @@ huggingface-cli download Qwen/Qwen2.5-1.5B-Instruct --local-dir ../Qwen2.5-1.5B-
 
 python3 qwen_edit.py -m ../Qwen2.5-1.5B-Instruct -t trimm_vocab
 
+python3 qwen_chat.py ../Qwen2.5-1.5B-Instruct
+# Bạn: Translate following sentence into Chinese: tôi tên là Lý Quốc Dân
+# Bot: 我的名字是李国定
+# ../Qwen2.5-1.5B-Instruct: timespent 1.31 seconds
+
 python3 qwen_chat.py ../Qwen2.5-1.5B-Instruct__trimm_vocab
-```
-```
-new_vocab 76138
-Bạn: bạn tên gì?
-
-Tôi là một trợ lý ảo, không có tên riêng.
-qwenchat: timespent 0.65 seconds
-
-Bạn: dịch đoạn văn sau sang tiếng Anh: tôi tên là Lý Quốc Dân
-
-Here's the English translation of the Vietnamese text:
-
-"My name is Ly Quoc Dan."
-
-This directly translates the given Vietnamese sentence into English, maintaining its original meanriginal meaning and structure.
-qwenchat: timespent 1.15 seconds
-
-Bạn: dịch đoạn văn sau sang tiếng Trung: tôi tên là Lý Quốc Dân
-
-Here's the English translation of the Vietnamese text:
-
-Mr. Tran: My name is Le Quoc Dan.
-qwenchat: timespent 0.98 seconds
+# Bạn: Translate following sentence into Chinese: tôi tên là Lý Quốc Dân
+# Bot: My name is Li Guo Dan.
+# ../Qwen2.5-1.5B-Instruct__trimm_vocab: timespent 1.31 seconds
 ```
 Vì bộ vocab mới chỉ hỗ trợ tiếng Anh và Việt là chính nên qwen không thể nói tiếng Trung được nữa
 
-
 - - -
-
 
 ## Physics of LMs: Sau khi tỉa gọn, từng bước một mở rộng vocab
 
