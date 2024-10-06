@@ -16,3 +16,24 @@ python3 prepare_wikimedia_data.py 3000 | shuf > wikimedia_vi_filtered.jsonl
 shuf wikihow_vien_filtered.jsonl | head -n 10 | jq
 shuf wikimedia_vi_filtered.jsonl | head -n 10 | jq
 ```
+
+## Chuẩn bị data instructions
+```sh
+wget https://huggingface.co/datasets/ssmi153/Capybara-ShareGPT/resolve/main/CapybaraPure_Decontaminated.jsonl
+webglm-qa.py > webglm-qa_vien.jsonl
+```
+
+## Final finetune data
+```sh
+cat wikimedia_vi_filtered.jsonl webglm-qa_vien.jsonl CapybaraPure_Decontaminated.jsonl | shuf > final_finetune.jsonl
+du -sh final_finetune.jsonl # 226M
+
+# 111M    wikimedia_vi_filtered.jsonl
+# 72M     CapybaraPure_Decontaminated.jsonl
+# 45M     webglm-qa_vien.jsonl
+
+#  7662 wikimedia_vi_filtered.jsonl
+# 10343 webglm-qa_vien.jsonl
+# 16005 CapybaraPure_Decontaminated.jsonl
+# 34010 total
+```
