@@ -303,8 +303,8 @@ kept    / total = 117942 / 256000
 remains / total = 191746 / 256000
 
 [ Qwen ]
-kept    / total = 79719 / 151643
-remains / total = 80147 / 151643
+kept    / total = 92548 / 151643
+remains / total = 93169 / 151643
 
 ( remains = wanted - removed )
 Final = kept + special tokens
