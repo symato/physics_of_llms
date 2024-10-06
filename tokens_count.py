@@ -33,7 +33,6 @@ print(min_count, max_count)
 
 
 from config import ONLINE_MODEL_PATH as model_path
-model_path = "google/gemma-2-2b-it"
 PATH = f"data/{model_path}"
 mkdirs(PATH)
 
