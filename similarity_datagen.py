@@ -103,28 +103,29 @@ from utils import *
 import time
 import llm
 
-infile = "data/vi_words_score.jsonl.xz"
+infile = "data/vi_words_impact.jsonl.xz"
 outfile = "data/vi_words_similarity.jsonl"
 model = llm.MODEL_NAME
 
 try:
-    done = [ json.loads(line)["source"] for line in open(outfile) ]
+    done = [ json.loads(line)["word"] for line in open(outfile) ]
 except:
     done = []
+# print(done)
 
 for idx, line in enumerate( lzma.open(infile) ):
-    # Thử trước với 100 words
+    # Thử trước với ~100 words
     if idx >= 128: break
 
-    source = f"{infile}:{idx}"
+    word = json.loads(line)["word"].replace("_", " ")
 
-    if source not in done:
+    if word not in done:
 
-        word = json.loads(line)["word"].replace("_", " ")
+        print(word)
+        # break
 
-        prompt = prompt_template.format( word = word )
+        prompt = prompt_template.format( word = word.strip() )
 
-        print(source)
         reset_timer()
 
         res = llm.chat(prompt, model = model, temperature = 0.5)
@@ -144,7 +145,7 @@ for idx, line in enumerate( lzma.open(infile) ):
             measure_time(model)
 
             assert "Ví dụ tiếng Việt:" in res, "LLM sinh thiếu ví dụ ..."
-            ww = word.lower()
+            ww = word.strip().lower()
 
             for example in re.findall(r'Ví dụ(?:\n|.)+?\n\n', res, flags = re.MULTILINE | re.IGNORECASE):
                 # print(example); print("!!!!!"); input() # DEBUG
@@ -156,8 +157,7 @@ for idx, line in enumerate( lzma.open(infile) ):
 
             with open(outfile, "at") as f:
                 f.write(json.dumps({
-                    "word": word.strip(),
+                    "word": word,
                     "textbook": res.strip(),
-                    "source": source.strip(),
                 }, ensure_ascii = False) + "\n")
 

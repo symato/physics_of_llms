@@ -12,8 +12,8 @@ parser.add_argument("-t", "--task", type = str, default = None, \
     help = "Tác vụ `trimm_vocab` để cắt tỉa, `extend_vocab` để mở rộng")
 
 args = parser.parse_args()
-assert args.task in "trimm_vocab extend_vocab".split()
 print(args)
+assert args.task in "trimm_vocab extend_vocab".split()
 
 # bỏ / ở cuối model_path
 model_path = re.sub(r'/*$', "", args.model.strip())
@@ -67,7 +67,7 @@ if is_tied_embedding:
         assert vocab_size == 151936
 
         from similarity import get_similiar_words
-        words = get_similiar_words()
+        words = get_similiar_words(n = 128) # Thử nghiệm với 128 words trước
         added_tokens_count = len(words)
 
         print(f"Adding {added_tokens_count} new tokens ...")
@@ -75,7 +75,7 @@ if is_tied_embedding:
         new_embeddings = model.model.embed_tokens.weight.detach()
 
         # input_embeddings_avg = input_embeddings[:-num_new_tokens].mean(dim=0, keepdim=True)
-        for idx, (k, v) in enumerate(words.items()):
+        for idx, (k, v) in enumerate(words):
             print(v.values())
             tid = list(v.values())[0] # lấy tid của 1 từ tiếng Anh tương ứng
             new_embeddings[ vocab_size + idx ] = old_embeddings[tid]

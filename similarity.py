@@ -15,16 +15,13 @@ sim1 = [ json.loads(line) for line in open("data/vi_words_similarity_berua.jsonl
 # pprint(sim1[0]); input()
 
 
-def get_similiar_words():
+def get_similiar_words(n = None):
 	words = {}
 
 	def get_uniq_token_ids(word, en_word):
 
 		if word not in words:
 			words[word] = { }
-
-		if en_word not in words[word]:
-			words[word][en_word] = { }
 
 		variants = [
 			en_word,
@@ -35,7 +32,9 @@ def get_similiar_words():
 		]
 
 		for x in variants:
-			words[word][en_word][x] = tokenizer.encode(x)
+			tids = tokenizer.encode(x)
+			if len(tids) == 1: # chỉ lấy en_word có 1 token
+				words[word][x] = tids[0]
 
 
 	for x in sim0:
@@ -54,19 +53,22 @@ def get_similiar_words():
 			en_word = e["term"]
 			# get_uniq_token_ids(word, en_word)
 
-	return words
+	# Loại bỏ words 
+	for word, en_words in list(words.items()):
+		if len(en_words) == 0:
+			words.pop(word)
+
+	words = list(words.items())
+	if n is None:
+		return words
+	else:
+		return words[ : n]
 
 
 if __name__ == "__main__":
 	words = get_similiar_words()
 	pprint(words)
 	print(len(words))
-	for word, en_words in words.items():
-		for variants in en_words.values():
-			for tids in variants.values():
-				if len(tids) == 1: break
-			if len(tids) == 1: break
-		if len(tids) > 1: print(word, en_words)
 
 
 '''

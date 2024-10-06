@@ -142,7 +142,7 @@ xzcat data/vi_words_impact.jsonl.xz | tail -n 10
 ```
 ![](img/vi-words-impact-00.jpg)
 
-=> **Chọn khoảng 3k -> 4k từ ghép để mở rộng vocab là hợp lý, trên 4k độ impact không cao.**
+=> **Chọn khoảng 2.4k - 3.2k từ ghép để mở rộng vocab là hợp lý là đủ để tạo impact**
 
 - [ ] lọc và map những từ ghép này vào token ids mới
 
