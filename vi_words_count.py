@@ -105,7 +105,7 @@ def get_uniq_words(infile):
         count.pop("last_line_idx")
 
     for w, c in list( count.items() ):
-        if "_" not in w or c < min_count:
+        if c < min_count:
             count.pop(w)
 
     return count
