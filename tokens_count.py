@@ -37,17 +37,11 @@ PATH = f"data/{model_path}"
 mkdirs(PATH)
 
 
-latin_tids = [ json.loads(line)["tid"] for line in lzma.open("data/tokens_by_lang/Latin.jsonl.xz", "rt") ]
-latin_tids = set(latin_tids)
 ###
 def ok(x):
 
     tid, count = x
     tid = int(tid)
-
-    if tid in latin_tids:
-        return True
-
     token = tokenizer.decode(tid)
 
     if contains_unwanted(token):
@@ -59,6 +53,9 @@ def ok(x):
             return True
 
         if is_alphabet(token):
+            return True
+
+        if canbe_vietnamese(token):
             return True
 
     elif count < max_count:
