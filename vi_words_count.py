@@ -157,8 +157,9 @@ spaces = " " * (maxx + 1)
 
 with open("data/vi_words_impact.jsonl", "wt") as f:
     for w in words:
-        a, b = json.dumps(w, ensure_ascii = False).split(", ", 1)
-        f.write(f"{a},{spaces[:maxx - len(a)]}{b}\n")
+        if w["impact"] > 0:
+            a, b = json.dumps(w, ensure_ascii = False).split(", ", 1)
+            f.write(f"{a},{spaces[:maxx - len(a)]}{b}\n")
 
 
 '''
