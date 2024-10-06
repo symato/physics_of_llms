@@ -10,7 +10,7 @@ rm -rf data_cached/$data_path
   # --finetune_layers "0 1 2 3 4 5 6 7 8 9 10 11 12" \
 python finetune.py \
   --model_name_or_path "/home/t/repos/Qwen2.5-1.5B-Instruct__extend_vocab" \
-  --finetune_layers "0 1 2 3 4 5 6 7" \
+  --finetune_layers "" \
   --data_path "$data_path" \
   --model_max_length 512 \
   --output_dir output_qwen \
