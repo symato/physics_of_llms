@@ -156,21 +156,22 @@ model = transformers.AutoModelForCausalLM.from_pretrained(
 model.config.use_cache = False
 
 
-'''
 ## Finetune embeddings và layers được chọn
 # Tham khảo https://github.com/jondurbin/qlora/blob/e4c20638464e70becc212caa955efea378684473/train.py#L1133
-First, freeze all params
-for param in model.parameters():
-    param.requires_grad = False
+if "all" not in model_args.finetune_layers.lower():
+    # First, freeze all params
+    for param in model.parameters():
+        param.requires_grad = False
 
-# Then unfreeze embeddings and finetune_layers
-model.model.embed_tokens.weight.requires_grad_(True)
+    # Then unfreeze embeddings and finetune_layers
+    model.enable_input_require_grads()
 
-finetune_layers = [ int(x) for x in model_args.finetune_layers.strip().split() ]
-for idx in finetune_layers:
-    for param in model.model.layers[idx].parameters():
-        param.requires_grad = True
-'''
+    finetune_layers = [ int(x) for x in model_args.finetune_layers.strip().split() ]
+    print(">>> finetune_layers", finetune_layers)
+    for idx in finetune_layers:
+        for param in model.model.layers[idx].parameters():
+            param.requires_grad = True
+
 
 ## Detecting last checkpoint
 last_checkpoint = None

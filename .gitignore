@@ -10,3 +10,4 @@ data/vi_words/
 data/meta-llama/
 data/*train*jsonl.xz
 data_cached/
+output_*
