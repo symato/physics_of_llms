@@ -81,7 +81,7 @@ def old2new_tid(x, tokenizer):
         return old2new[x]
 
     else:
-        token = tokenizer.decode(x)
+        token = tokenizer.decode([x])
         if contains_unwanted(token):
             return None
 
