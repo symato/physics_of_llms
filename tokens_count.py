@@ -52,7 +52,7 @@ def ok(x):
         if contains_emoji(token):
             return True
 
-        if is_alphabet(token):
+        if mostly_alphabet(token):
             return True
 
         if canbe_vietnamese(token):

@@ -38,6 +38,14 @@ def is_alphabet(token):
             return False
     return True
 
+def mostly_alphabet(text):
+    lower_text = text.lower()
+    tokens = re.findall(r'[a-z]+', lower_text)
+    n = 0
+    for x in tokens:
+        n += len(x)
+    return n / len(text) > 0.8
+
 
 import nltk # pip install nltk
 nltk.download('words')
