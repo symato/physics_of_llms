@@ -122,7 +122,29 @@ else:
     # https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/blob/main/config.json
     # embeddings chiếm 1b (~15%)
     print("separate embeddings", "=> cần tỉa cả embed_tokens và lm_head")
-    # TODO, apply tỉa lm_head giống embedding ở phần trên
+
+    if args.task == "trimm_vocab":
+
+        old_lm_head = model.lm_head.weight.detach().clone()
+        print("old_lm_head", old_lm_head.shape) # torch.Size([151936, 1536])
+
+        # Thay embeddings
+        model.resize_token_embeddings(nn)
+        new_embeddings = model.model.embed_tokens.weight.detach()
+
+        new_lm_head = model.lm_head.weight.detach()
+        print(new_lm_head.shape) # torch.Size([, 76160])
+
+        for idx, tid in enumerate(kept_tids):
+            new_embeddings[idx] = old_embeddings[tid]
+            new_lm_head[idx] = old_lm_head[tid]
+
+        x = model.model.embed_tokens.weight == new_embeddings
+        assert torch.all(x), "Không thay được new_embeddings"
+
+
+    else:
+        assert False, "Không hỗ trợ task này" 
 
 model.save_pretrained(new_model_path)
 tokenizer.save_pretrained(new_model_path)
