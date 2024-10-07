@@ -58,15 +58,19 @@ for new_tid, old_tid in enumerate( kept_tids ):
 
 STRANGE_TOKENS = set()
 def old2new_tid(x, tokenizer):
+    global STRANGE_TOKENS
     if x not in old2new:
 
         token = tokenizer.decode(x)
         if contains_unwanted(token):
             return None
 
-        for c in "ŀĵļ":
-            if c in token:
-                return None
+        words = re.findall(r'[_\w]+', token)
+        if len(words) == 1:
+            tids = tokenizer.encode(word)
+            if len(tids) == 1 and tids[0] in old2new:
+                x = tids[0]
+                return old2new[x]
 
         msg = f">>> old2new_tid error: id {x}, token '{token}'"
         if token not in STRANGE_TOKENS:
