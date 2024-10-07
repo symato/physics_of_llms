@@ -82,7 +82,7 @@ if is_tied_embedding:
 
         else:
 
-            assert vocab_size == 92928
+            assert vocab_size == 95168
 
             # load base embeddings
             base_model = transformers.AutoModelForCausalLM.from_pretrained(
