@@ -58,11 +58,16 @@ for new_tid, old_tid in enumerate( kept_tids ):
 
 def old2new_tid(x, tokenizer):
     if x not in old2new:
-        print(">>> old2new_tid error:", x)
-        print(tokenizer.decode(x))
-        assert False
-    else:
-        return old2new[x]
+
+        token = tokenizer.decode(x)
+        if contains_unwanted(token):
+            return None
+
+        msg = f">>> old2new_tid error: id {x}, token '{token}'"
+        print(msg)
+        assert False, msg
+
+    return old2new[x]
 
 
 if __name__ == "__main__":
