@@ -323,7 +323,5 @@ def make_supervised_data_module(
     else:
         assert 'attention_mask' not in x
 
-    print(">>> STRANGE_TOKENS", qwen_vocab.STRANGE_TOKENS)
-    print("PRESS ENTER TO CONTINUE ...")
-    input()
+    qwen_vocab.show_strange_token()
     return dict(train_dataset=train_dataset, eval_dataset=None)

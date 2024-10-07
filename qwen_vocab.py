@@ -56,7 +56,14 @@ for new_tid, old_tid in enumerate( kept_tids ):
     old2new[ old_tid ] = new_tid
     new2old[ new_tid ] = old_tid
 
+
 STRANGE_TOKENS = set()
+
+def show_strange_tokens():
+    print(">>> STRANGE_TOKENS", STRANGE_TOKENS)
+    print("PRESS ENTER TO CONTINUE ...")
+    input()
+
 def old2new_tid(x, tokenizer):
     global STRANGE_TOKENS
     if x not in old2new:
