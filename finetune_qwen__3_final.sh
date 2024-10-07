@@ -13,8 +13,8 @@ python finetune.py \
   --output_dir "../Qwen2.5-1.5B-Instruct__extend_vocab__final" \
   --num_train_epochs 3 \
   --per_device_train_batch_size 1 \
-  --gradient_accumulation_steps 4 \
-  --logging_steps 1 \
+  --gradient_accumulation_steps 8 \
+  --logging_steps 2 \
   --save_strategy "steps" \
   --save_steps 200 \
   --save_total_limit 2 \
