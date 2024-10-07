@@ -236,3 +236,4 @@ print(f"Peak reserved memory for training % of max memory = {finetune_percentage
 ## Final save
 trainer.save_state()
 trainer._save(training_args.output_dir)
+tokenizer.save_pretrained(training_args.output_dir)
