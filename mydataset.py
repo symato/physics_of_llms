@@ -324,4 +324,6 @@ def make_supervised_data_module(
         assert 'attention_mask' not in x
 
     print(">>> STRANGE_TOKENS", STRANGE_TOKENS)
+    print("PRESS ENTER TO CONTINUE ...")
+    input()
     return dict(train_dataset=train_dataset, eval_dataset=None)
