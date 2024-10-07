@@ -44,8 +44,8 @@ def ok(x):
     tid = int(tid)
     token = tokenizer.decode(tid)
 
-    if "Ġ" in token:
-        return True
+    if "Ġ" in token: return True
+    if "�" in token: return True
 
     if contains_unwanted(token):
         return False
