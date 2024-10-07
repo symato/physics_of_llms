@@ -65,10 +65,14 @@ def show_strange_tokens():
     print("PRESS ENTER TO CONTINUE ...")
     input()
 
+
 def old2new_tid(x, tokenizer):
     global STRANGE_TOKENS
-    if x not in old2new:
 
+    if x in old2new:
+        return old2new[x]
+
+    else:
         token = tokenizer.decode(x)
         if contains_unwanted(token):
             return None
@@ -81,8 +85,7 @@ def old2new_tid(x, tokenizer):
         if len(words) == 1:
             tids = tokenizer.encode(words[0])
             if len(tids) == 1 and tids[0] in old2new:
-                x = tids[0]
-                return old2new[x]
+                return old2new[tids[0]]
 
         msg = f">>> old2new_tid error: id {x}, token '{token}'"
         if token not in STRANGE_TOKENS:
@@ -92,7 +95,7 @@ def old2new_tid(x, tokenizer):
         # assert False, msg
         return None
 
-    return old2new[x]
+    assert False, "Không thể tới bước này, có lỗi ở phần code trên"
 
 
 if __name__ == "__main__":

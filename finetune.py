@@ -67,15 +67,18 @@ if ( not PREPARE_DATA_ONLY ) or ( PREPARE_DATA_ONLY and local_rank == 0 ):
 
     if tokenizer.bos_token_id:
         tokenizer.bos_token_id = old2new_tid(tokenizer.bos_token_id, tokenizer)
+        assert tokenizer.bos_token_id is not None
 
     assert tokenizer.eos_token_id is not None
     tokenizer.eos_token_id = old2new_tid(tokenizer.eos_token_id, tokenizer)
+    assert tokenizer.eos_token_id is not None
 
     ## Enhance tokenizer
     if tokenizer.pad_token_id is None:
         tokenizer.pad_token_id = tokenizer.eos_token_id
 
     tokenizer.pad_token_id = old2new_tid(tokenizer.pad_token_id, tokenizer)
+    assert tokenizer.pad_token_id is not None
 
 
     ## Load data

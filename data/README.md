@@ -20,7 +20,7 @@ shuf wikimedia_vi_filtered.jsonl | head -n 10 | jq
 ## Chuẩn bị data instructions
 ```sh
 wget https://huggingface.co/datasets/ssmi153/Capybara-ShareGPT/resolve/main/CapybaraPure_Decontaminated.jsonl
-webglm-qa.py > webglm-qa_vien.jsonl
+./webglm-qa.py > webglm-qa_vien.jsonl
 ```
 
 ## Final finetune data
