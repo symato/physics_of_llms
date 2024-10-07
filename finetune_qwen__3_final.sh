@@ -16,7 +16,7 @@ python finetune.py \
   --gradient_accumulation_steps 8 \
   --logging_steps 3 \
   --save_strategy "steps" \
-  --save_steps 500 \
+  --save_steps 300 \
   --save_total_limit 2 \
   --learning_rate 1e-5 \
   --warmup_ratio 0.01 \
@@ -25,3 +25,5 @@ python finetune.py \
   --bf16 True \
   --optim adamw_8bit
 
+# GPU = NVIDIA GeForce RTX 4090. Max memory = 23.52 GB.
+# 2.916 GB of memory reserved.
