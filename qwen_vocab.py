@@ -67,6 +67,9 @@ def old2new_tid(x, tokenizer):
             if c in token:
                 return None
 
+        # —including
+        
+
         msg = f">>> old2new_tid error: id {x}, token '{token}'"
         print(msg)
         assert False, msg
