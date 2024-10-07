@@ -54,9 +54,9 @@ def preprocess(sources, tokenizer, max_len):
             continue
 
         input_id, target = [], []
-        # im_end = "<|im_end|>" # mặc định cho chatml format
+        im_end = "<|im_end|>" # mặc định cho chatml format
         # im_end = "</s>" # để viet-mistal ko phải học cách kết thúc câu mới khi ko finetune embeddings
-        im_end = tokenizer.eos_token # sẽ tự động là <|im_end|> khi xài qwen-based
+        # im_end = tokenizer.eos_token # sẽ tự động là <|im_end|> khi xài qwen-based
         for c in d['conversations']:
             # Bắt lỗi
             try: c['from']
