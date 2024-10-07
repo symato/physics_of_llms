@@ -61,6 +61,9 @@ def ok(x):
         if canbe_vietnamese(token):
             return True
 
+        if is_ascii(token):
+            return True
+
     elif count < max_count:
 
         if canbe_vietnamese(token):
