@@ -26,14 +26,21 @@ def get_kept_tids():
     tokenizer = AutoTokenizer.from_pretrained(model_path)
 
     canbe_vi_kept = 0
+    is_ascii_kept = 0
+
     for tid in range(0, tokenizer.vocab_size):
         token = tokenizer.decode(tid)
-        # if canbe_vietnamese(token):
+
         if vietnamese_syllable_ratio(token) > 0.8:
-            # print(f">>> keep '{token}'") # DEBUG
             canbe_vi_kept += 1
             kept_tids.add(tid)
+
+        if len(token) <= 2 and is_ascii(token):
+            is_ascii_kept += 1
+            kept_tids.add(tid)
+
     print(">>> canbe_vi_kept", canbe_vi_kept)
+    print(">>> is_ascii_kept", is_ascii_kept)
     # '''
 
     kept_filenames = glob.glob("gemma__1000__20000/tokens_kept__*.jsonl")
@@ -112,7 +119,7 @@ if __name__ == "__main__":
     tokenizer = AutoTokenizer.from_pretrained(filename.split("tokenizer")[0])
     new_tokenizer = AutoTokenizer.from_pretrained(new_filename.split("tokenizer")[0])
 
-    s = "xin chào"
+    s = "bạn tên là gì? bạn có thể cho tôi biết bạn là ai không"
     tids = tokenizer.encode(s)
     new_tids = new_tokenizer.encode(s)
 
