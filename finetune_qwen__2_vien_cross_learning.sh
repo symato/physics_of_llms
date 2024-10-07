@@ -3,10 +3,10 @@
 export PACK_DATA=1
 
 data_path=wikihow_vien_filtered
-rm -rf data_cached/$data_path
+# rm -rf data_cached/$data_path
 
 python finetune.py \
-  --model_name_or_path "../Qwen2.5-1.5B-Instruct__trimm_vocab" \
+  --model_name_or_path "../Qwen2.5-7B-Instruct__trimm_vocab" \
   --finetune_layers "0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15" \
   --data_path "$data_path" \
   --model_max_length 8192 \
