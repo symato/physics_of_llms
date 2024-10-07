@@ -298,13 +298,17 @@ print("( remains = wanted - removed )")
 
 python3 tokens_count.py 1000 20000
 
-[ Gemma2 ]
+[ Gemma ]
 kept    / total = 117942 / 256000
 remains / total = 191746 / 256000
 
 [ Qwen ]
 kept    / total = 92548 / 151643
 remains / total = 93169 / 151643
+
+[ Llama ] (bỏ qua vì hiệu quả ko nhiều + tied embeddings)
+kept    / total = 97764 / 128000
+remains / total = 98115 / 128000
 
 ( remains = wanted - removed )
 Final = kept + special tokens
