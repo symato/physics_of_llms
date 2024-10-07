@@ -13,7 +13,7 @@ python finetune.py \
   --output_dir "../Qwen2.5-1.5B-Instruct__trimm_vocab__final" \
   --num_train_epochs 3 \
   --per_device_train_batch_size 1 \
-  --gradient_accumulation_steps 8 \
+  --gradient_accumulation_steps 16 \
   --logging_steps 3 \
   --save_strategy "steps" \
   --save_steps 300 \
