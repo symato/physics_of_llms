@@ -68,7 +68,7 @@ def old2new_tid(x, tokenizer):
         words = re.findall(r'[_\w]+', token)
         print(">>>", words)
         if len(words) == 1:
-            tids = tokenizer.encode(word)
+            tids = tokenizer.encode(words[0])
             if len(tids) == 1 and tids[0] in old2new:
                 x = tids[0]
                 return old2new[x]
