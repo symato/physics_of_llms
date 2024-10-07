@@ -146,7 +146,11 @@ def none_tone_vietnamese(s): # tieng_viet_khong_dau
 
 def vietnamese_syllable_ratio(text):
     none_tone_text = none_tone_vietnamese(text)
-    tokens = re.split(r'[^a-z]+', none_tone_text)
+    tokens = re.findall(r'[a-z]+', none_tone_text)
+
+    if len(tokens) == 0:
+        return 0
+
     syllable_count = 0
 
     for token in tokens:

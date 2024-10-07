@@ -19,11 +19,13 @@ x = model_path.lower()
 if "qwen" in x: 
     from qwen_vocab import old2new, new2old
     STOP_WORDS = "<|im_end|> <|endoftext|>".split()
+
 elif "gemma" in x:
     from gemma_vocab import old2new, new2old
     STOP_WORDS = "<end_of_turn> <eos>".split()
 else:
     assert False
+
 
 def map_tids(map_dict, tids):
     if "trimm_vocab" in model_path:
