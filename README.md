@@ -163,13 +163,18 @@ lm_head value ở ví trí đó với qwen 1.5 chính là embedding value vì qw
 
 - - -
 
+## Làm thử nghiệm In-context Pretraining xem khi trộn lẫn training sample trong ctxlen ảnh hưởng gì tới model?
+- trộn ngẫu nhiên
+- trộn có tính toán https://arxiv.org/abs/2310.10638
+- không trộn (mỗi sample 1 ctxlen hoặc dùng packed dataset)
+
 ## Physics of LMs: làm thí nghiệm về Knowledge Storage, Extraction and Manipulation
 
 ## Physics of LMs: làm thí nghiệm [TinyStories](TinyStories.md) về học language
 - Build dataset theo một hướng khác? TinyFantasy? TinyFunny?
 - Mở rộng: xây bộ data để chuyển knowledge đã học từ Vi => En
 - Mở rộng: Từ hiểu ngôn ngữ tới làm thơ và làm thơ thuận nghịch độc
-  - 750 bài thơ thuận nghịch độc https://vantholieuxuyencom.blog/about/
+  - https://nhathongnguyenthanhvan.wordpress.com/2018/03/20/nhung-bai-tho-thuan-nghich-doc
   - Nên bắt đầu với dataset thuận nghịch độc, các câu ngắn đọc xuôi hay ngược đều có ý nghĩa
 - Ý tưởng: dùng kỹ thuật FIM (fill in middle) của code LLM để tạo thơ có vần
   Yêu cầu chữ cuối phải rơi vào 1 từ hoặc 1 vần nào đó ...
