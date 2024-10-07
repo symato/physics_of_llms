@@ -9,7 +9,7 @@ rm -rf data_cached/$data_path
   # --output_dir "../Qwen2.5-1.5B-Instruct__extend_vocab__1_embeddings_massage" \ >>> gpu used 3363546112 memory
 python finetune.py \
   --model_name_or_path "../Qwen2.5-1.5B-Instruct__extend_vocab" \
-  --finetune_layers "all" \
+  --finetune_layers "0 1 2 3" \
   --data_path "$data_path" \
   --model_max_length 512 \
   --output_dir "../Qwen2.5-1.5B-Instruct__extend_vocab__1_embeddings_massage" \
