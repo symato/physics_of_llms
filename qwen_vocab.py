@@ -56,6 +56,7 @@ for new_tid, old_tid in enumerate( kept_tids ):
     old2new[ old_tid ] = new_tid
     new2old[ new_tid ] = old_tid
 
+STRANGE_TOKENS = set()
 def old2new_tid(x, tokenizer):
     if x not in old2new:
 
@@ -63,12 +64,15 @@ def old2new_tid(x, tokenizer):
         if contains_unwanted(token):
             return None
 
-        for c in "ŀĵ":
+        for c in "ŀĵļ":
             if c in token:
                 return None
 
         msg = f">>> old2new_tid error: id {x}, token '{token}'"
-        print(msg)
+        if token not in STRANGE_TOKENS:
+            print(msg)
+            STRANGE_TOKENS.add( token )
+
         # assert False, msg
         return None
 
