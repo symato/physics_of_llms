@@ -14,9 +14,9 @@ python finetune.py \
   --num_train_epochs 3 \
   --per_device_train_batch_size 1 \
   --gradient_accumulation_steps 4 \
-  --logging_steps 1 \
+  --logging_steps 3 \
   --save_strategy "steps" \
-  --save_steps 200 \
+  --save_steps 500 \
   --save_total_limit 2 \
   --learning_rate 1e-5 \
   --warmup_ratio 0.01 \

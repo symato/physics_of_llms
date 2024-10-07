@@ -60,6 +60,7 @@ for new_tid, old_tid in enumerate( kept_tids ):
 STRANGE_TOKENS = set()
 
 def show_strange_tokens():
+    return
     print(">>> STRANGE_TOKENS", STRANGE_TOKENS)
     print("PRESS ENTER TO CONTINUE ...")
     input()
