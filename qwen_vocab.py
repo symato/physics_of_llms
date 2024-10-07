@@ -65,7 +65,7 @@ def old2new_tid(x, tokenizer):
         if contains_unwanted(token):
             return None
 
-        words = re.findall(r'[_\w]+', token)
+        words = re.findall(r'[a-z]+', token, flags = re.IGNORECASE)
         print(">>>", words)
         if len(words) == 1:
             tids = tokenizer.encode(words[0])

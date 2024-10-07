@@ -16,7 +16,7 @@ IGNORE_TOKEN_ID = LabelSmoother.ignore_index
 assert IGNORE_TOKEN_ID == -100
 
 ####################
-from qwen_vocab import old2new_tid, STRANGE_TOKENS
+import qwen_vocab
 
 ###
 def preprocess(sources, tokenizer, max_len):
@@ -24,7 +24,7 @@ def preprocess(sources, tokenizer, max_len):
     def tknz(str):
         token_ids = tokenizer(str, add_special_tokens=False).input_ids
         ## không cần nữa bỏ qua first token nữa vì đã có add_special_tokens=False
-        token_ids = [ old2new_tid(x, tokenizer) for x in token_ids ]
+        token_ids = [ qwen_vocab.old2new_tid(x, tokenizer) for x in token_ids ]
         token_ids = [ x for x in token_ids if x is not None ]
         return token_ids
 
@@ -323,7 +323,7 @@ def make_supervised_data_module(
     else:
         assert 'attention_mask' not in x
 
-    print(">>> STRANGE_TOKENS", STRANGE_TOKENS)
+    print(">>> STRANGE_TOKENS", qwen_vocab.STRANGE_TOKENS)
     print("PRESS ENTER TO CONTINUE ...")
     input()
     return dict(train_dataset=train_dataset, eval_dataset=None)
