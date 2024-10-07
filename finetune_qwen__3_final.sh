@@ -3,7 +3,7 @@
 export PACK_DATA=1
 
 data_path=final_finetune
-rm -rf data_cached/$data_path
+# rm -rf data_cached/$data_path
 
 python finetune.py \
   --model_name_or_path "../Qwen2.5-1.5B-Instruct__trimm_vocab__2_vien_cross_learning" \
