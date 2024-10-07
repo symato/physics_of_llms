@@ -323,5 +323,5 @@ def make_supervised_data_module(
     else:
         assert 'attention_mask' not in x
 
-    qwen_vocab.show_strange_token()
+    qwen_vocab.show_strange_tokens()
     return dict(train_dataset=train_dataset, eval_dataset=None)
