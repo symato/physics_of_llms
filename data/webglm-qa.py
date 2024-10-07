@@ -23,7 +23,7 @@ def citing_ok(a, b):
     return ok
 
 
-filename = "THUDM__webglm-qa__train__a__vi.jsonl.xz"
+filename = sys.argv[1]
 
 vivi = "__vi"
 if vivi in filename:
@@ -53,17 +53,18 @@ for idx, line in enumerate(lzma.open(filename, "rt")):
     if idx % 2 == 0:
         type = "vi -> vi"
         references = data["references"]
+        human_weight = 0
     else:
         type = "en -> vi"
         references = origin["references"]
-    
+        human_weight = 1
 
     context = "\n".join([ f"<C {i+1}>{x}" for i, x in enumerate(references) ])
-    
+
     value = f"{context}\n<instruction>{instruction}</instruction>\n<question>{data['question']}</question>"
 
     conversations = [
-        { "from": "human", "value": value },
+        { "from": "human", "value": value, "weight": human_weight },
         { "from": "gpt", "value": reformat_answer(data['answer']) },
     ]
 
@@ -84,4 +85,3 @@ for idx, line in enumerate(lzma.open(filename, "rt")):
 
 
     previous_questions.append( data['question'] )
-
