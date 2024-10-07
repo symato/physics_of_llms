@@ -13,7 +13,7 @@ python finetune.py \
   --output_dir "../Qwen2.5-1.5B-Instruct__extend_vocab__final" \
   --num_train_epochs 3 \
   --per_device_train_batch_size 1 \
-  --gradient_accumulation_steps 4 \
+  --gradient_accumulation_steps 8 \
   --logging_steps 3 \
   --save_strategy "steps" \
   --save_steps 500 \
@@ -24,4 +24,4 @@ python finetune.py \
   --report_to "none" \
   --bf16 True \
   --optim adamw_8bit
-  
+
