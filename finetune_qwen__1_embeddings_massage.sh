@@ -28,6 +28,16 @@ python finetune.py \
   --optim adamw_8bit
 
 
+# >>> finetune_layers []
+# GPU = NVIDIA GeForce RTX 3050 Ti Laptop GPU. Max memory = 4.0 GB.
+# 3.428 GB of memory reserved.
+# 3.12 minutes used for training.
+# Peak reserved memory = 4.049 GB.
+# Peak reserved memory for training = 0.621 GB.
+# Peak reserved memory % of max memory = 101.225 %.
+# Peak reserved memory for training % of max memory = 15.525 %.
+
+
 #   --finetune_layers "0 1 2 3 4 5 6 7" \
 # GPU = NVIDIA GeForce RTX 3050 Ti Laptop GPU. Max memory = 4.0 GB.
 # 3.428 GB of memory reserved.
@@ -38,11 +48,11 @@ python finetune.py \
 # Peak reserved memory for training % of max memory = 56.975 %.
 
 
-# >>> finetune_layers []
+# >>> finetune_layers [all]
 # GPU = NVIDIA GeForce RTX 3050 Ti Laptop GPU. Max memory = 4.0 GB.
 # 3.428 GB of memory reserved.
-# 3.12 minutes used for training.
-# Peak reserved memory = 4.049 GB.
-# Peak reserved memory for training = 0.621 GB.
-# Peak reserved memory % of max memory = 101.225 %.
-# Peak reserved memory for training % of max memory = 15.525 %.
+# 23.72 minutes used for training.
+# Peak reserved memory = 10.338 GB.
+# Peak reserved memory for training = 6.91 GB.
+# Peak reserved memory % of max memory = 258.45 %.
+# Peak reserved memory for training % of max memory = 172.75 %.
