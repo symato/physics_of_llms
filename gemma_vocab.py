@@ -35,6 +35,10 @@ def get_kept_tids():
             canbe_vi_kept += 1
             kept_tids.add(tid)
 
+        if len(token) <= 2 and canbe_vietnamese(token):
+            canbe_vi_kept += 1
+            kept_tids.add(tid)            
+
         if len(token) <= 2 and is_ascii(token):
             is_ascii_kept += 1
             kept_tids.add(tid)
@@ -120,6 +124,7 @@ if __name__ == "__main__":
     new_tokenizer = AutoTokenizer.from_pretrained(new_filename.split("tokenizer")[0])
 
     s = "bạn tên là gì? bạn có thể cho tôi biết bạn là ai không"
+    s = "số tuổi của An trừ đi số tuổi của Lan là 3, An 10 tuổi hỏi Lan mấy tuổi?"
     tids = tokenizer.encode(s)
     new_tids = new_tokenizer.encode(s)
 
