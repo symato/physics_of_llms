@@ -63,16 +63,14 @@ def old2new_tid(x, tokenizer):
         if contains_unwanted(token):
             return None
 
-        for c in "ŀ":
+        for c in "ŀĵ":
             if c in token:
                 return None
 
-        # —including
-        
-
         msg = f">>> old2new_tid error: id {x}, token '{token}'"
         print(msg)
-        assert False, msg
+        # assert False, msg
+        return None
 
     return old2new[x]
 
