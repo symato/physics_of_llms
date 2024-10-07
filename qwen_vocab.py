@@ -1,209 +1,36 @@
-added_tokens = [
-    {
-      "id": 151643,
-      "content": "<|endoftext|>",
-      "single_word": False,
-      "lstrip": False,
-      "rstrip": False,
-      "normalized": False,
-      "special": True
-    },
-    {
-      "id": 151644,
-      "content": "<|im_start|>",
-      "single_word": False,
-      "lstrip": False,
-      "rstrip": False,
-      "normalized": False,
-      "special": True
-    },
-    {
-      "id": 151645,
-      "content": "<|im_end|>",
-      "single_word": False,
-      "lstrip": False,
-      "rstrip": False,
-      "normalized": False,
-      "special": True
-    },
-    {
-      "id": 151646,
-      "content": "<|object_ref_start|>",
-      "normalized": False,
-      "lstrip": False,
-      "rstrip": False,
-      "single_word": False,
-      "special": True
-    },
-    {
-      "id": 151647,
-      "content": "<|object_ref_end|>",
-      "normalized": False,
-      "lstrip": False,
-      "rstrip": False,
-      "single_word": False,
-      "special": True
-    },
-    {
-      "id": 151648,
-      "content": "<|box_start|>",
-      "normalized": False,
-      "lstrip": False,
-      "rstrip": False,
-      "single_word": False,
-      "special": True
-    },
-    {
-      "id": 151649,
-      "content": "<|box_end|>",
-      "normalized": False,
-      "lstrip": False,
-      "rstrip": False,
-      "single_word": False,
-      "special": True
-    },
-    {
-      "id": 151650,
-      "content": "<|quad_start|>",
-      "normalized": False,
-      "lstrip": False,
-      "rstrip": False,
-      "single_word": False,
-      "special": True
-    },
-    {
-      "id": 151651,
-      "content": "<|quad_end|>",
-      "normalized": False,
-      "lstrip": False,
-      "rstrip": False,
-      "single_word": False,
-      "special": True
-    },
-    {
-      "id": 151652,
-      "content": "<|vision_start|>",
-      "normalized": False,
-      "lstrip": False,
-      "rstrip": False,
-      "single_word": False,
-      "special": True
-    },
-    {
-      "id": 151653,
-      "content": "<|vision_end|>",
-      "normalized": False,
-      "lstrip": False,
-      "rstrip": False,
-      "single_word": False,
-      "special": True
-    },
-    {
-      "id": 151654,
-      "content": "<|vision_pad|>",
-      "normalized": False,
-      "lstrip": False,
-      "rstrip": False,
-      "single_word": False,
-      "special": True
-    },
-    {
-      "id": 151655,
-      "content": "<|image_pad|>",
-      "normalized": False,
-      "lstrip": False,
-      "rstrip": False,
-      "single_word": False,
-      "special": True
-    },
-    {
-      "id": 151656,
-      "content": "<|video_pad|>",
-      "normalized": False,
-      "lstrip": False,
-      "rstrip": False,
-      "single_word": False,
-      "special": True
-    },
-    {
-      "id": 151657,
-      "content": "<tool_call>",
-      "lstrip": False,
-      "normalized": False,
-      "rstrip": False,
-      "single_word": False,
-      "special": False
-    },
-    {
-      "id": 151658,
-      "content": "</tool_call>",
-      "lstrip": False,
-      "normalized": False,
-      "rstrip": False,
-      "single_word": False,
-      "special": False
-    },
-    {
-      "id": 151659,
-      "content": "<|fim_prefix|>",
-      "lstrip": False,
-      "normalized": False,
-      "rstrip": False,
-      "single_word": False,
-      "special": False
-    },
-    {
-      "id": 151660,
-      "content": "<|fim_middle|>",
-      "lstrip": False,
-      "normalized": False,
-      "rstrip": False,
-      "single_word": False,
-      "special": False
-    },
-    {
-      "id": 151661,
-      "content": "<|fim_suffix|>",
-      "lstrip": False,
-      "normalized": False,
-      "rstrip": False,
-      "single_word": False,
-      "special": False
-    },
-    {
-      "id": 151662,
-      "content": "<|fim_pad|>",
-      "lstrip": False,
-      "normalized": False,
-      "rstrip": False,
-      "single_word": False,
-      "special": False
-    },
-    {
-      "id": 151663,
-      "content": "<|repo_name|>",
-      "lstrip": False,
-      "normalized": False,
-      "rstrip": False,
-      "single_word": False,
-      "special": False
-    },
-    {
-      "id": 151664,
-      "content": "<|file_sep|>",
-      "lstrip": False,
-      "normalized": False,
-      "rstrip": False,
-      "single_word": False,
-      "special": False
-    }
-]
 
 
 import os, sys, glob, json
 
 def get_kept_tids():
-    kept_tids = set( x["id"] for x in added_tokens )
+    # Keep all special tokens
+    kept_tids = set( x for x in range(151643, 151664 + 1) )
+
+    # '''
+    from config import ONLINE_MODEL_PATH as model_path
+    tokenizer = AutoTokenizer.from_pretrained(model_path)
+
+    canbe_vi_kept = 0
+    is_ascii_kept = 0
+
+    for tid in range(0, tokenizer.vocab_size):
+        token = tokenizer.decode(tid)
+
+        if vietnamese_syllable_ratio(token) > 0.8:
+            canbe_vi_kept += 1
+            kept_tids.add(tid)
+
+        if len(token) <= 2 and canbe_vietnamese(token):
+            canbe_vi_kept += 1
+            kept_tids.add(tid)            
+
+        if len(token) <= 2 and is_ascii(token):
+            is_ascii_kept += 1
+            kept_tids.add(tid)
+
+    print(">>> canbe_vi_kept", canbe_vi_kept)
+    print(">>> is_ascii_kept", is_ascii_kept)
+    # '''
 
     kept_filenames = glob.glob("qwen__1000__20000/tokens_kept__*.jsonl")
 

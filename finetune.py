@@ -206,10 +206,28 @@ if last_checkpoint is not None:
 trainer = transformers.Trainer(model=model, tokenizer=tokenizer, args=training_args, **data_module)
 
 # https://discuss.pytorch.org/t/how-to-calculate-the-gpu-memory-that-a-model-uses/157486/5
-print(f"{CYAN}>>> gpu used {torch.cuda.max_memory_allocated(device=None)} memory{RESET}")
+# https://colab.research.google.com/drive/1vIrqH5uYDQwsJ4-OO3DErvuv4pBgVwk4?usp=sharing#scrollTo=2ejIt2xSNKKp
+#@title Show current memory stats
+gpu_stats = torch.cuda.get_device_properties(0)
+start_gpu_memory = round(torch.cuda.max_memory_reserved() / 1024 / 1024 / 1024, 3)
+max_memory = round(gpu_stats.total_memory / 1024 / 1024 / 1024, 3)
+print(f"{CYAN}GPU = {gpu_stats.name}. Max memory = {max_memory} GB.")
+print(f"{start_gpu_memory} GB of memory reserved.{RESET}")
 
-trainer.train(resume_from_checkpoint=last_checkpoint) # last_checkpoint is None là train từ đầu
+## BẮT ĐẦU HUẤN LUYỆN ##
+# last_checkpoint is None là train từ đầu
+trainer_stats = trainer.train(resume_from_checkpoint=last_checkpoint)
+
+#@title Show final memory and time stats
+used_memory = round(torch.cuda.max_memory_reserved() / 1024 / 1024 / 1024, 3)
+used_memory_for_finetune = round(used_memory - start_gpu_memory, 3)
+used_percentage     = round(used_memory             /max_memory*100, 3)
+finetune_percentage = round(used_memory_for_finetune/max_memory*100, 3)
+print(f"{round(trainer_stats.metrics['train_runtime']/60, 2)} minutes used for training.")
+print(f"Peak reserved memory = {used_memory} GB.")
+print(f"Peak reserved memory for training = {used_memory_for_finetune} GB.")
+print(f"Peak reserved memory % of max memory = {used_percentage} %.")
+print(f"Peak reserved memory for training % of max memory = {finetune_percentage} %.")
 
 ## Final save
-print(f"{CYAN}>>> gpu used {torch.cuda.max_memory_allocated(device=None)} memory{RESET}")
 trainer.save_state()
