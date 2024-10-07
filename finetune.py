@@ -203,6 +203,7 @@ if last_checkpoint is not None:
 
 
 ## Start training
+model.gradient_checkpointing_enable()
 trainer = transformers.Trainer(model=model, tokenizer=tokenizer, args=training_args, **data_module)
 
 # https://discuss.pytorch.org/t/how-to-calculate-the-gpu-memory-that-a-model-uses/157486/5
