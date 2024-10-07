@@ -104,3 +104,13 @@ Answer: Menlo Park, CA.
 Yuanzhi Li | Physics of Language Models: Knowledge Storage, Extraction, and Manipulation 
 https://youtu.be/M25cbX5do8Y?t=100
 
+Physics of Language Models: Part 3.1 + 3.2, Knowledge Storage, Extraction and Manipulation 
+https://www.youtube.com/watch?v=YSHzKmEianc&t=8s
+
+![](img/physics-of-lm-3.1-03.jpg)
+**(Query-based) Q-probing** cho <start> <end> token vào đầu và cuối tên người, và dùng output của <end> token dự đoán 6 thuộc tính tri thức.
+
+![](img/physics-of-lm-3.1-04.jpg)
+2 bảng cho kết quả chính xác như nhau chứng tỏ tri thức đã được lưu ở vị trí tên cá nhân.
+Điều này giúp tác hỏi về các thuộc tính của tên cá nhân trở nên có hiệu quả.
+

@@ -200,11 +200,12 @@ if "all" not in model_args.finetune_layers.lower():
     model.enable_input_require_grads()
 
     finetune_layers = [ int(x) for x in model_args.finetune_layers.strip().split() ]
-    print(">>> finetune_layers", finetune_layers)
     for idx in finetune_layers:
         for param in model.model.layers[idx].parameters():
             param.requires_grad = True
 # '''
+print(">>> finetune_model", model_args.model_name_or_path)
+print(">>> finetune_layers", finetune_layers)
 
 ## Detecting last checkpoint
 last_checkpoint = None

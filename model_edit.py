@@ -126,14 +126,14 @@ else:
     if args.task == "trimm_vocab":
 
         old_lm_head = model.lm_head.weight.detach().clone()
-        print("old_lm_head", old_lm_head.shape) # torch.Size([151936, 1536])
+        print("old_lm_head", old_lm_head.shape) # torch.Size([152064, 3584])
 
         # Thay embeddings
         model.resize_token_embeddings(nn)
         new_embeddings = model.model.embed_tokens.weight.detach()
 
         new_lm_head = model.lm_head.weight.detach()
-        print(new_lm_head.shape) # torch.Size([, 76160])
+        print(new_lm_head.shape) # torch.Size([101056, 3584])
 
         for idx, tid in enumerate(kept_tids):
             new_embeddings[idx] = old_embeddings[tid]
@@ -142,6 +142,9 @@ else:
         x = model.model.embed_tokens.weight == new_embeddings
         assert torch.all(x), "Không thay được new_embeddings"
 
+
+        x = model.lm_head.weight == new_lm_head
+        assert torch.all(x), "Không thay được new_lm_head"
 
     else:
         assert False, "Không hỗ trợ task này" 
