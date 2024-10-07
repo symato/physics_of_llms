@@ -97,3 +97,10 @@ Answer: Menlo Park, CA.
 
 ![](img/physics-of-lm-3.1-02.jpg)
 
+. . .
+
+- - -
+
+Yuanzhi Li | Physics of Language Models: Knowledge Storage, Extraction, and Manipulation 
+https://youtu.be/M25cbX5do8Y?t=100
+

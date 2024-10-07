@@ -71,13 +71,40 @@ for new_tid, old_tid in enumerate( kept_tids ):
     old2new[ old_tid ] = new_tid
     new2old[ new_tid ] = old_tid
 
+
+STRANGE_TOKENS = set()
+
 def old2new_tid(x, tokenizer):
-    if x not in old2new:
-        print(">>> old2new_tid error:", x)
-        print(tokenizer.decode(x))
-        assert False
-    else:
+    global STRANGE_TOKENS
+
+    if x in old2new:
         return old2new[x]
+
+    else:
+        token = tokenizer.decode(x)
+        if contains_unwanted(token):
+            return None
+
+        words = re.findall(r'[a-z]+', token, flags = re.IGNORECASE)
+
+        if len(words) > 1:
+            print(">>>", words)
+
+        if len(words) == 1:
+            tids = tokenizer.encode(words[0])
+            if len(tids) == 1 and tids[0] in old2new:
+                return old2new[tids[0]]
+
+        msg = f">>> old2new_tid error: id {x}, token '{token}'"
+        if token not in STRANGE_TOKENS:
+            print(msg)
+            STRANGE_TOKENS.add( token )
+
+        # assert False, msg
+        return None
+
+    assert False, "Không thể tới bước này, có lỗi ở phần code trên"
+
 
 if __name__ == "__main__":
 

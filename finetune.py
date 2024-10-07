@@ -51,9 +51,6 @@ ddp = world_size != 1
 PREPARE_DATA_ONLY = ( os.getenv("PREPARE_DATA", 0) == "1" or os.getenv("PREPARE_DATA_ONLY", 0) == "1" )
 if PREPARE_DATA_ONLY: rank0_print(">>> PREPARE_DATA_ONLY START")
 
-from qwen_vocab import new2old
-from qwen_vocab import old2new_tid
-
 if ( not PREPARE_DATA_ONLY ) or ( PREPARE_DATA_ONLY and local_rank == 0 ):
     ## Load tokenizer and data với trường hợp training bình thường (not PREPARE_DATA_ONLY) trên mọi processes
     # còn với PREPARE_DATA_ONLY is True thì chỉ load trên process đầu tiên để chuẩn bị dữ liệu
@@ -64,6 +61,19 @@ if ( not PREPARE_DATA_ONLY ) or ( PREPARE_DATA_ONLY and local_rank == 0 ):
         padding_side="right",
         use_fast=False,
     )
+
+
+    tknz_name = tokenizer.__class__.__name__.lower()
+
+    if "qwen" in tknz_name:
+        from qwen_vocab import new2old, old2new_tid
+
+    elif "gemma" in tknz_name:
+        from gemma_vocab import new2old, old2new_tid
+
+    else:
+        assert False, "Không hỗ trợ"
+
 
     if tokenizer.bos_token_id:
         tokenizer.bos_token_id = old2new_tid(tokenizer.bos_token_id, tokenizer)
