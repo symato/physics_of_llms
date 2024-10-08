@@ -8,20 +8,6 @@ def get_kept_tids():
     kept_tids = set( x for x in range(0, 217) )
     for x in range(255968, 255999 + 1): kept_tids.add(x)
 
-    ''' Gemma vocab khá dị (unigram?)
-      "▁EXPERIMENT S",
-      "▁EXPERI MENTS",
-      "▁EXPER IMENTS",
-      "▁negotiator s",
-      "▁negoti ators",
-      "▁Recharge able",
-      "▁Re chargeable",
-      "▁espiritual es",
-      "▁Multi cultural",
-      "▁Mul ticultural",
-      "▁potential ities",
-    '''
-    # '''
     from config import ONLINE_MODEL_PATH as model_path
     tokenizer = AutoTokenizer.from_pretrained(model_path)
 
@@ -77,6 +63,10 @@ STRANGE_TOKENS = set()
 def old2new_tid(x, tokenizer):
     global STRANGE_TOKENS
 
+    if len(STRANGE_TOKENS) == 0:
+        with open("STRANGE_TOKENS.jsonl", "wt") as f:
+            f.write("")
+
     if x in old2new:
         return old2new[x]
 
@@ -87,8 +77,8 @@ def old2new_tid(x, tokenizer):
 
         words = re.findall(r'[a-z]+', token, flags = re.IGNORECASE)
 
-        if len(words) > 1:
-            print(">>>", words)
+        # if len(words) > 1:
+        #     print(">>>", words)
 
         if len(words) == 1:
             tids = tokenizer.encode(words[0])
@@ -97,8 +87,11 @@ def old2new_tid(x, tokenizer):
 
         msg = f">>> old2new_tid error: id {x}, token '{token}'"
         if token not in STRANGE_TOKENS:
-            print(msg)
+            # print(msg)
             STRANGE_TOKENS.add( token )
+            with open("STRANGE_TOKENS.jsonl", "at") as f:
+                f.write(json.dumps([token, x, 0], ensure_ascii=False) + "\n")
+
 
         # assert False, msg
         return None

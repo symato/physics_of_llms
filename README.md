@@ -163,10 +163,13 @@ lm_head value ở ví trí đó với qwen 1.5 chính là embedding value vì qw
 
 - - -
 
-## Làm thử nghiệm In-context Pretraining xem khi trộn lẫn training sample trong ctxlen ảnh hưởng gì tới model?
+## Thử nghiệm In-context Pretraining xem khi trộn lẫn training sample trong ctxlen ảnh hưởng gì tới model?
 - trộn ngẫu nhiên
 - trộn có tính toán https://arxiv.org/abs/2310.10638
 - không trộn (mỗi sample 1 ctxlen hoặc dùng packed dataset)
+
+## Thử nghiệm Block Expansion
+- https://arxiv.org/abs/2401.02415v2
 
 ## Physics of LMs: làm thí nghiệm về Knowledge Storage, Extraction and Manipulation
 
