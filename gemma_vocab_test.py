@@ -42,7 +42,7 @@ import os, sys, glob, json, math, lzma
 from transformers import AutoTokenizer
 from pprint import pprint
 
-a = json.load(lzma.open("gemma_tokenizer.json.xz"))
+a = json.load(lzma.open("data/gemma_tokenizer.json.xz"))
 
 for k, v in a.items():
     if isinstance(v, list):
