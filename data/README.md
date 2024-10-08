@@ -25,7 +25,7 @@ wget https://huggingface.co/datasets/ssmi153/Capybara-ShareGPT/resolve/main/Capy
 
 ## Final finetune data
 ```sh
-cat wikimedia_vi_filtered.jsonl webglm-qa_vien.jsonl CapybaraPure_Decontaminated.jsonl | shuf > final_finetune.jsonl
+cat wikimedia_vi_filtered.jsonl webglm-qa_vien*.jsonl CapybaraPure_Decontaminated.jsonl | shuf > final_finetune.jsonl
 du -sh final_finetune.jsonl # 226M
 
 # 111M    wikimedia_vi_filtered.jsonl

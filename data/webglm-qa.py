@@ -50,10 +50,10 @@ for idx, line in enumerate(lzma.open(filename, "rt")):
     if not citing_ok(data["answer"], origin["answer"]) or "tiếng việt" in line.lower():
         continue
 
-    if idx % 2 == 0:
+    if idx % 2 == 1:
         type = "vi -> vi"
         references = data["references"]
-        human_weight = 0
+        human_weight = 1
     else:
         type = "en -> vi"
         references = origin["references"]
