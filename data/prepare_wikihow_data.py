@@ -52,10 +52,10 @@ for idx, line in enumerate(open(inputfile, "rt")):
 '''
 
 # Xem trước
-python3 prepare_wikihow_data.py 10000 | head -n 10 | jq
+python3 prepare_wikihow_data.py 2000 20000 | head -n 10 | jq
 
 # Xuất dữ liệu ra file
-python3 prepare_wikihow_data.py 10000 > wikihow_vien_filtered.jsonl
+python3 prepare_wikihow_data.py 2000 20000 > wikihow_vien_filtered.jsonl
 
 wc -l wikihow_vien_filtered.jsonl
 # 2938 samples
