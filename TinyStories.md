@@ -17,7 +17,7 @@ Không thể tách facts khỏi language vì rất nhiều facts là cần thi�
 
 ![](img/tiny-stories-00.jpg)
 
-Để sử dụng ngôn ngữ thành cần phải:
+Để sử dụng ngôn ngữ thành thạo cần phải:
 - hiểu facts,
 - cần kỹ năng reasoning nhất định
 - cần có mối liên hệ với ngữ cảnh (follow entities, relationships ...)
