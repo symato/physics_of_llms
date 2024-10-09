@@ -11,3 +11,4 @@ data/meta-llama/
 data/*train*jsonl.xz
 data_cached/
 output_*
+wandb/
