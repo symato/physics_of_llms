@@ -28,18 +28,16 @@ else:
 
 
 def map_tids(map_dict, tids):
-    if "trimm_vocab" in model_path:
-        try: tids_ = tids.tolist()
-        except: tids_ = tids
-
-        for idx, x in enumerate(tids_):
-            tids[idx] = map_dict[x]
+    if "trimm_vocab" not in model_path:
+        return tids
+    else:
+        return [ map_dict[x] for x in tids if x in map_dict ]
 
 
 class KeywordsStoppingCriteria(transformers.StoppingCriteria):
     def __init__(self, str):
-        self.keyword_ids = tokenizer(str).input_ids
-        map_tids(old2new, self.keyword_ids)
+        self.keyword_ids = tokenizer.encode(str)
+        self.keyword_ids = map_tids(old2new, self.keyword_ids)
         self.keyword_len = len(self.keyword_ids)
 
     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs) -> bool:
@@ -53,8 +51,19 @@ stop_criteria_list = transformers.StoppingCriteriaList(
 
 def get_answer(q):
     prompt = tokenizer.apply_chat_template([{"role": "user", "content": q}], tokenize=False)
-    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
-    map_tids(old2new, inputs["input_ids"][0])
+    old_tids = tokenizer.encode(prompt)
+
+    new_tids = map_tids(old2new, old_tids)
+    new_old_tids = map_tids(new2old, new_tids)
+
+    new_prompt = tokenizer.decode(new_old_tids)
+
+    if new_old_tids != old_tids:
+        print(f"!!! Cảnh báo sự trimm vocab làm mất thông tin !!!")
+        print(f"!!! old prompt: {prompt}")
+        print(f"!!! new prompt: {new_prompt}")
+
+    inputs = tokenizer(new_prompt, return_tensors="pt").to(model.device)    
 
     with torch.no_grad():
         output_ids = model.generate(
@@ -68,9 +77,8 @@ def get_answer(q):
         )
 
     answer_tids = output_ids[0][len(inputs["input_ids"][0]) : ] # bỏ đi prompt tokens
-    map_tids(new2old, answer_tids)
-
-    return tokenizer.decode(answer_tids).split("<|im_end|>")[0].split("<end_of_turn>")[0].strip()
+    return tokenizer.decode(map_tids(new2old, answer_tids))\
+        .split("<|im_end|>")[0].split("<end_of_turn>")[0].strip()
 
 
 from utils import *
