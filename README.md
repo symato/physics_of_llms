@@ -171,6 +171,9 @@ lm_head value ở ví trí đó với qwen 1.5 chính là embedding value vì qw
 ## Thử nghiệm Block Expansion
 - https://arxiv.org/abs/2401.02415v2
 
+## Thử nghiệm LAYER SWAPPING
+- https://arxiv.org/abs/2410.01335
+
 ## Physics of LMs: làm thí nghiệm về Knowledge Storage, Extraction and Manipulation
 
 ## Physics of LMs: làm thí nghiệm [TinyStories](TinyStories.md) về học language
