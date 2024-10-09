@@ -16,11 +16,13 @@ tokenizer = transformers.AutoTokenizer.from_pretrained(model_path)
 
 x = model_path.lower()
 
-if "qwen" in x: 
+if "qwen" in x:
+    model_type = "qwen"
     from qwen_vocab import old2new, new2old
     STOP_WORDS = "<|im_end|> <|endoftext|>".split()
 
 elif "gemma" in x:
+    model_type = "gemma"
     from gemma_vocab import old2new, new2old
     STOP_WORDS = "<end_of_turn> <eos>".split()
 else:
@@ -50,7 +52,11 @@ stop_criteria_list = transformers.StoppingCriteriaList(
 
 
 def get_answer(q):
-    prompt = tokenizer.apply_chat_template([{"role": "user", "content": q}], tokenize=False)
+    if model_type == "qwen":
+        prompt = f"<|im_start|>user\n{q}<|im_end|>\n<|im_start|>assistant"
+    else:
+        prompt = tokenizer.apply_chat_template([{"role": "user", "content": q}], tokenize=False)
+
     old_tids = tokenizer.encode(prompt)
 
     new_tids = map_tids(old2new, old_tids)
@@ -63,7 +69,12 @@ def get_answer(q):
         print(f"!!! old prompt: {prompt}")
         print(f"!!! new prompt: {new_prompt}")
 
-    inputs = tokenizer(new_prompt, return_tensors="pt").to(model.device)    
+    inputs = tokenizer(new_prompt, return_tensors="pt").to(model.device)
+
+    assert inputs["input_ids"][0].tolist() == new_old_tids
+
+    for i, x in enumerate(new_tids):
+        inputs["input_ids"][0][i] = x
 
     with torch.no_grad():
         output_ids = model.generate(
@@ -77,7 +88,10 @@ def get_answer(q):
         )
 
     answer_tids = output_ids[0][len(inputs["input_ids"][0]) : ] # bỏ đi prompt tokens
-    return tokenizer.decode(map_tids(new2old, answer_tids))\
+    old_tids = map_tids(new2old, answer_tids.tolist())
+
+    # print(prompt, answer_tids, old_tids) # DEBUG
+    return tokenizer.decode(old_tids)\
         .split("<|im_end|>")[0].split("<end_of_turn>")[0].strip()
 
 
