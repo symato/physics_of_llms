@@ -25,9 +25,9 @@ python finetune.py \
   --lr_scheduler_type "linear" \
   --report_to "none" \
   --bf16 True \
-  --optim adamw_8bit \
-  # --mixed_int8 True
-
+  --optim ademamix_8bit
+  # --optim adamw_8bit \
+  # --int8_mixed True
 
 # >>> finetune_layers []
 # GPU = NVIDIA GeForce RTX 3050 Ti Laptop GPU. Max memory = 4.0 GB.
@@ -57,7 +57,7 @@ python finetune.py \
 # Peak reserved memory % of max memory = 142.675 %.
 # Peak reserved memory for training % of max memory = 56.975 %.
 
-## Sau khi áp dụng unsloth gradient checkpointing => có thể nhận thấy Peak reserved memory giảm rõ rệt!
+## Sau khi áp dụng unsloth gradient checkpointing => có thể nhận thấy Peak reserved memory for training giảm rõ rệt!
 #   --finetune_layers "0 1 2 3 4 5 6 7" \
 # GPU = NVIDIA GeForce RTX 3050 Ti Laptop GPU. Max memory = 4.0 GB.
 # 3.607 GB of memory reserved. # khác biệt là do lần test này dùng model nguyên bản vocab x1.5 lần
@@ -66,3 +66,6 @@ python finetune.py \
 # Peak reserved memory for training = 1.516 GB.
 # Peak reserved memory % of max memory = 128.075 %.
 # Peak reserved memory for training % of max memory = 37.9 %.
+
+## Đổi optim từ adamw_8bit sang ademamix_8bit, Peak reserved memory for training tăng lên kha khá
+# Peak reserved memory for training = 1.96 GB.

@@ -34,9 +34,9 @@ class TrainingArguments(transformers.TrainingArguments):
 
     data_path: str = field(default="", metadata={"help": ".jsonl or .jsonl.xz data filename"})
 
-    optim: str = field(default="adamw_8bit")
+    optim: str = field(default="adamw_8bit") # ademamix_8bit
 
-    mixed_int8: bool = field(default=False, metadata={"help": "apply torchao's int8_mixed_precision_training speedup"})
+    int8_mixed: bool = field(default=False, metadata={"help": "apply torchao's int8_mixed_precision_training speedup"})
 
 
 def rank0_print(*args):
@@ -191,7 +191,8 @@ model = AutoLigerKernelForCausalLM.from_pretrained(
 ## In the training, we set use_cache=False, use_cache=True only takes effect at inference
 model.config.use_cache = False
 
-if training_args.mixed_int8:
+if training_args.int8_mixed:
+    # !!! Code thử nghiệm, không dùng cho production !!!
     # áp dụng mixed int8 linear kernel to get 1.7x speedup on 4090 and 1.4x speedup on A100
     from torchao import quantize_ # pip install torchao
 
@@ -231,7 +232,12 @@ if last_checkpoint is not None:
 
 ## Start training
 model.gradient_checkpointing_enable()
-trainer = transformers.Trainer(model=model, tokenizer=tokenizer, args=training_args, **data_module)
+trainer = transformers.Trainer(
+    model = model, 
+    tokenizer = tokenizer, 
+    args = training_args, 
+    **data_module,
+)
 
 # https://discuss.pytorch.org/t/how-to-calculate-the-gpu-memory-that-a-model-uses/157486/5
 # https://colab.research.google.com/drive/1vIrqH5uYDQwsJ4-OO3DErvuv4pBgVwk4?usp=sharing#scrollTo=2ejIt2xSNKKp
