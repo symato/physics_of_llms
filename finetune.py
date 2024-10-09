@@ -22,29 +22,29 @@ from unsloth_gradient_checkpointing import hf_grad_checkpoint_unsloth_wrapper
 transformers.modeling_utils.checkpoint = hf_grad_checkpoint_unsloth_wrapper
 
 @dataclass
-class ModelArguments:
-    model_name_or_path: Optional[str] = field(default="../Qwen2.5-1.5B-Instruct__extend_vocab")
-    finetune_layers: str = field(default="", metadata={"help": "'0 1 2' ..."})
-
-@dataclass
-class DataArguments:
-    data_path: str = field(default="", metadata={"help": ".jsonl or .jsonl.xz data filename"})
-
-@dataclass
 class TrainingArguments(transformers.TrainingArguments):
-    cache_dir: Optional[str] = field(default=None)
-    optim: str = field(default="adamw_8bit")
+    model_name_or_path: Optional[str] = field(default="../Qwen2.5-1.5B-Instruct")
+
     model_max_length: int = field(
         default=1024*4, # 4k ctxlen
         metadata={"help": "Maximum sequence length. Sequences will be right padded (and possibly truncated)."},
     )
 
+    finetune_layers: str = field(default="", metadata={"help": "'0 1 2' ..."})
+
+    data_path: str = field(default="", metadata={"help": ".jsonl or .jsonl.xz data filename"})
+
+    optim: str = field(default="adamw_8bit")
+
+    mixed_int8: bool = field(default=False, metadata={"help": "apply torchao's int8_mixed_precision_training speedup"})
+
+
 def rank0_print(*args):
     if local_rank == 0:
         print(*args)
 
-parser = transformers.HfArgumentParser((ModelArguments, DataArguments, TrainingArguments))
-model_args, data_args, training_args = parser.parse_args_into_dataclasses()
+parser = transformers.HfArgumentParser((TrainingArguments))
+training_args, = parser.parse_args_into_dataclasses()
 
 local_rank = training_args.local_rank
 device_map = None
@@ -61,11 +61,10 @@ if ( not PREPARE_DATA_ONLY ) or ( PREPARE_DATA_ONLY and local_rank == 0 ):
     ## Load tokenizer and data với trường hợp training bình thường (not PREPARE_DATA_ONLY) trên mọi processes
     # còn với PREPARE_DATA_ONLY is True thì chỉ load trên process đầu tiên để chuẩn bị dữ liệu
     tokenizer = transformers.AutoTokenizer.from_pretrained(
-        model_args.model_name_or_path,
-        cache_dir=training_args.cache_dir,
-        model_max_length=training_args.model_max_length,
-        padding_side="right",
-        use_fast=False,
+        training_args.model_name_or_path,
+        model_max_length = training_args.model_max_length,
+        padding_side = "right",
+        use_fast = False,
     )
 
 
@@ -103,8 +102,9 @@ if ( not PREPARE_DATA_ONLY ) or ( PREPARE_DATA_ONLY and local_rank == 0 ):
     # làm vậy sẽ giúp tăng tốc độ xử lý dữ liệu lên rất nhiều lần khi sử dụng đa GPUs
     with training_args.main_process_first(desc="dataset map tokenization and grouping"):
         data_module = make_supervised_data_module(
-            tokenizer=tokenizer, data_args=data_args, max_len=training_args.model_max_length, 
-            rank0_print=rank0_print,
+            tokenizer = tokenizer, 
+            training_args = training_args, 
+            rank0_print = rank0_print,
         )
 
 if True: # PREPARE_DATA_ONLY: # Show some sample data to double check
@@ -176,28 +176,35 @@ if True: # PREPARE_DATA_ONLY: # Show some sample data to double check
 ######################################################
 
 config = transformers.AutoConfig.from_pretrained(
-    model_args.model_name_or_path,
-    cache_dir=training_args.cache_dir,
+    training_args.model_name_or_path,
 )
 
 # model = transformers.AutoModelForCausalLM.from_pretrained(
 model = AutoLigerKernelForCausalLM.from_pretrained(
-    model_args.model_name_or_path,
-    config=config,
-    cache_dir=training_args.cache_dir,
-    device_map=device_map,
-    torch_dtype=torch.bfloat16,
-    attn_implementation="flash_attention_2", # bắt buộc phải có để hoạt động đc với packed dataset
+    training_args.model_name_or_path,
+    config = config,
+    device_map = device_map,
+    torch_dtype = torch.bfloat16,
+    attn_implementation = "flash_attention_2", # bắt buộc phải có để hoạt động đc với packed dataset
 )
 
 ## In the training, we set use_cache=False, use_cache=True only takes effect at inference
 model.config.use_cache = False
 
+if training_args.mixed_int8:
+    # áp dụng mixed int8 linear kernel to get 1.7x speedup on 4090 and 1.4x speedup on A100
+    from torchao import quantize_ # pip install torchao
+
+    # pip install --pre torchao --index-url https://download.pytorch.org/whl/nightly/cu124 -U
+    from torchao.prototype.quantized_training import int8_mixed_precision_training
+
+    # print(model)
+    quantize_(model.model.layers, int8_mixed_precision_training(), set_inductor_config=False)
 
 # '''
 ## Finetune embeddings và layers được chọn
 # Tham khảo https://github.com/jondurbin/qlora/blob/e4c20638464e70becc212caa955efea378684473/train.py#L1133
-if "all" not in model_args.finetune_layers.lower():
+if "all" not in training_args.finetune_layers.lower():
     # First, freeze all params
     for param in model.parameters():
         param.requires_grad = False
@@ -205,12 +212,12 @@ if "all" not in model_args.finetune_layers.lower():
     # Then unfreeze embeddings and finetune_layers
     model.enable_input_require_grads()
 
-    finetune_layers = [ int(x) for x in model_args.finetune_layers.strip().split() ]
+    finetune_layers = [ int(x) for x in training_args.finetune_layers.strip().split() ]
     for idx in finetune_layers:
         for param in model.model.layers[idx].parameters():
             param.requires_grad = True
 # '''
-print(">>> finetune_model", model_args.model_name_or_path)
+print(">>> finetune_model", training_args.model_name_or_path)
 print(">>> finetune_layers", finetune_layers)
 
 ## Detecting last checkpoint

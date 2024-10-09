@@ -8,7 +8,7 @@ rm -rf data_cached/$data_path
   # --model_name_or_path "../Qwen2.5-1.5B-Instruct" \                             >>> gpu used 3558122496 memory
   # --output_dir "../Qwen2.5-1.5B-Instruct__extend_vocab__1_embeddings_massage" \ >>> gpu used 3363546112 memory
 python finetune.py \
-  --model_name_or_path "../Qwen2.5-1.5B-Instruct__extend_vocab" \
+  --model_name_or_path "../Qwen2.5-1.5B-Instruct" \
   --finetune_layers "0 1 2 3 4 5 6 7" \
   --data_path "$data_path" \
   --model_max_length 512 \
@@ -25,7 +25,8 @@ python finetune.py \
   --lr_scheduler_type "linear" \
   --report_to "none" \
   --bf16 True \
-  --optim adamw_8bit
+  --optim adamw_8bit \
+  # --mixed_int8 True
 
 
 # >>> finetune_layers []

@@ -292,20 +292,20 @@ class SupervisedDataset(Dataset):
 
 
 def make_supervised_data_module(
-    tokenizer: PreTrainedTokenizer, data_args, max_len, rank0_print = None
+    tokenizer: PreTrainedTokenizer, training_args, rank0_print = None
 ) -> Dict:
 
     """Make dataset and collator for supervised fine-tuning."""
-    cache_path = os.path.join("data_cached", data_args.data_path)
+    cache_path = os.path.join("data_cached", training_args.data_path)
     train_dataset = SupervisedDataset()
 
     if os.path.exists(cache_path):
         print(f">>> {cache_path} existed.")
     else:
-        data_path = f"data/{data_args.data_path}.jsonl"
+        data_path = f"data/{training_args.data_path}.jsonl"
         use_lzma = False
         if not os.path.exists(data_path):
-            data_path = f"data/{data_args.data_path}.jsonl.xz"
+            data_path = f"data/{training_args.data_path}.jsonl.xz"
             use_lzma = True
 
         print(f"!!! Loading data for supervised finetune from {data_path} ... !!!")
@@ -317,7 +317,11 @@ def make_supervised_data_module(
         file.close()
 
         print("Formatting inputs...")
-        train_dataset.prepare(sources, tokenizer=tokenizer, max_len=max_len)
+        train_dataset.prepare(
+            sources, 
+            tokenizer = tokenizer, 
+            max_len = training_args.model_max_length,
+        )
 
         print("Save to disk...")
         os.makedirs(cache_path, exist_ok=True)
