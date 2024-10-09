@@ -13,7 +13,13 @@ from transformers.trainer_utils import get_last_checkpoint
 from transformers.trainer_pt_utils import LabelSmoother
 from mydataset import make_supervised_data_module 
 from dataclasses import dataclass, field
+
+# 20% speedup, 60% vram save?
 from liger_kernel.transformers import AutoLigerKernelForCausalLM
+
+# save more vram by offload gradients to cpu (unblocking)
+from unsloth_gradient_checkpointing import hf_grad_checkpoint_unsloth_wrapper
+transformers.modeling_utils.checkpoint = hf_grad_checkpoint_unsloth_wrapper
 
 @dataclass
 class ModelArguments:

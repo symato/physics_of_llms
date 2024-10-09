@@ -9,7 +9,7 @@ rm -rf data_cached/$data_path
   # --output_dir "../Qwen2.5-1.5B-Instruct__extend_vocab__1_embeddings_massage" \ >>> gpu used 3363546112 memory
 python finetune.py \
   --model_name_or_path "../Qwen2.5-1.5B-Instruct__extend_vocab" \
-  --finetune_layers "0 1 2 3" \
+  --finetune_layers "0 1 2 3 4 5 6 7" \
   --data_path "$data_path" \
   --model_max_length 512 \
   --output_dir "../Qwen2.5-1.5B-Instruct__extend_vocab__1_embeddings_massage" \
@@ -37,6 +37,15 @@ python finetune.py \
 # Peak reserved memory % of max memory = 101.225 %.
 # Peak reserved memory for training % of max memory = 15.525 %.
 
+# >>> finetune_layers [all]
+# GPU = NVIDIA GeForce RTX 3050 Ti Laptop GPU. Max memory = 4.0 GB.
+# 3.428 GB of memory reserved.
+# 23.72 minutes used for training.
+# Peak reserved memory = 10.338 GB.
+# Peak reserved memory for training = 6.91 GB.
+# Peak reserved memory % of max memory = 258.45 %.
+# Peak reserved memory for training % of max memory = 172.75 %.
+
 
 #   --finetune_layers "0 1 2 3 4 5 6 7" \
 # GPU = NVIDIA GeForce RTX 3050 Ti Laptop GPU. Max memory = 4.0 GB.
@@ -47,12 +56,12 @@ python finetune.py \
 # Peak reserved memory % of max memory = 142.675 %.
 # Peak reserved memory for training % of max memory = 56.975 %.
 
-
-# >>> finetune_layers [all]
+## Sau khi áp dụng unsloth gradient checkpointing => có thể nhận thấy Peak reserved memory giảm rõ rệt!
+#   --finetune_layers "0 1 2 3 4 5 6 7" \
 # GPU = NVIDIA GeForce RTX 3050 Ti Laptop GPU. Max memory = 4.0 GB.
-# 3.428 GB of memory reserved.
-# 23.72 minutes used for training.
-# Peak reserved memory = 10.338 GB.
-# Peak reserved memory for training = 6.91 GB.
-# Peak reserved memory % of max memory = 258.45 %.
-# Peak reserved memory for training % of max memory = 172.75 %.
+# 3.607 GB of memory reserved. # khác biệt là do lần test này dùng model nguyên bản vocab x1.5 lần
+# 5.26 minutes used for training.
+# Peak reserved memory = 5.123 GB.
+# Peak reserved memory for training = 1.516 GB.
+# Peak reserved memory % of max memory = 128.075 %.
+# Peak reserved memory for training % of max memory = 37.9 %.
