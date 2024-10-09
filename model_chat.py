@@ -99,13 +99,15 @@ from utils import *
 while True:
     # bỏ qua lỗi utf-8 encoding trong trường hợp nhập text từ console
     try: q = input(f"Bạn: {GREEN}").encode('utf-8', 'ignore').decode('utf-8', 'ignore')
-    except Exception as e: print(e); q = ""
+    except Exception as e: print(e); q = None
 
-    reset_timer(timer=model_path)
-    a = get_answer(q).strip()
-    print(f"Bot: {RED}{a}{RESET}")
-    measure_time("timespent", timer=model_path)
-
+    if q is None:
+        print("...")
+    else:
+        reset_timer(timer=model_path)
+        a = get_answer(q).strip()
+        print(f"Bot: {RED}{a}{RESET}")
+        measure_time("timespent", timer=model_path)
 
 '''
 python3 qwen_chat.py ../Qwen2.5-1.5B-Instruct__trimmed_vocab
