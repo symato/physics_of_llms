@@ -54,18 +54,22 @@ def short_line_ratio(x, min_line_len):
 	return count / len(lines)
 
 
+cutoff_patterns = """
+Tài liệu tham khảo
+Tham khảo
+Chú thích
+""".strip().split("\n")
+
 final_texts = []
 with Pool( processes = n ) as pool:
     for wanted_texts in pool.imap_unordered(get_wanted_lang_texts, chunks):
         final_texts += wanted_texts
 
 for text in final_texts:
+	for x in cutoff_patterns:
+		text = text.split(f"\n{x}\n")[0]
 	print(json.dumps({"text": text}, ensure_ascii = False))
 
-cutoff_patterns = """
-Tài liệu tham khảo
-Tham khảo
-"""
 
 '''
 
