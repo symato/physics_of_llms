@@ -16,12 +16,12 @@ python finetune.py \
   --gradient_accumulation_steps 16 \
   --logging_steps 2 \
   --save_strategy "steps" \
-  --save_steps 200 \
+  --save_steps 100 \
   --save_total_limit 1 \
   --learning_rate 5e-5 \
   --warmup_ratio 0.01 \
   --lr_scheduler_type "linear" \
-  --report_to "none" \
+  --report_to "wandb" \
   --bf16 True \
   --optim adamw_8bit
 
