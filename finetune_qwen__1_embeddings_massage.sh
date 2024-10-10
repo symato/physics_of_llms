@@ -40,6 +40,14 @@ python finetune.py \
   # --optim adamw_torch \
   # --int8_mixed True \
 
+## bf16 + adamw_8bit
+# {'loss': 1.2705, 'grad_norm': 3.21875, 'learning_rate': 0.0, 'epoch': 0.99}
+# 100%|███████████████████████████████| 40/40 [00:32<00:00,  1.23it/s]
+
+## bf16 + adamw_bnb_8bit
+# {'loss': 1.0794, 'grad_norm': 2.578125, 'learning_rate': 0.0, 'epoch': 1.0}
+# 100%|███████████████████████████████| 40/40 [00:33<00:00,  1.23it/s
+
 ## bf16 + adamw_torch
 # {'loss': 0.8688, 'grad_norm': 1.484375, 'learning_rate': 0.0, 'epoch': 1.0}
 # 100%|███████████████████████████████| 43/43 [01:17<00:00,  1.80s/it]
