@@ -27,10 +27,18 @@ python finetune.py \
   --bf16 True \
   --booster "" \
   --optim adamw_bnb_8bit \
-  --int8_mixed True
+  # --int8_mixed True \
   # --optim adamw_torch \
+  # --optim adamw_8bit \
   # --optim ademamix_8bit \
 
+
+############################################################################################################################
+
+  # --model_name_or_path "../qwen7b" \
+  # --finetune_layers "0 1 2 3" \
+  # --optim adamw_torch \
+  # --int8_mixed True \
 
 ## bf16 + adamw_torch
 # {'loss': 0.8688, 'grad_norm': 1.484375, 'learning_rate': 0.0, 'epoch': 1.0}
