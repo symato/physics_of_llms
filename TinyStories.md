@@ -1,6 +1,7 @@
 ## 18 tháng trước tinystories đã có những insights rất tốt về cách tạo data và huấn luyện models
 - https://youtu.be/iNhrW0Nt7zs
-- https://youtu.be/wTQH6mRDXhw?t=116
+- https://youtu.be/wTQH6mRDXhw
+- https://youtu.be/mv3SIgDP_y4
 - https://arxiv.org/abs/2305.07759
 - https://huggingface.co/datasets/roneneldan/TinyStories
 - https://huggingface.co/datasets/roneneldan/TinyStoriesInstruct
@@ -232,3 +233,20 @@ GPT-2 không được như thế => có lẽ model nhỏ hơn dễ interpreable 
 00:41:38	know future directions from this project so many of the findings we saw are really preliminary you know there's much more work to do in and for example in your architecture search in interpretability Etc I think the biggest question is you know so it's very easy to get insights on this data set in terms of compute you know you don't need you have an idea you can test it in one day um but are those insights actually relevant for you know llms I think this is the biggest question is there any reason to think what's Happening Here
 
 00:42:23	will be true at large scales suppose we find some architecture that's you know doing really well here can we translate it um yeah maybe we should one should think about a hierarchy of data sets you know and would this be used for curriculum training and uh yeah like uh last question which is already partially answered in a follow-up work uh the Phi one paper now available on an archive is you know can synthetically create a data sets actually uh give rise to better llms okay thanks I'll finish here
+
+- - -
+
+## Neuron technique used in developing the TinyStories model
+https://youtu.be/mv3SIgDP_y4?t=6007
+
+Nếu có 1 lập trình viên cố gắng viết code để tự đồng hoàn thành tinystories, rất có khả năng nó sẽ là 1 hàm cố gắng định vị tên của nhân vật chính bởi vì nó hữu dụng ở rất nhiều nơi bạn định autocomplete. Thực tế là khi bạn biết tên của vài nhân vật nên xuất hiện, nó là một dự đoán tốt (good guest) đây có thể là tên nhân vật chính.
+
+Bạn có neuron làm chính xác điều đó, chúng tôi chưa kiểm tra kỹ để khẳng định chắc chắn nhưng rất có khả năng có một attention head, tạo ra kết quả bất cứ khi nào bạn biết rằng tên của vài nhân vật nên xuất hiện bạn khi bạn liên hệ 2 điều này với nhau, bạn sẽ nhận được một cơ chế có thể copy tên nhân vật chính đến những vị trí khác nhau trong quá trình sinh text. Đây là một cơ chế rất cơ bản mà bạn có thể quan sát trong NN mà nó không xảy ra ở những model lớn, ít nhất theo cái cách không dễ dàng theo dõi ...
+
+Có rất nhiều cách NN hoạt động để giải quyết vấn đề. Cho 1 bài toán, có rất nhiều cấu hình NN của trọng số (weight) để giải quyết *cùng một vấn đề*. Một số cấu hình là dễ hiểu với con người nhưng đa số còn lại là một mớ hỗn độn - kiểu như mọi nơ ron đều đang làm một chút việc gì đó cho mọi nhiệm vụ có thể làm, và chúng kết hợp với nhau một cách vô cùng phức tạp.
+
+Và NN không có động lực trong hàm mất mát (no incentive in the lost function) để không tạo nên một mớ hỗn độn, *đó là nơi entropy located*. => Chả tội gì phải ngăn nắp trong khi mớ hỗn độn đang có đã giải quyết được vấn đề!
+
+Khi mô hình nhỏ, nơ ron *không có lựa chọn nào khác* ngoài align với meaningful tasks. Nơ ron là nơi bạn có sự phi tuyến tính và bạn không có đủ chúng cho giải pháp one-big-mess. Somehow giải pháp hiệu quả nhất (với NN nhỏ) là giải pháp không hỗn độn. Vậy với NN nhỏ khả năng diễn giải xuất hiện như là một hiệu ứng phụ của quá trình không hỗn độn hóa được.
+
+ 

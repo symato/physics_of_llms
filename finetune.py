@@ -36,6 +36,8 @@ class TrainingArguments(transformers.TrainingArguments):
 
     optim: str = field(default="adamw_8bit") # ademamix_8bit
 
+    booster: str = field(default="", metadata={"help": "None, liger hoặc unsloth"}) # ko dùng
+
     int8_mixed: bool = field(default=False, metadata={"help": "apply torchao's int8_mixed_precision_training speedup"})
 
 
@@ -179,8 +181,12 @@ config = transformers.AutoConfig.from_pretrained(
     training_args.model_name_or_path,
 )
 
-# model = transformers.AutoModelForCausalLM.from_pretrained(
-model = AutoLigerKernelForCausalLM.from_pretrained(
+if training_args.booster == "liger":
+    from_pretrained = AutoLigerKernelForCausalLM.from_pretrained
+else:
+    from_pretrained = transformers.AutoModelForCausalLM.from_pretrained
+
+model = from_pretrained(
     training_args.model_name_or_path,
     config = config,
     device_map = device_map,
@@ -193,6 +199,7 @@ model.config.use_cache = False
 
 if training_args.int8_mixed:
     # !!! Code thử nghiệm, không dùng cho production !!!
+    # !!! Phải chờ lâu để compile ...
     # áp dụng mixed int8 linear kernel to get 1.7x speedup on 4090 and 1.4x speedup on A100
     from torchao import quantize_ # pip install torchao
 
