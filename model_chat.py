@@ -52,6 +52,8 @@ stop_criteria_list = transformers.StoppingCriteriaList(
 
 
 def get_answer(q):
+    if len(q) < 3: return "..."
+
     if model_type == "qwen":
         prompt = f"<|im_start|>user\n{q}<|im_end|>\n<|im_start|>assistant"
     else:
@@ -99,25 +101,22 @@ from utils import *
 while True:
     # bỏ qua lỗi utf-8 encoding trong trường hợp nhập text từ console
     try: q = input(f"Bạn: {GREEN}").encode('utf-8', 'ignore').decode('utf-8', 'ignore')
-    except Exception as e: print(e); q = None
+    except Exception as e: print(f"{RESET}{e}"); q = ""
 
-    if q is None:
-        print("...")
-    else:
-        reset_timer(timer=model_path)
-        a = get_answer(q).strip()
-        print(f"Bot: {RED}{a}{RESET}")
-        measure_time("timespent", timer=model_path)
+    reset_timer(timer=model_path)
+    a = get_answer(q).strip()
+    print(f"{RESET}Bot: {RED}{a}{RESET}")
+    measure_time("timespent", timer=model_path)
 
 '''
-python3 qwen_chat.py ../Qwen2.5-1.5B-Instruct__trimmed_vocab
+python3 model_chat.py ../Qwen2.5-1.5B-Instruct__trimm_vocab
 
-python3 qwen_chat.py ../Qwen2.5-1.5B-Instruct
+python3 model_chat.py ../Qwen2.5-1.5B-Instruct
 
 số tuổi của An trừ đi số tuổi của Lan là 3, An 10 tuổi hỏi Lan mấy tuổi?
 
 ai tạo ra bạn
 
 Bạn: tạo ra một câu hoàn chỉnh với từ "thực hiện"
-Thì ra, việc thực hiện kế hoạch của chúng ta cần được lên lịch cụ thể.
+Bot: Thì ra, việc thực hiện kế hoạch của chúng ta cần được lên lịch cụ thể.
 '''
