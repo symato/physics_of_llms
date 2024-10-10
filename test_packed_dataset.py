@@ -7,9 +7,6 @@ from transformers.trainer_pt_utils import LabelSmoother
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from packed_dataset import PackedDataset, monkey_patch, get_unpad_data
 
-from liger_kernel.transformers import AutoLigerKernelForCausalLM
-from liger_kernel.transformers import apply_liger_kernel_to_mistral
-
 from typing import Any, Dict, List, Tuple
 from dataclasses import dataclass
 import numpy as np
@@ -97,9 +94,26 @@ else:
     )
     def load_model(model_name, booster = None, use_lora = False):
         if booster == "liger":
-            from_pretrained = AutoLigerKernelForCausalLM.from_pretrained
-        else:
-            from_pretrained = transformers.AutoModelForCausalLM.from_pretrained
+
+            from liger_kernel.transformers.cross_entropy import LigerCrossEntropyLoss
+            from liger_kernel.transformers.geglu import LigerGEGLUMLP
+            from liger_kernel.transformers.rms_norm import LigerRMSNorm
+            from liger_kernel.transformers.rope import liger_rotary_pos_emb
+            from liger_kernel.transformers.swiglu import LigerSwiGLUMLP
+
+            from liger_kernel.transformers.model.qwen2 import lce_forward as qwen2_lce_forward
+            from transformers.models.qwen2 import modeling_qwen2
+
+            # modeling_qwen2.apply_rotary_pos_emb = liger_rotary_pos_emb
+            modeling_qwen2.Qwen2RMSNorm = LigerRMSNorm
+            modeling_qwen2.Qwen2MLP = LigerSwiGLUMLP
+            modeling_qwen2.CrossEntropyLoss = LigerCrossEntropyLoss
+            modeling_qwen2.Qwen2ForCausalLM.forward = qwen2_lce_forward
+
+        #     from liger_kernel.transformers import AutoLigerKernelForCausalLM
+        #     from_pretrained = AutoLigerKernelForCausalLM.from_pretrained
+        # else:
+        from_pretrained = transformers.AutoModelForCausalLM.from_pretrained
 
         if booster is None or booster == "liger":
             model = from_pretrained(
@@ -155,8 +169,11 @@ else:
 
     results = []
     for booster in [None, "liger"]:
+
         # booster như unsloth, liger sẽ sửa đổi code của transformers nên None cần đc chạy trước
-        for use_lora in [False, True]:
+        os.environ["ZIN_BOOSTER"] = f"{booster}"
+
+        for use_lora in [False]: # [False, True]:
             print("$$$$", model_name, booster, use_lora)
             model = load_model(model_name, booster = booster, use_lora = use_lora)
 
