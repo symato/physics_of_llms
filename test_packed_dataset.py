@@ -32,7 +32,7 @@ class RandomDataset(Dataset):
         self.pack_length = pack_length
         self.tokenizer = tokenizer
         self.length = length
-        self.input_ids = [ np.random.randint(16000, size=random.randint(3, pack_length//1.5)).tolist() \
+        self.input_ids = [ np.random.randint(16000, size=random.randint(3, int(pack_length//1.5))).tolist() \
             for i in range(length) ]
 
     def __len__(self):
