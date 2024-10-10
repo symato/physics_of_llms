@@ -15,8 +15,11 @@ from mydataset import make_supervised_data_module
 from dataclasses import dataclass, field
 
 # save more vram by offload gradients to cpu (unblocking)
-from unsloth_gradient_checkpointing import hf_grad_checkpoint_unsloth_wrapper
+# Tham khảo https://raw.githubusercontent.com/axolotl-ai-cloud/axolotl/main/src/axolotl/utils/models.py
+
+from axolotl_unsloth_gradient_checkpointing import hf_grad_checkpoint_unsloth_wrapper
 transformers.modeling_utils.checkpoint = hf_grad_checkpoint_unsloth_wrapper
+
 
 @dataclass
 class TrainingArguments(transformers.TrainingArguments):
@@ -183,27 +186,19 @@ if training_args.booster == "liger":
     print(">>> Sử dụng liger-kernel booster ...")
 
     from liger_kernel.transformers.cross_entropy import LigerCrossEntropyLoss
-    from liger_kernel.transformers.geglu import LigerGEGLUMLP
     from liger_kernel.transformers.rms_norm import LigerRMSNorm
-    from liger_kernel.transformers.rope import liger_rotary_pos_emb
     from liger_kernel.transformers.swiglu import LigerSwiGLUMLP
 
     from liger_kernel.transformers.model.qwen2 import lce_forward as qwen2_lce_forward
     from transformers.models.qwen2 import modeling_qwen2
 
-    # modeling_qwen2.apply_rotary_pos_emb = liger_rotary_pos_emb
     modeling_qwen2.Qwen2RMSNorm = LigerRMSNorm
     modeling_qwen2.Qwen2MLP = LigerSwiGLUMLP
     modeling_qwen2.CrossEntropyLoss = LigerCrossEntropyLoss
     modeling_qwen2.Qwen2ForCausalLM.forward = qwen2_lce_forward
 
-    # 20% speedup, 60% vram save?
-    # from liger_kernel.transformers import AutoLigerKernelForCausalLM
-    # from_pretrained = AutoLigerKernelForCausalLM.from_pretrained
 
-from_pretrained = transformers.AutoModelForCausalLM.from_pretrained
-
-model = from_pretrained(
+model = transformers.AutoModelForCausalLM.from_pretrained(
     training_args.model_name_or_path,
     config = config,
     device_map = device_map,

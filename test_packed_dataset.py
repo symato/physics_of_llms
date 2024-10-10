@@ -96,27 +96,49 @@ else:
         if booster == "liger":
 
             from liger_kernel.transformers.cross_entropy import LigerCrossEntropyLoss
-            from liger_kernel.transformers.geglu import LigerGEGLUMLP
             from liger_kernel.transformers.rms_norm import LigerRMSNorm
-            from liger_kernel.transformers.rope import liger_rotary_pos_emb
             from liger_kernel.transformers.swiglu import LigerSwiGLUMLP
 
             from liger_kernel.transformers.model.qwen2 import lce_forward as qwen2_lce_forward
             from transformers.models.qwen2 import modeling_qwen2
 
-            # modeling_qwen2.apply_rotary_pos_emb = liger_rotary_pos_emb
             modeling_qwen2.Qwen2RMSNorm = LigerRMSNorm
             modeling_qwen2.Qwen2MLP = LigerSwiGLUMLP
             modeling_qwen2.CrossEntropyLoss = LigerCrossEntropyLoss
             modeling_qwen2.Qwen2ForCausalLM.forward = qwen2_lce_forward
 
-        #     from liger_kernel.transformers import AutoLigerKernelForCausalLM
-        #     from_pretrained = AutoLigerKernelForCausalLM.from_pretrained
-        # else:
-        from_pretrained = transformers.AutoModelForCausalLM.from_pretrained
+        elif booster == "unsloth": # for lora
+
+            # elif cfg.unsloth_rms_norm:
+            from axolotl_unsloth_patching import patch_unsloth_layernorm
+            patch_unsloth_layernorm()
+
+            # if cfg.unsloth_cross_entropy_loss:
+            from axolotl_unsloth_patching import integrate_cross_entropy_loss_patch
+            integrate_cross_entropy_loss_patch(model_type="llama")
+
+            # if cfg.unsloth_lora_qkv or cfg.unsloth_lora_o:
+            from axolotl_unsloth_patching import patch_self_attn_lora
+            patch_self_attn_lora()
+
+            # if cfg.unsloth_lora_mlp:
+            from axolotl_unsloth_patching import integrate_lora_mlp_patch
+            integrate_lora_mlp_patch(model)
+
+            # if cfg.unsloth_lora_qkv or cfg.unsloth_lora_o:
+            # from axolotl_unsloth_patching import integrate_lora_patch
+            # integrate_lora_patch(model, cfg)
+
+            # Các kỹ thuật bên unsloth để tăng tốc lora trên 01 GPU
+            # https://raw.githubusercontent.com/axolotl-ai-cloud/axolotl/main/src/axolotl/utils/models.py
+
+            # if cfg.unsloth_rope:
+            from axolotl_unsloth_patching import integrate_rope_embeddings
+            integrate_rope_embeddings()
+
 
         if booster is None or booster == "liger":
-            model = from_pretrained(
+            model = transformers.AutoModelForCausalLM.from_pretrained(
                 model_name,
                 trust_remote_code = False,
                 use_cache = False,
