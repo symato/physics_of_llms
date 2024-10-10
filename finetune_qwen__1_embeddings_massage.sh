@@ -26,10 +26,25 @@ python finetune.py \
   --report_to "none" \
   --bf16 True \
   --booster "" \
-  --optim adamw_torch \
+  --optim adamw_bnb_8bit \
   --int8_mixed True
+  # --optim adamw_torch \
   # --optim ademamix_8bit \
-  # --optim adamw_8bit \
+
+
+## normal + adamw_torch
+# {'loss': 0.8688, 'grad_norm': 1.484375, 'learning_rate': 0.0, 'epoch': 1.0}
+# 100%|█████████████████████████████████████████████████████████████████████████████████████| 43/43 [01:17<00:00,  1.80s/it]
+
+## 8bit_mixed + adamw_torch
+# {'loss': 0.8453, 'grad_norm': 1.578125, 'learning_rate': 0.0, 'epoch': 1.0}
+# 100%|█████████████████████████████████████████████████████████████████████████████████████| 41/41 [03:23<00:00,  4.35s/it]
+
+# mất khoảng 30s để compile rồi mới chạy
+
+
+############################################################################################################################
+
 
 # >>> finetune_layers []
 # GPU = NVIDIA GeForce RTX 3050 Ti Laptop GPU. Max memory = 4.0 GB.

@@ -199,7 +199,7 @@ model.config.use_cache = False
 
 if training_args.int8_mixed:
     # !!! Code thử nghiệm, không dùng cho production !!!
-    # !!! Phải chờ lâu để compile ...
+    print("!!! Phải chờ lâu để int8_mixed khởi động ... ")
     # áp dụng mixed int8 linear kernel to get 1.7x speedup on 4090 and 1.4x speedup on A100
     from torchao import quantize_ # pip install torchao
 
