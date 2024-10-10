@@ -34,6 +34,15 @@ python finetune.py \
   # --optim adamw_bnb_8bit \
   # --booster "liger" \
 
+############################################################################################################################
+
+## liger booster <= tốn time lúc đầu để compile kernels?
+# 0.46 minutes used for training.
+# Peak reserved memory for training = 1.576 GB.
+
+## None
+# 0.29 minutes used for training.
+# Peak reserved memory for training = 2.546 GB.
 
 ############################################################################################################################
 

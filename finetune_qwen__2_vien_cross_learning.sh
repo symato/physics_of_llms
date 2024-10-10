@@ -23,6 +23,7 @@ python finetune.py \
   --lr_scheduler_type "linear" \
   --report_to "none" \
   --bf16 True \
+  --booster "liger" \
   --optim adamw_8bit
 
 

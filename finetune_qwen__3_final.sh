@@ -7,7 +7,7 @@ data_path=final_finetune
 
 python finetune.py \
   --model_name_or_path "../Qwen2.5-7B-Instruct__trimm_vocab" \
-  --finetune_layers "0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24" \
+  --finetune_layers "0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25" \
   --data_path "$data_path" \
   --model_max_length 4096 \
   --output_dir "../Qwen2.5-7B-Instruct__trimm_vocab__final" \
