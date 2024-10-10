@@ -249,4 +249,22 @@ Và NN không có động lực trong hàm mất mát (no incentive in the lost 
 
 Khi mô hình nhỏ, nơ ron *không có lựa chọn nào khác* ngoài align với meaningful tasks. Nơ ron là nơi bạn có sự phi tuyến tính và bạn không có đủ chúng cho giải pháp one-big-mess. Somehow giải pháp hiệu quả nhất (với NN nhỏ) là giải pháp không hỗn độn. Vậy với NN nhỏ khả năng diễn giải xuất hiện như là một hiệu ứng phụ của quá trình không hỗn độn hóa được.
 
- 
+
+## Interpretability work that inspires Ronen and Yuanzhi
+...
+
+Tôi nghĩ những gì chúng ta chứng kiến với LLM nó giống như một phép lạ toán học đang diễn ra. Ý tôi là bạn sử dụng thuật toán, nó khá đơn giản, gradient descent ++, tôi không muốn đánh giá thấp những đóng góp kỹ thuật thông minh của bạn trong những thuật toán đó, nhưng về cơ bản nó là gradient descent với một kiến trúc rất thông minh - nhưng vẫn khá đơn giản (để hiểu công thức).
+
+Điều kì diệu là khi bạn lấy 1 corpus khổng lồ để huấn luyện model - sử dụng những thuật toán này, và NN không bị biết ghi nhớ chỗ dữ liệu này, bạn có một network thực sự có thể genuinely có thể tổng hợp ra context mới, content mới thể hiện những dấu hiệu của việc hiểu về reasoning and so on. TinyStories chỉ là một ví dụ nhỏ khi bạn chứng kiến cùng một kiểu phép lạ (nó ko thú vụ như LLM) nhưng ý tôi muốn nói ở size nhỏ bạn đã có very interesting generalization and emergence going on - ở kích thước nhỏ bạn cũng đã chứng kiến được những thứ rất thú vị như tổng quát hóa ...
+
+> Emergence là hiện tượng trong đó các đặc tính hoặc hành vi phức tạp xuất hiện từ sự tương tác đơn giản giữa các thành phần của một hệ thống. Điều đặc biệt về emergence là các đặc tính này không thể được dự đoán chỉ dựa trên các thuộc tính của từng thành phần đơn lẻ mà xuất phát từ sự tương tác và tổ chức của toàn bộ hệ thống.
+
+> Ví dụ, trong sinh học, nhận thức của bộ não người không thể được lý giải hoàn toàn chỉ bằng cách phân tích từng tế bào thần kinh riêng lẻ. Các tế bào này tương tác với nhau để tạo ra ý thức, một đặc tính emergent của hệ thống não bộ.
+
+> Trong khoa học máy tính, các hệ thống trí tuệ nhân tạo cũng có thể xuất hiện các đặc tính emergent khi lượng dữ liệu và cách thức xử lý trở nên đủ phức tạp, ví dụ như việc AI học hỏi các khái niệm trừu tượng từ dữ liệu mà không cần hướng dẫn trực tiếp.
+
+Có 1 paper tôi muốn đề cập `Transformer feed forward layers are key value memory`, đó là 1 paper tôi thích, cố giải thích cách hoạt động của các nơ ron của 1 model cỡ Bert, và họ đã cố gắng chỉ ra rằng có một vài nơ ron có vai trò nhất định có thể giải nghĩa.
+
+In general, lý thuyết đằng sau việc diễn giải hoạt động của NN nó đang ở dạng rất rất sơ khai, và có rất nhiều những công trình thông minh (very very clever works) tuy nhiên nó có vẻ rất khó ... và những tác phẩm thực sự về đề tài này chắc phải đợi nhiều năm (ánh sáng) nữa ... để có thể hiểu thực sự những gì đang diễn ra trong NN ... Và bạn biết tiên nghiệm không có giả thiết nào chúng ta có thể thực sự hiểu model. https://youtu.be/mv3SIgDP_y4?t=6943 ...
+
+Bạn biết đấy nhân loại đã tận dụng lợi thế của việc cưỡi ngựa từ rất lâu rồi. Vậy mà tới giờ chúng ta vẫn không biết mọi tế bào trong não ngựa đang diễn ra điều gì ... Chúng ta không thực sự giải thích được làm thế nào mà khi người cưỡi đưa ra một vài ám hiệu mà con ngựa hiểu và làm theo được một cách đáng tin cậy, hầu như không có sai sót / tai nạn xảy ra trong việc cưỡi ngựa. **Ngựa tuân theo chỉ dẫn một cách rất đáng tin cậy**. Bạn biết đấy điều này diễn ra một cách hết sức tự nhiên, hiệu quả mà không cần khả năng diễn giải não ngựa, có thể ta cũng nên áp dụng cách nghĩ tương tự như thuần hóa ngựa vào việc **thuần hóa LLMs** và nhân loại sẽ được hưởng lợi rất nhiều từ điều đó ... Vì thế có thể tôi không lạc quan về khả năng hiểu hay diễn giải được toàn bộ cơ chế hoạt động của LLM nhưng mặt khác tôi rất lạc quan về tính hữu ích của LLM, và chúng ta có thể thuần hóa (align) chúng một cách hiệu quả! 
