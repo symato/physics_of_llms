@@ -199,6 +199,7 @@ model.config.use_cache = False
 
 if training_args.int8_mixed:
     # !!! Code thử nghiệm, không dùng cho production !!!
+    # !!! Đã chạy được với adamw_torch nhưng rất chậm, cần tìm hiểu nguyên nhân
     print("!!! Phải chờ lâu để int8_mixed khởi động ... ")
     # áp dụng mixed int8 linear kernel to get 1.7x speedup on 4090 and 1.4x speedup on A100
     from torchao import quantize_ # pip install torchao
@@ -208,7 +209,7 @@ if training_args.int8_mixed:
 
     quantize_(model.model.layers, int8_mixed_precision_training(), set_inductor_config=False)
 
-model.compile()
+    model.compile()
 
 # '''
 ## Finetune embeddings và layers được chọn
