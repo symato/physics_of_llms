@@ -206,8 +206,10 @@ if training_args.int8_mixed:
     # pip install --pre torchao --index-url https://download.pytorch.org/whl/nightly/cu124 -U
     from torchao.prototype.quantized_training import int8_mixed_precision_training
 
-    # print(model)
-    quantize_(model.model.layers, int8_mixed_precision_training(), set_inductor_config=False)
+    x = model.model
+    quantize_(x.layers, int8_mixed_precision_training(), set_inductor_config=False)
+
+    model.compile()
 
 # '''
 ## Finetune embeddings và layers được chọn
