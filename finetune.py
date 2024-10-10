@@ -180,6 +180,8 @@ config = transformers.AutoConfig.from_pretrained(
 
 if training_args.booster == "liger":
 
+    print(">>> Sử dụng liger-kernel booster ...")
+
     from liger_kernel.transformers.cross_entropy import LigerCrossEntropyLoss
     from liger_kernel.transformers.geglu import LigerGEGLUMLP
     from liger_kernel.transformers.rms_norm import LigerRMSNorm

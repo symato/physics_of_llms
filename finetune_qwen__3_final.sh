@@ -23,6 +23,7 @@ python finetune.py \
   --lr_scheduler_type "linear" \
   --report_to "wandb" \
   --bf16 True \
+  --booster "liger" \
   --optim adamw_8bit
 
 # GPU = NVIDIA GeForce RTX 4090. Max memory = 23.52 GB.
