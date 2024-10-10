@@ -239,7 +239,7 @@ GPT-2 không được như thế => có lẽ model nhỏ hơn dễ interpreable 
 ## Neuron technique used in developing the TinyStories model
 https://youtu.be/mv3SIgDP_y4?t=6007
 
-Nếu có 1 lập trình viên cố gắng viết code để tự đồng hoàn thành tinystories, rất có khả năng nó sẽ là 1 hàm cố gắng định vị tên của nhân vật chính bởi vì nó hữu dụng ở rất nhiều nơi bạn định autocomplete. Thực tế là khi bạn biết tên của vài nhân vật nên xuất hiện, nó là một dự đoán tốt (good guest) đây có thể là tên nhân vật chính.
+Nếu có 1 lập trình viên cố gắng viết code để tự động hoàn thành tinystories (đoán từ trên tập data tinystories), rất có khả năng nó sẽ là 1 hàm cố gắng định vị tên của nhân vật chính bởi vì nó hữu dụng ở rất nhiều nơi bạn định autocomplete. Thực tế là khi bạn biết tên của vài nhân vật nên xuất hiện, nó là một dự đoán tốt (good guest) đây có thể là tên nhân vật chính.
 
 Bạn có neuron làm chính xác điều đó, chúng tôi chưa kiểm tra kỹ để khẳng định chắc chắn nhưng rất có khả năng có một attention head, tạo ra kết quả bất cứ khi nào bạn biết rằng tên của vài nhân vật nên xuất hiện bạn khi bạn liên hệ 2 điều này với nhau, bạn sẽ nhận được một cơ chế có thể copy tên nhân vật chính đến những vị trí khác nhau trong quá trình sinh text. Đây là một cơ chế rất cơ bản mà bạn có thể quan sát trong NN mà nó không xảy ra ở những model lớn, ít nhất theo cái cách không dễ dàng theo dõi ...
 
