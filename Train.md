@@ -1,7 +1,7 @@
 ![](https://github.com/a-r-r-o-w/cogvideox-factory/blob/main/assets/slaying-ooms.png)
 
-Slaying OOMs with PyTorch FSDP and torchao
-- https://youtu.be/UvRl4ansfCg?t=983
+Slaying OOMs - Mark Saroufim & Jane Xu, Meta 
+- https://www.youtube.com/watch?v=xzBcBJ8_rzM
 
 INT8 mixed
 - https://youtu.be/Br07GsnnvWc?t=2666
