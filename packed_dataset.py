@@ -45,8 +45,7 @@ def monkey_patch(caller=None):
         assert False, "Upgrade transformers để dùng được multi packing dataset"
 
     print("\033[36mBạn đang sử dụng multi packing, hãy bật biến môi trường PACKED_PATCH_CHECK=1")
-    print("để kiểm tra xem việc patching đã thành công chưa. Nếu thành công bạn sẽ thấy")
-    print("dòng chữ dưới đây và hãy ấn Enter để tiếp tục. \033[0m")
+    print("để kiểm tra xem việc patching đã thành công chưa.\033[0m")
     print(f"\033[91m!!! PACKED_PATCH_CHECK=1")
     print(f"!!! booster \033[36m{{liger|unsloth|...}}\033[91m, attention_mask.shape ... \033[0m\n")
 
