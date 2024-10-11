@@ -67,7 +67,7 @@ def get_uniq_words(infile):
     outfile = f"{PATH}/{x}_count.json"
     print(outfile)
 
-    try: count = json.load(lzma.open(outfile))
+    try: count = json.load(open(outfile))
     except: count = { "last_line_idx": 0 }
 
     if os.path.exists(infile) and "last_line_idx" in count: # DONE
