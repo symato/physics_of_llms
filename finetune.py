@@ -16,8 +16,8 @@ from dataclasses import dataclass, field
 
 # save more vram by offload gradients to cpu (unblocking)
 # Tham khảo https://raw.githubusercontent.com/axolotl-ai-cloud/axolotl/main/src/axolotl/utils/models.py
-# from axolotl_unsloth_gradient_checkpointing import hf_grad_checkpoint_unsloth_wrapper
-# transformers.modeling_utils.checkpoint = hf_grad_checkpoint_unsloth_wrapper
+from axolotl_unsloth_gradient_checkpointing import hf_grad_checkpoint_unsloth_wrapper
+transformers.modeling_utils.checkpoint = hf_grad_checkpoint_unsloth_wrapper
 
 
 @dataclass
@@ -202,7 +202,7 @@ model = transformers.AutoModelForCausalLM.from_pretrained(
     config = config,
     device_map = device_map,
     torch_dtype = torch.bfloat16,
-    # attn_implementation = "flash_attention_2", # bắt buộc phải có để hoạt động đc với packed dataset
+    attn_implementation = "flash_attention_2", # bắt buộc phải có để hoạt động đc với packed dataset
 )
 
 ## In the training, we set use_cache=False, use_cache=True only takes effect at inference
