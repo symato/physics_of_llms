@@ -2,7 +2,7 @@
 
 export PACK_DATA=1
 
-data_path=final_finetune2
+data_path=final_finetune1
 #rm -rf data_cached/$data_path
 
 python finetune.py \
@@ -10,8 +10,8 @@ python finetune.py \
   --finetune_layers "0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25" \
   --data_path "$data_path" \
   --model_max_length 4096 \
-  --output_dir "../Qwen2.5-7B-Instruct__trimm_vocab__final2" \
-  --num_train_epochs 3 \
+  --output_dir "../Qwen2.5-7B-Instruct__trimm_vocab__final1" \
+  --num_train_epochs 5 \
   --per_device_train_batch_size 1 \
   --gradient_accumulation_steps 16 \
   --logging_steps 2 \
