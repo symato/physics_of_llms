@@ -7,8 +7,8 @@ from pyvi import ViTokenizer
 from utils import *
 from utils_lang import *
 
-x = ViTokenizer.tokenize("Trường đại học bách khoa hà nội")
-x = re.findall(r'[_\w]+', x)
+x = ViTokenizer.tknz("Trường đại học bách khoa hà nội")
+x = re.findall(r'[▁\w]+', x)
 print(x)#; input() # DEBUG
 
 min_count = 0
@@ -38,10 +38,10 @@ def count_words(texts):
     count = {}
     for text in texts:
         if detect_lang(text) == "vi":
-            x = ViTokenizer.tokenize(text)
+            x = ViTokenizer.tknz(text)
             
-            words_without_space_prefix = re.findall(r'(?<![ _\w])[_\w]+', x)
-            words_with_space_prefix    = re.findall(r' [_\w]+', x)
+            words_without_space_prefix = re.findall(r'(?<![ ▁\w])[▁\w]+', x)
+            words_with_space_prefix    = re.findall(r' [▁\w]+', x)
 
             for word in words_without_space_prefix + words_with_space_prefix:
 
@@ -64,7 +64,7 @@ def merge_count(count, x):
 
 def get_uniq_words(infile):
     x = infile.split("/")[-1]
-    outfile = f"{PATH}/{x}_count.json.xz"
+    outfile = f"{PATH}/{x}_count.json"
     print(outfile)
 
     try: count = json.load(lzma.open(outfile))
@@ -81,7 +81,7 @@ def get_uniq_words(infile):
             text = json.loads(line)["text"]
             texts.append( text )
 
-            # 1k samples ghi lại kết quả đếm 1 lần
+            # 5k samples ghi lại kết quả đếm 1 lần
             if idx % 5000 == 4999:
                 merge_count(count, count_words(texts))
                 count["last_line_idx"] = idx
@@ -119,7 +119,7 @@ def get_final_count(input_files):
             merge_count(count, x)
 
     for w, c in list( count.items() ):
-        if "_" not in w or c < min_count:
+        if "▁" not in w or c < min_count:
             count.pop(w)
 
     return count
@@ -135,7 +135,7 @@ words = []
 
 for word, freq in count.items():
 
-    text = word.replace("_", " ")
+    text = word.replace("▁", " ")
     tids = tokenizer.encode(text)
     qwen_tokens = [ tokenizer.decode(tid) for tid in tids ]
 
