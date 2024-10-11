@@ -16,9 +16,8 @@ from dataclasses import dataclass, field
 
 # save more vram by offload gradients to cpu (unblocking)
 # Tham khảo https://raw.githubusercontent.com/axolotl-ai-cloud/axolotl/main/src/axolotl/utils/models.py
-
-from axolotl_unsloth_gradient_checkpointing import hf_grad_checkpoint_unsloth_wrapper
-transformers.modeling_utils.checkpoint = hf_grad_checkpoint_unsloth_wrapper
+# from axolotl_unsloth_gradient_checkpointing import hf_grad_checkpoint_unsloth_wrapper
+# transformers.modeling_utils.checkpoint = hf_grad_checkpoint_unsloth_wrapper
 
 
 @dataclass
@@ -36,7 +35,7 @@ class TrainingArguments(transformers.TrainingArguments):
 
     optim: str = field(default="adamw_8bit") # ademamix_8bit
 
-    booster: str = field(default="", metadata={"help": "None, liger hoặc unsloth"}) # ko dùng
+    boosters: str = field(default="", metadata={"help": "None, liger hoặc unsloth"}) # ko dùng
 
     int8_mixed: bool = field(default=False, metadata={"help": "apply torchao's int8_mixed_precision_training speedup"})
 
@@ -181,7 +180,7 @@ config = transformers.AutoConfig.from_pretrained(
     training_args.model_name_or_path,
 )
 
-if training_args.booster == "liger":
+if "liger" in training_args.booster.lower():
 
     print(">>> Sử dụng liger-kernel booster ...")
 
@@ -203,7 +202,7 @@ model = transformers.AutoModelForCausalLM.from_pretrained(
     config = config,
     device_map = device_map,
     torch_dtype = torch.bfloat16,
-    attn_implementation = "flash_attention_2", # bắt buộc phải có để hoạt động đc với packed dataset
+    # attn_implementation = "flash_attention_2", # bắt buộc phải có để hoạt động đc với packed dataset
 )
 
 ## In the training, we set use_cache=False, use_cache=True only takes effect at inference
