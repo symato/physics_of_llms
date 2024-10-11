@@ -110,30 +110,30 @@ else:
         elif booster == "unsloth": # for lora
 
             # elif cfg.unsloth_rms_norm:
-            from axolotl_unsloth_patching import patch_unsloth_layernorm
+            from unsloth_axolotl_patching import patch_unsloth_layernorm
             patch_unsloth_layernorm()
 
             # if cfg.unsloth_cross_entropy_loss:
-            from axolotl_unsloth_patching import integrate_cross_entropy_loss_patch
+            from unsloth_axolotl_patching import integrate_cross_entropy_loss_patch
             integrate_cross_entropy_loss_patch(model_type="llama")
 
             # if cfg.unsloth_lora_qkv or cfg.unsloth_lora_o:
-            from axolotl_unsloth_patching import patch_self_attn_lora
+            from unsloth_axolotl_patching import patch_self_attn_lora
             patch_self_attn_lora()
 
             # if cfg.unsloth_lora_mlp:
-            from axolotl_unsloth_patching import integrate_lora_mlp_patch
+            from unsloth_axolotl_patching import integrate_lora_mlp_patch
             integrate_lora_mlp_patch(model)
 
             # if cfg.unsloth_lora_qkv or cfg.unsloth_lora_o:
-            # from axolotl_unsloth_patching import integrate_lora_patch
+            # from unsloth_axolotl_patching import integrate_lora_patch
             # integrate_lora_patch(model, cfg)
 
             # Các kỹ thuật bên unsloth để tăng tốc lora trên 01 GPU
             # https://raw.githubusercontent.com/axolotl-ai-cloud/axolotl/main/src/axolotl/utils/models.py
 
             # if cfg.unsloth_rope:
-            from axolotl_unsloth_patching import integrate_rope_embeddings
+            from unsloth_axolotl_patching import integrate_rope_embeddings
             integrate_rope_embeddings()
 
 

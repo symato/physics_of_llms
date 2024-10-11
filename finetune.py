@@ -15,10 +15,9 @@ from mydataset import make_supervised_data_module
 from dataclasses import dataclass, field
 
 # save more vram by offload gradients to cpu (unblocking)
-# Tham khảo https://raw.githubusercontent.com/axolotl-ai-cloud/axolotl/main/src/axolotl/utils/models.py
-from axolotl_unsloth_gradient_checkpointing import hf_grad_checkpoint_unsloth_wrapper
+# Source https://raw.githubusercontent.com/axolotl-ai-cloud/axolotl/main/src/axolotl/utils/models.py
+from unsloth_utils import hf_grad_checkpoint_unsloth_wrapper
 transformers.modeling_utils.checkpoint = hf_grad_checkpoint_unsloth_wrapper
-
 
 @dataclass
 class TrainingArguments(transformers.TrainingArguments):
@@ -26,7 +25,7 @@ class TrainingArguments(transformers.TrainingArguments):
 
     model_max_length: int = field(
         default=1024*4, # 4k ctxlen
-        metadata={"help": "Maximum sequence length. Sequences will be right padded (and possibly truncated)."},
+        metadata={"help": "Maximum sequence length. Sequences will be right padded and truncated."},
     )
 
     finetune_layers: str = field(default="", metadata={"help": "'0 1 2' ..."})
@@ -35,9 +34,7 @@ class TrainingArguments(transformers.TrainingArguments):
 
     optim: str = field(default="adamw_8bit") # ademamix_8bit
 
-    booster: str = field(default="", metadata={"help": "None, liger hoặc unsloth"}) # ko dùng
-
-    int8_mixed: bool = field(default=False, metadata={"help": "apply torchao's int8_mixed_precision_training speedup"})
+    booster: str = field(default="", metadata={"help": "None, liger hoặc unsloth"})
 
 
 def rank0_print(*args):
@@ -208,20 +205,6 @@ model = transformers.AutoModelForCausalLM.from_pretrained(
 ## In the training, we set use_cache=False, use_cache=True only takes effect at inference
 model.config.use_cache = False
 
-if training_args.int8_mixed:
-    # !!! Code thử nghiệm, không dùng cho production !!!
-    # !!! Đã chạy được với adamw_torch nhưng rất chậm, cần tìm hiểu nguyên nhân
-    print("!!! Phải chờ lâu để int8_mixed khởi động ... ")
-    # áp dụng mixed int8 linear kernel to get 1.7x speedup on 4090 and 1.4x speedup on A100
-    from torchao import quantize_ # pip install torchao
-
-    # pip install --pre torchao --index-url https://download.pytorch.org/whl/nightly/cu124 -U
-    from torchao.prototype.quantized_training import int8_mixed_precision_training
-
-    quantize_(model.model.layers, int8_mixed_precision_training(), set_inductor_config=False)
-
-    model.compile()
-
 # '''
 ## Finetune embeddings và layers được chọn
 # Tham khảo https://github.com/jondurbin/qlora/blob/e4c20638464e70becc212caa955efea378684473/train.py#L1133
@@ -238,6 +221,7 @@ if "all" not in training_args.finetune_layers.lower():
         for param in model.model.layers[idx].parameters():
             param.requires_grad = True
 # '''
+
 print(">>> finetune_model", training_args.model_name_or_path)
 print(">>> finetune_layers", finetune_layers)
 

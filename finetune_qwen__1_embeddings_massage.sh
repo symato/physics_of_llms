@@ -26,8 +26,7 @@ python finetune.py \
   --report_to "none" \
   --bf16 True \
   --booster "liger" \
-  --optim adamw_8bit \
-  # --int8_mixed True \
+  --optim ademamix_8bit \
   # --optim adamw_torch \
   # --optim adamw_8bit \
   # --optim ademamix_8bit \
