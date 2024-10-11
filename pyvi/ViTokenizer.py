@@ -125,7 +125,7 @@ def tokenize(input_text, use_special_sep = False):
     return output
 
 
-def tknz(input_text, allowed_words):
+def tknz(input_text, allowed_words = False):
     _, tokens = sylabelize(input_text)
     labels = model.predict([sent2features(tokens)])[0]
 
@@ -144,20 +144,25 @@ def tknz(input_text, allowed_words):
             # new token
             if "▁" in output:
                 word = "▁" + output
-                if word in allowed_words:
+                if allowed_words is False or word in allowed_words:
                     words.add( output )
 
             output = tokens[i]
 
     if "▁" in output:
         word = "▁" + output
-        if word in allowed_words:
+        if allowed_words is False or word in allowed_words:
             words.add( output )
 
     # print(words)
 
-    for word in words:
-        original_word = " " + word.replace("▁", " ")
-        input_text = input_text.replace(original_word, " " + word)
+    if allowed_words is False:
+        for word in words:
+            original_word = word.replace("▁", " ")
+            input_text = input_text.replace(original_word, word)
+    else:
+        for word in words:
+            original_word = " " + word.replace("▁", " ")
+            input_text = input_text.replace(original_word, " " + word)
 
     return input_text
