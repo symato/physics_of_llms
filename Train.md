@@ -15,3 +15,6 @@ Others
 - https://srush.github.io/annotated-mamba/hard.html
 - https://github.com/gpu-mode/triton-index
 
+## weighted_cross_entropy and weighted_token_accuracy
+- https://github.com/imoneoi/openchat/blob/master/ochat/models/unpadded_mistral.py#L44-L51
+- https://www.tensorflow.org/api_docs/python/tf/nn/weighted_cross_entropy_with_logits

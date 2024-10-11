@@ -14,6 +14,8 @@ wget https://huggingface.co/datasets/Symato/KB_wikimedia/resolve/main/wikipedia_
 
 python3 prepare_wikimedia_data.py 3000 | shuf > wikimedia_vi_filtered.jsonl
 
+# 190mb text song ngữ mini-vncc-envi_30k.jsonl
+
 # xem thử vài samples
 shuf wikihow_vien_filtered.jsonl | head -n 10 | jq
 shuf wikimedia_vi_filtered.jsonl | head -n 10 | jq
