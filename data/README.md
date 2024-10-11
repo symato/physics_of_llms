@@ -24,20 +24,13 @@ shuf wikimedia_vi_filtered.jsonl | head -n 10 | jq
 ## Chuẩn bị data instructions
 ```sh
 wget https://huggingface.co/datasets/ssmi153/Capybara-ShareGPT/resolve/main/CapybaraPure_Decontaminated.jsonl
-./webglm-qa.py THUDM__webglm-qa__train__a__vi.jsonl.xz > webglm-qa_vien.jsonl
+./prepare_webglm-qa.py THUDM__webglm-qa__train__a__vi.jsonl.xz > webglm-qa_vien.jsonl
+
+python3 prepare_mini-vncc-envi.py > mini-vncc-envi.jsonl
 ```
 
 ## Final finetune data
 ```sh
-cat wikimedia_vi_filtered.jsonl webglm-qa_vien*.jsonl CapybaraPure_Decontaminated.jsonl | shuf > final_finetune.jsonl
-du -sh final_finetune.jsonl # ~223M
-
-# 111M    wikimedia_vi_filtered.jsonl
-# 72M     CapybaraPure_Decontaminated.jsonl
-# 45M     webglm-qa_vien.jsonl
-
-#  7662 wikimedia_vi_filtered.jsonl
-# 10343 webglm-qa_vien.jsonl
-# 16005 CapybaraPure_Decontaminated.jsonl
-# 34010 total
+cat wikihow_vien_filtered.jsonl wikimedia_vi_filtered.jsonl webglm-qa_vien*.jsonl CapybaraPure_Decontaminated.jsonl mini-vncc-envi.jsonl | shuf > final_finetune.jsonl
+du -sh final_finetune.jsonl
 ```

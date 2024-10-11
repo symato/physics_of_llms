@@ -179,7 +179,7 @@ config = transformers.AutoConfig.from_pretrained(
 
 if "liger" in training_args.booster.lower():
 
-    print(">>> Sử dụng liger-kernel booster ...")
+    print(">>> Sử dụng liger-kernel booster cho qwen2 ...")
 
     from liger_kernel.transformers.cross_entropy import LigerCrossEntropyLoss
     from liger_kernel.transformers.rms_norm import LigerRMSNorm
