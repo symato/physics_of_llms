@@ -99,7 +99,10 @@ def sylabelize(text):
     return text, [token[0] for token in tokens]
 
 
-def tokenize(input_text):
+def tokenize(input_text, use_special_sep = False):
+
+    sep = '▁' if use_special_sep else '_'
+
     text, tokens = sylabelize(input_text)
 
     if len(tokens) == 0:
@@ -114,9 +117,47 @@ def tokenize(input_text):
                 and not  tokens[i][0].isdigit() and not tokens[i-1][0].isdigit() \
                 and not (tokens[i][0].istitle() and not tokens[i-1][0].istitle()):
 
-            output += '_' + tokens[i]
+            output += sep + tokens[i]
 
         else:
             output += ' ' + tokens[i]
 
     return output
+
+
+def tknz(input_text, allowed_words):
+    _, tokens = sylabelize(input_text)
+    labels = model.predict([sent2features(tokens)])[0]
+
+    words = set()
+    output = tokens[0]
+
+    for i in range(1, len(labels)): # I_W = in-word?
+        if labels[i] == 'I_W' and tokens[i] not in string.punctuation \
+                and tokens[i-1] not in string.punctuation \
+                and not  tokens[i][0].isdigit() and not tokens[i-1][0].isdigit() \
+                and not (tokens[i][0].istitle() and not tokens[i-1][0].istitle()):
+
+            output += "▁" + tokens[i]
+
+        else:
+            # new token
+            if "▁" in output:
+                word = "▁" + output
+                if word in allowed_words:
+                    words.add( output )
+
+            output = tokens[i]
+
+    if "▁" in output:
+        word = "▁" + output
+        if word in allowed_words:
+            words.add( output )
+
+    # print(words)
+
+    for word in words:
+        original_word = " " + word.replace("▁", " ")
+        input_text = input_text.replace(original_word, " " + word)
+
+    return input_text

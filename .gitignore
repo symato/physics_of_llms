@@ -12,3 +12,4 @@ data/*train*jsonl.xz
 data_cached/
 output_*
 wandb/
+phi_tokenizer__extend_vocab.model
