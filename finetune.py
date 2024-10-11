@@ -35,7 +35,7 @@ class TrainingArguments(transformers.TrainingArguments):
 
     optim: str = field(default="adamw_8bit") # ademamix_8bit
 
-    boosters: str = field(default="", metadata={"help": "None, liger hoặc unsloth"}) # ko dùng
+    booster: str = field(default="", metadata={"help": "None, liger hoặc unsloth"}) # ko dùng
 
     int8_mixed: bool = field(default=False, metadata={"help": "apply torchao's int8_mixed_precision_training speedup"})
 
