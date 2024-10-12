@@ -163,6 +163,21 @@ lm_head value ở ví trí đó với qwen 1.5 chính là embedding value vì qw
 
 - - -
 
+## Kỹ thuật dồn vocab khi finetune
+
+Khi finetune trên 1 tập domain data nhỏ (vài GB) sẽ không dùng hết 100k - 200k vocab, => 
+lọc tokens thực sự dùng trong data (1/4 - 1/2), dồn embeddings lại và chỉ train trên những embeddings đó.
+Sau khi train xong lại re-map và merge vào vocab gốc.
+
+Ưu: 
+- Save vram while training!
+- không làm ảnh hưởng bộ tknz gốc
+
+Nhược:
+- Các embeddings khác không được tune?
+
+- - -
+
 ## Thử nghiệm In-context Pretraining xem khi trộn lẫn training sample trong ctxlen ảnh hưởng gì tới model?
 - trộn ngẫu nhiên
 - trộn có tính toán https://arxiv.org/abs/2310.10638
