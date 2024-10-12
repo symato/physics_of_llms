@@ -81,7 +81,7 @@ def preprocess(sources, tokenizer, max_len):
                 add_tokens(input_id, target,          f"{im_end}\n", ignore=True)
 
 
-            elif c['from'] == "human":
+            elif c['from'] == "human" or c['from'] == "user":
 
                 ignore = True # mặc định là không học
 
