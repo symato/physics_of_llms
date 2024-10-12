@@ -36,7 +36,7 @@ def get_unpad_data(attention_mask):
 def monkey_patch(caller=None):
     # Monkey-patch flash attention if this transformers already merged: 
     # https://github.com/huggingface/transformers/commit/e314395277d784a34ee99526f48155d4d62cff3d
-    # this will work for all models using flash attention: Llama, Mistral, Qwen2, Phi3, ...
+    # this will work for all models using **flash attention**: Llama, Mistral, Qwen2, Phi3, ...
     if hasattr(transformers, "modeling_flash_attention_utils"):
         already_patched = ( transformers.modeling_flash_attention_utils._get_unpad_data == get_unpad_data )
         if already_patched: print(f"{caller} \033[36mpacked_dataset already patched \033[0m"); return

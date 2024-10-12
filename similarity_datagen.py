@@ -117,7 +117,7 @@ for idx, line in enumerate( lzma.open(infile) ):
     # Thử trước với ~100 words
     if idx >= 128: break
 
-    word = json.loads(line)["word"].replace("_", " ")
+    word = json.loads(line)["word"].replace("▁", " ")
 
     if word not in done:
 

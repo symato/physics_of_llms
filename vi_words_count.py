@@ -67,8 +67,14 @@ def get_uniq_words(infile):
     outfile = f"{PATH}/{x}_count.json"
     print(outfile)
 
-    try: count = json.load(open(outfile))
-    except: count = { "last_line_idx": 0 }
+
+    try:
+        if os.path.exists(outfile):
+            count = json.load(open(outfile))
+        else:
+            count = json.load(lzma.open(outfile + ".xz"))
+    except:
+        count = { "last_line_idx": 0 }
 
     if os.path.exists(infile) and "last_line_idx" in count: # DONE
 
@@ -165,7 +171,7 @@ with open("data/vi_words_impact.jsonl", "wt") as f:
 
 '''
 
-python3 vi_words_count.py 600
+python3 vi_words_count.py 6000
 
 head -n 10 data/vi_words_impact.jsonl
 
