@@ -170,7 +170,7 @@ lọc tokens thực sự dùng trong data (1/4 - 1/2), dồn embeddings lại v�
 Sau khi train xong lại re-map và merge vào vocab gốc.
 
 Ưu: 
-- Save vram while training!
+- Save vram while training! (embeddings ở định dạng f32 nên khá tốn)
 - không làm ảnh hưởng bộ tknz gốc
 
 Nhược:
