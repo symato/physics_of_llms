@@ -93,7 +93,7 @@ def preprocess(sources, tokenizer, max_len):
                 add_tokens(input_id, target,          f"{im_end}\n", ignore=ignore)
             else:
 
-                assert c['from'] == 'gpt'
+                assert c['from'] == 'gpt', c
                 ignore = False # mặc định là học
 
                 if "weight" in c and c["weight"] == 0:
