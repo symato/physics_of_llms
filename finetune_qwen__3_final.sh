@@ -24,7 +24,7 @@ python finetune.py \
   --report_to "wandb" \
   --bf16 True \
   --booster "liger" \
-  --optim ademamix_8bit
+  --optim adamw_8bit
 
 # GPU = NVIDIA GeForce RTX 4090. Max memory = 23.52 GB.
 # 2.916 GB of memory reserved.
