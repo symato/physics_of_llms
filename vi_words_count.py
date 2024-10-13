@@ -26,9 +26,7 @@ else:
     if os.path.exists(x):
         input_files = [x]
     else:
-        input_files = \
-            glob.glob(f"{x}/*.lzma") + \
-            glob.glob(f"{x}/*.xz")
+        input_files = glob.glob(f"{x}/*")
 
 print(input_files, min_count)
 
