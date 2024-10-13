@@ -93,7 +93,7 @@ xzcat data/vi_words_impact.jsonl.xz | head -n 10
 {"word": " tổ▁chức",     "impact": 4730918, "qwen_tokens": [" tổ", " chức"], "freq": 4730918, "qwen_tokens_count": 2}
 {"word": " cơ▁quan",     "impact": 4695570, "qwen_tokens": [" cơ", " qu", "an"], "freq": 2347785, "qwen_tokens_count": 3}
 
-xzcat data/vi_words_impact.jsonl.xz | head -n 3000 |  tail -n 10 
+xzcat data/vi_words_impact.jsonl.xz | head -n 3000 | tail -n 10 
 {"word": " bàng▁quang",  "impact": 101721, "qwen_tokens": [" b", "àng", " qu", "ang"], "freq": 33907, "qwen_tokens_count": 4}
 {"word": " phản▁xạ",     "impact": 101720, "qwen_tokens": [" phản", " x", "ạ"], "freq": 50860, "qwen_tokens_count": 3}
 {"word": " Sức▁khỏe",    "impact": 101626, "qwen_tokens": [" S", "ức", " khỏe"], "freq": 50813, "qwen_tokens_count": 3}

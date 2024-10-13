@@ -11,21 +11,24 @@ x = ViTokenizer.tknz("Trường đại học bách khoa hà nội")
 x = re.findall(r'[▁\w]+', x)
 print(x)#; input() # DEBUG
 
-min_count = 0
-try:
-    # bỏ / ở cuối tham số đầu vào
-    x = re.sub(r'/*$', "", sys.argv[1].strip())
+try: x = sys.argv[1]
+except: x = "data/test.jsonl.xz"
 
-    if re.match(r"\d+", x):
-        input_files = "stats_mode"
-        min_count = int(x)
+min_count = 0
+
+# bỏ / ở cuối tham số đầu vào
+x = re.sub(r'/*$', "", x.strip())
+
+if re.match(r"\d+", x):
+    input_files = "stats_mode"
+    min_count = int(x)
+else:
+    if os.path.exists(x):
+        input_files = [x]
     else:
         input_files = \
             glob.glob(f"{x}/*.lzma") + \
             glob.glob(f"{x}/*.xz")
-
-except:
-    input_files = ["data/test.jsonl.xz"]
 
 print(input_files, min_count)
 
@@ -37,7 +40,7 @@ subprocess.run(f"mkdir -p {PATH}", shell = True)
 def count_words(texts):
     count = {}
     for text in texts:
-        if detect_lang(text) == "vi":
+        if True:#detect_lang(text) == "vi":
             x = ViTokenizer.tknz(text)
             
             words_without_space_prefix = re.findall(r'(?<![ ▁\w])[▁\w]+', x)
@@ -80,12 +83,26 @@ def get_uniq_words(infile):
 
         texts = []
 
-        for idx, line in enumerate( lzma.open(infile) ):
+        if ".xz" in infile or ".lzma" in infile:
+            f = lzma.open(infile)
+        else:
+            f = open(infile)
+
+        for idx, line in enumerate( f ):
             if idx <= count["last_line_idx"]:
                 continue
 
-            text = json.loads(line)["text"]
-            texts.append( text )
+            data = json.loads(line)
+            if "text" in data:
+                t = data["text"]
+                if isinstance(t, str):
+                    texts.append( t )
+
+            if "conversations" in data:
+                for c in data["conversations"]:
+                    v = c["value"]
+                    if isinstance(v, str):
+                        texts.append( v )
 
             # 5k samples ghi lại kết quả đếm 1 lần
             if idx % 5000 == 4999:
@@ -108,6 +125,8 @@ def get_uniq_words(infile):
 
         print(f'get_uniq_token {infile} DONE.', flush = True)
 
+        f.close()
+
     if "last_line_idx" in count:
         count.pop("last_line_idx")
 
@@ -127,6 +146,12 @@ def get_final_count(input_files):
     for w, c in list( count.items() ):
         if "▁" not in w or c < min_count:
             count.pop(w)
+
+        elif " " == w[0]:
+            count.pop(w)
+            w = w[1:]
+            if w not in count: count[w] = 0
+            count[w] += c
 
     return count
 
