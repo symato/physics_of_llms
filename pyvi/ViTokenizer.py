@@ -129,7 +129,7 @@ def tknz(input_text, allowed_words = False):
     _, tokens = sylabelize(input_text)
     labels = model.predict([sent2features(tokens)])[0]
 
-    words = set()
+    candidates = set()
     output = tokens[0]
 
     for i in range(1, len(labels)): # I_W = in-word?
@@ -141,28 +141,59 @@ def tknz(input_text, allowed_words = False):
             output += "▁" + tokens[i]
 
         else:
-            # new token
-            if "▁" in output:
-                word = "▁" + output
-                if allowed_words is False or word in allowed_words:
-                    words.add( output )
-
+            candidates.add( output )
             output = tokens[i]
 
-    if "▁" in output:
-        word = "▁" + output
-        if allowed_words is False or word in allowed_words:
-            words.add( output )
+        candidates.add( output )
+
+
+    words = set()
+    for x in candidates:
+        if "▁" in x:
+            if allowed_words is not False:
+                y = f"▁{x}"
+                if x in allowed_words: words.add(x)
+                if y in allowed_words: words.add(y)
+            else:
+                words.add(x)
 
     # print(words)
 
-    if allowed_words is False:
-        for word in words:
-            original_word = word.replace("▁", " ")
-            input_text = input_text.replace(original_word, word)
-    else:
-        for word in words:
-            original_word = " " + word.replace("▁", " ")
-            input_text = input_text.replace(original_word, " " + word)
+    for word in words:
+        original_word = word.replace("▁", " ")
+        input_text = input_text.replace(original_word, word)
 
     return input_text
+
+
+if __name__ == "__main__":
+
+    text = """
+- Hệ thống thần kinh đóng vai trò quan trọng trong việc kiểm soát và phối hợp các hoạt động của cơ thể con người.
+- Bệnh lý liên quan đến hệ thần kinh có thể gây ảnh hưởng nghiêm trọng đến chất lượng cuộc sống.
+- Một số bệnh liên quan đến thần kinh như Alzheimer, Parkinson đang trở thành thách thức lớn đối với y học hiện đại.      
+- Hệ thần kinh trung ương bao gồm não bộ và tủy sống.
+- Rối loạn thần kinh có thể dẫn đến mất ngủ, căng thẳng và mệt mỏi kéo dài.
+
+Từ tiếng Việt "thần kinh" có thể được dịch sang tiếng Anh với các lựa chọn sau:
+
+1. "Nerve"
+ - Phù hợp vì: Đây là từ chung để chỉ các sợi dây thần kinh trong cơ thể con người.
+ - Ví dụ tiếng Anh: Damage to a nerve can cause numbness or pain in that area.
+ - Ví dụ tiếng Việt: Tổn thương dây thần kinh có thể gây tê liệt hoặc đau đớn ở khu vực đó.
+
+2. "Neurological"
+ - Phù hợp vì: Liên quan đến ngành y khoa nghiên cứu về hệ thần kinh và bệnh lý liên quan.
+ - Ví dụ tiếng Anh: Neurological disorders such as Alzheimer's disease require specialized care.
+ - Ví dụ tiếng Việt: Rối loạn thần kinh như bệnh Alzheimer đòi hỏi chăm sóc chuyên sâu.
+
+3. "Nervous system"
+ - Phù hợp vì: Chỉ toàn bộ mạng lưới thần kinh trong cơ thể con người, bao gồm cả hệ thần kinh trung ương và ngoại biên.  
+ - Ví dụ tiếng Anh: The nervous system plays a crucial role in controlling our body functions.
+ - Ví dụ tiếng Việt: Hệ thần kinh đóng vai trò quyết định trong việc kiểm soát các chức năng của cơ thể.
+
+Nhận xét:
+"Thần kinh" trong tiếng Việt liên quan đến lĩnh vực sinh học và y học, đề cập đến mạng lưới các sợi dây thần kinh và hệ thống thần kinh trong cơ thể con người. Khi dịch sang tiếng Anh, việc chọn từ phù hợp tùy thuộc vào ngữ cảnh cụ thể và mức độ chi tiết cần thiết. "Nerve" thường được sử dụng để chỉ riêng lẻ các sợi dây thần kinh, trong khi "neurological" tập trung vào ngành y khoa nghiên cứu về hệ thần kinh và bệnh lý liên quan. "Nervous system" mô tả toàn diện mạng lưới thần kinh trong cơ thể con người.
+    """
+
+    print(tknz(text))

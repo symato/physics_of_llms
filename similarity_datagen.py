@@ -107,24 +107,30 @@ infile = "data/vi_words_impact.jsonl.xz"
 outfile = "data/vi_words_similarity.jsonl"
 model = llm.MODEL_NAME
 
-try:
-    done = [ json.loads(line)["word"] for line in open(outfile) ]
-except:
-    done = []
-# print(done)
+# try: done = [ json.loads(line)["word"] for line in open(outfile) ]
+# except: done = []
+
+done = [ json.loads(line)["word"] for line in open(outfile) ]
+print(done)
+
+skips_count = 0
+skip_words = "New▁York"
 
 for idx, line in enumerate( lzma.open(infile) ):
     # Thử trước với ~1000 words
     if idx >= 1000: break
 
-    word = json.loads(line)["word"].replace("▁", " ")
+    word = json.loads(line)["word"]
 
-    if word not in done:
+    if word in done or word in skip_words:
+        skips_count += 1
+        print(f"Bỏ qua #{skips_count} {word}")
+    else:
 
         print(word)
         # break
 
-        prompt = prompt_template.format( word = word.strip() )
+        prompt = prompt_template.format( word = word.replace("▁", " ").strip() )
 
         reset_timer()
 
@@ -145,7 +151,7 @@ for idx, line in enumerate( lzma.open(infile) ):
             measure_time(model)
 
             assert "Ví dụ tiếng Việt:" in res, "LLM sinh thiếu ví dụ ..."
-            ww = word.strip().lower()
+            ww = word.replace("▁", " ").strip().lower()
 
             for example in re.findall(r'Ví dụ(?:\n|.)+?\n\n', res, flags = re.MULTILINE | re.IGNORECASE):
                 # print(example); print("!!!!!"); input() # DEBUG
