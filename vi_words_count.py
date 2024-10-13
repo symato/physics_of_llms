@@ -166,8 +166,12 @@ for word, freq in count.items():
 
     text = word.replace("▁", " ")
     tids = tokenizer.encode(text)
-    qwen_tokens = [ tokenizer.decode(tid) for tid in tids ]
+    tids_ = tokenizer.encode(" " + text)
 
+    if len(tids_) < len(tids):
+        tids = tids_
+
+    qwen_tokens = [ tokenizer.decode(tid) for tid in tids ]
     qwen_tokens_count = len(qwen_tokens)
     impact = freq * (qwen_tokens_count - 1) # trừ đi 1 slot là tid mới thêm vào
 
