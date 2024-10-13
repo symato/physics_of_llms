@@ -11,4 +11,3 @@ accelerate
 liger-kernel
 flash-attn
 bitsandbytes
-unsloth
