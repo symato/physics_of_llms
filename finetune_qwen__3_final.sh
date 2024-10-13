@@ -25,13 +25,4 @@ python finetune.py \
   --bf16 True \
   --booster "liger" \
   --optim adamw_8bit
-
-# GPU = NVIDIA GeForce RTX 4090. Max memory = 23.52 GB.
-# 2.916 GB of memory reserved.
-# {'loss': 1.6427, 'grad_norm': 3.3125, 'learning_rate': 1.0344827586206898e-06, 'epoch': 0.0}
-# {'train_steps_per_second': 0.15, 'train_loss': 1.5611213878612613, 'epoch': 3.0}
-# 312.04 minutes used for training.
-# Peak reserved memory = 10.951 GB.
-# Peak reserved memory for training = 8.035 GB.
-# Peak reserved memory % of max memory = 46.56 %.
-# Peak reserved memory for training % of max memory = 34.162 %.
+  
