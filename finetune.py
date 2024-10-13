@@ -185,13 +185,13 @@ if "liger" in training_args.booster.lower():
     from liger_kernel.transformers.rms_norm import LigerRMSNorm
     from liger_kernel.transformers.swiglu import LigerSwiGLUMLP
 
-    from liger_kernel.transformers.model.qwen2 import lce_forward as qwen2_lce_forward
+    from liger_kernel.transformers.model.qwen2 import lce_forward
     from transformers.models.qwen2 import modeling_qwen2
 
     modeling_qwen2.Qwen2RMSNorm = LigerRMSNorm
     modeling_qwen2.Qwen2MLP = LigerSwiGLUMLP
     modeling_qwen2.CrossEntropyLoss = LigerCrossEntropyLoss
-    modeling_qwen2.Qwen2ForCausalLM.forward = qwen2_lce_forward
+    modeling_qwen2.Qwen2ForCausalLM.forward = lce_forward
 
 
 model = transformers.AutoModelForCausalLM.from_pretrained(
