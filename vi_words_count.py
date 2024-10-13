@@ -23,10 +23,10 @@ if re.match(r"\d+", x):
     input_files = "stats_mode"
     min_count = int(x)
 else:
-    if os.path.exists(x):
-        input_files = [x]
-    else:
+    if os.path.isdir(x):
         input_files = glob.glob(f"{x}/*")
+    else:
+        input_files = [x]
 
 print(input_files, min_count)
 
