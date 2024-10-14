@@ -124,6 +124,10 @@ if is_tied_embedding:
         model.resize_token_embeddings(vocab_size + added_tokens_count)
         new_embeddings = model.model.embed_tokens.weight.detach()
 
+        redudant = added_tokens_count - len(words)
+        new_embeddings[ -redudant-1 : ] = torch.zeros(redudant+1, new_embeddings.shape[1])
+        print(new_embeddings[ -redudant : ]) # DEBUG
+
         word2tid = {}
         for idx, (k, v) in enumerate(words):
             english_tids = v.values()
@@ -135,10 +139,12 @@ if is_tied_embedding:
             new_tid = vocab_size + idx
             word2tid[k] = new_tid
 
-            print(f"Tạo embedding value cho new token #{new_tid} {k}")
+            # print(f"Tạo embedding value cho new token #{new_tid} {k}")
 
             embeddings_avg = torch.Tensor(embeddings_).mean(dim=0, keepdim=True)
             new_embeddings[ new_tid ] = embeddings_avg
+
+        print(new_embeddings[ -redudant - 1 : ])#; input() # DEBUG
 
         x = model.model.embed_tokens.weight == new_embeddings
         assert torch.all(x), "Không thay được new_embeddings"
