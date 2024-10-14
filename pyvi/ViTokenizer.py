@@ -129,7 +129,7 @@ def tknz(input_text, allowed_words = False):
     _, tokens = sylabelize(input_text)
     labels = model.predict([sent2features(tokens)])[0]
 
-    candidates = set()
+    candidates = []
     output = tokens[0]
 
     for i in range(1, len(labels)): # I_W = in-word?
@@ -141,27 +141,32 @@ def tknz(input_text, allowed_words = False):
             output += "▁" + tokens[i]
 
         else:
-            candidates.add( output )
+            if "▁" in output:
+                candidates.append( output )
+                # print(output) # DEBUG
+
             output = tokens[i]
+    pass
+    # Check lần cuối (ngoài vòng for) để đảm bảo không bỏ sót
+    if "▁" in output:
+        candidates.append( output )
 
-        candidates.add( output )
-
-
-    words = set()
+    words = []
     for x in candidates:
         if "▁" in x:
-            if allowed_words is not False:
-                y = f"▁{x}"
-                if x in allowed_words: words.add(x)
-                if y in allowed_words: words.add(y)
+            if allowed_words is False:
+                words.append(x)
             else:
-                words.add(x)
+                y = f"▁{x}"
+                if x in allowed_words: words.append(x)
+                if y in allowed_words: words.append(y)
 
-    # print(words)
+    # for c in candidates: print(c)
+    # for w in words: print(w)
 
     for word in words:
         original_word = word.replace("▁", " ")
-        input_text = input_text.replace(original_word, word)
+        input_text = input_text.replace(original_word, word, 1) # replace word-by-word
 
     return input_text
 
@@ -169,31 +174,16 @@ def tknz(input_text, allowed_words = False):
 if __name__ == "__main__":
 
     text = """
-- Hệ thống thần kinh đóng vai trò quan trọng trong việc kiểm soát và phối hợp các hoạt động của cơ thể con người.
-- Bệnh lý liên quan đến hệ thần kinh có thể gây ảnh hưởng nghiêm trọng đến chất lượng cuộc sống.
-- Một số bệnh liên quan đến thần kinh như Alzheimer, Parkinson đang trở thành thách thức lớn đối với y học hiện đại.      
-- Hệ thần kinh trung ương bao gồm não bộ và tủy sống.
-- Rối loạn thần kinh có thể dẫn đến mất ngủ, căng thẳng và mệt mỏi kéo dài.
+Luanvan.vn luôn đồng hành cùng tri thức việt
+luanvanmauMember
+Thảo luận trong 'Linh tinh' bắt đầu bởi luanvanmau, 14 Tháng mười một 2013.
+Bài luận văn mẫu với những ý nghĩa tích cực sẽ giúp cho bạn rất nhiều trong việc định hướng ban đầu để hình thành đề cương dù là đề cương luận văn đại học hay đề cương luận văn thạc sĩ. Tiếp theo là cách thức trình bày luận văn .Một luận văn tốt nghiệp mẫu hay sẽ làm cho bạn đỡ mất thời gian rất nhiều trong việc hình thành cách thức trình bày luận văn, cách suy nghĩ đặt vấn đề chuẩn xác hơn trong việc định hướng nghiêng cứu và tìm ra cái mới tích cực hơn.
+Có nhiều tiêu chí đặt ra cho một bài luận văn mẫu để bạn lựa chọn. Vậy tiêu chí đó là gì ? Các bạn phải xác định rõ để sau đó sẽ có định hướng cụ thể lựa chọn. Vì khó có thể có một đề tài tham khảo đúng ý của bạn hoàn toàn. Việc xác định tiêu chí rõ ràng sẽ giúp bạn chọn tài liệu tham khảo chuẩn xác nhất có thể so với nhu cầu và mong muốn.
+Từ các trường đào tạo chuyên ngành truong trung cap, truong cao dang , trường đại học tương ứng với các trình độ đào tạo trình độ trung cấp, trình độ cao đẳng, trình độ đại học, trình độ cao học và cao hơn thì trong học tập, nghiêng cứu cũng không thể thiếu việc tìm kiếm tài liệu và luận văn mẫu cũng là một loại tài liệu chuyên ngành đặc biệt mang tính tổng hợp và hữu ích với nhu cầu tham khảo.
+luanvanmau,14 Tháng mười một 2013
+tinviet posted 24 Tháng chín 2017 lúc 07:27
+    """.strip()
 
-Từ tiếng Việt "thần kinh" có thể được dịch sang tiếng Anh với các lựa chọn sau:
-
-1. "Nerve"
- - Phù hợp vì: Đây là từ chung để chỉ các sợi dây thần kinh trong cơ thể con người.
- - Ví dụ tiếng Anh: Damage to a nerve can cause numbness or pain in that area.
- - Ví dụ tiếng Việt: Tổn thương dây thần kinh có thể gây tê liệt hoặc đau đớn ở khu vực đó.
-
-2. "Neurological"
- - Phù hợp vì: Liên quan đến ngành y khoa nghiên cứu về hệ thần kinh và bệnh lý liên quan.
- - Ví dụ tiếng Anh: Neurological disorders such as Alzheimer's disease require specialized care.
- - Ví dụ tiếng Việt: Rối loạn thần kinh như bệnh Alzheimer đòi hỏi chăm sóc chuyên sâu.
-
-3. "Nervous system"
- - Phù hợp vì: Chỉ toàn bộ mạng lưới thần kinh trong cơ thể con người, bao gồm cả hệ thần kinh trung ương và ngoại biên.  
- - Ví dụ tiếng Anh: The nervous system plays a crucial role in controlling our body functions.
- - Ví dụ tiếng Việt: Hệ thần kinh đóng vai trò quyết định trong việc kiểm soát các chức năng của cơ thể.
-
-Nhận xét:
-"Thần kinh" trong tiếng Việt liên quan đến lĩnh vực sinh học và y học, đề cập đến mạng lưới các sợi dây thần kinh và hệ thống thần kinh trong cơ thể con người. Khi dịch sang tiếng Anh, việc chọn từ phù hợp tùy thuộc vào ngữ cảnh cụ thể và mức độ chi tiết cần thiết. "Nerve" thường được sử dụng để chỉ riêng lẻ các sợi dây thần kinh, trong khi "neurological" tập trung vào ngành y khoa nghiên cứu về hệ thần kinh và bệnh lý liên quan. "Nervous system" mô tả toàn diện mạng lưới thần kinh trong cơ thể con người.
-    """
-
+    print(tokenize(text))
+    print("\n- - -\n")
     print(tknz(text))

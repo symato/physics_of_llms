@@ -91,6 +91,23 @@ def old2new_tid(x, tokenizer):
     assert False, "Không thể tới bước này, có lỗi ở phần code trên"
 
 
+from pyvi import ViTokenizer
+added_tokens = json.load(open("data/new_words.json"))
+allowed_words = set( added_tokens.keys() )
+allowed_words_re = re.compile(f'({"|".join(allowed_words)})', flags = re.MULTILINE)
+# print(added_tokens, allowed_words) # DEBUG
+
+def tknz(x):
+    x = ViTokenizer.tknz(x, allowed_words = allowed_words)
+    splits = re.split(, x)
+
+    token_ids = tokenizer(str, add_special_tokens=False).input_ids
+    ## không cần nữa bỏ qua first token nữa vì đã có add_special_tokens=False
+    token_ids = [ old2new_tid(x, tokenizer) for x in token_ids ]
+    token_ids = [ x for x in token_ids if x is not None ]
+    return token_ids
+
+
 if __name__ == "__main__":
 
     n = len(kept_tids)

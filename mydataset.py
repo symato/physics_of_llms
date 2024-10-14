@@ -22,20 +22,20 @@ def preprocess(sources, tokenizer, max_len):
     tknz_name = tokenizer.__class__.__name__.lower()
 
     if "qwen" in tknz_name:
-        from qwen_vocab import old2new_tid
+        from qwen_vocab import old2new_tid, tknz
 
     elif "gemma" in tknz_name:
         from gemma_vocab import old2new_tid
 
+        def tknz(str):
+            token_ids = tokenizer(str, add_special_tokens=False).input_ids
+            ## không cần nữa bỏ qua first token nữa vì đã có add_special_tokens=False
+            token_ids = [ old2new_tid(x, tokenizer) for x in token_ids ]
+            token_ids = [ x for x in token_ids if x is not None ]
+            return token_ids
+
     else:
         assert False, "Không hỗ trợ"
-
-    def tknz(str):
-        token_ids = tokenizer(str, add_special_tokens=False).input_ids
-        ## không cần nữa bỏ qua first token nữa vì đã có add_special_tokens=False
-        token_ids = [ old2new_tid(x, tokenizer) for x in token_ids ]
-        token_ids = [ x for x in token_ids if x is not None ]
-        return token_ids
 
     def add_tokens(input_id, target, tokens, ignore=False):
         if isinstance(tokens, str): tokens = tknz(tokens)

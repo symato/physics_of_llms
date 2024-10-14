@@ -15,4 +15,5 @@ for idx, line in enumerate( lzma.open("../data/test_pyvi.jsonl.xz") ):
 
 	if idx == 3:
 		print(tokenize(data["text"], use_special_sep = False))
+		print("\n- - -\n")
 		print(x)

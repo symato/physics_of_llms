@@ -148,7 +148,7 @@ if is_tied_embedding:
         x = model.model.embed_tokens.weight == new_embeddings
         assert torch.all(x), "Không thay được new_embeddings"
 
-        filename = f"{model_path}/new_words.json"
+        filename = f"data/new_words.json"
         print(f"{len(word2tid)} words add. See {filename}")
         with open(filename, "wt") as f:
             f.write(json.dumps(word2tid, ensure_ascii = False))
