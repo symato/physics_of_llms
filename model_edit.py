@@ -64,10 +64,19 @@ if is_tied_embedding:
         # Thay embeddings
         model.resize_token_embeddings(nn)
         new_embeddings = model.model.embed_tokens.weight.detach()
-        print(new_embeddings.shape) # torch.Size([76160, 1536])
+        print(new_embeddings.shape) # torch.Size([101056, 1536])
 
         for idx, tid in enumerate(kept_tids):
             new_embeddings[idx] = old_embeddings[tid]
+
+        assert idx == n - 1
+
+        embedding_size = new_embeddings.shape[1]
+        assert embedding_size == 1536
+
+        new_embeddings[n : ] = torch.zeros(nn - n, embedding_size)
+
+        # print(new_embeddings[n : ]); input() # DEBUG, must be all 0
 
         x = model.model.embed_tokens.weight == new_embeddings
         assert torch.all(x), "Không thay được new_embeddings"
@@ -84,16 +93,20 @@ if is_tied_embedding:
 
         else:
 
-            assert vocab_size == 95168
+            assert vocab_size == 101056 # qwen 1.5 sau khi trimm vocab
 
             # load base embeddings
             base_model = transformers.AutoModelForCausalLM.from_pretrained(
-               args.base_model,
+               args.model,
                torch_dtype = torch.bfloat16, # dtype gốc của qwen
                device_map = "cpu"
             )
 
             base_embeddings = base_model.model.embed_tokens.weight.detach().clone()
+
+            for i in range(101012, 101056):
+                x = len( torch.nonzero(base_embeddings[i]) )
+                assert x == 0, f"Phần thừa sau khi làm tròn vocab size phải là 0, {base_embeddings[i]}"
 
         print("base_embeddings", base_embeddings.shape)
 

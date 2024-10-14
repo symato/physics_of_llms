@@ -155,6 +155,18 @@ xzcat data/vi_words_impact.jsonl.xz | head -n 2000 | tail -n 10
   - [ ] `trimm and extend vocab` 7b model ...
   - [ ] `original vocab` 14b model
 
+
+```sh
+python3 model_edit.py -t trimm_vocab
+
+# `101011` làm tròn `101056` => 101011 - 101055 không dùng tới => kiểm tra xem embedding của nó có thay đổi không.
+# Hãy gán nó == 0 để dễ check.
+
+python3 model_edit.py -m ../Qwen2.5-1.5B-Instruct__trimm_vocab -t extend_vocab
+
+
+```
+
 - - -
 
 Bài toán: cho một từ (ví dụ "thực hiện") là thế nào để tìm ra một embding value mà khi dùng nó để thay thế chuỗi tokens
