@@ -138,7 +138,7 @@ if True: # PREPARE_DATA_ONLY: # Show some sample data to double check
 
                 if is_end_of_chunk:
                     chunk = input_ids[begin : curr]
-                    _text = tknz_decode(chunk)
+                    _text = tknz_decode(chunk, tokenizer)
 
                     if labels[begin] == IGNORE_TOKEN_ID:
                         _text = f"{_MARK}{RED}{_text}{RESET}{_MARK}"
