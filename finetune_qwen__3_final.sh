@@ -19,11 +19,11 @@ python finetune.py \
   --model_max_length 4096 \
   --output_dir "../Qwen2.5-1.5B-Instruct__extend_vocab_final" \
   --num_train_epochs 5 \
-  --per_device_train_batch_size 8 \
-  --gradient_accumulation_steps 4 \
+  --per_device_train_batch_size 24 \
+  --gradient_accumulation_steps 1 \
   --logging_steps 2 \
   --save_strategy "steps" \
-  --save_steps 100 \
+  --save_steps 300 \
   --save_total_limit 1 \
   --learning_rate 2e-5 \
   --warmup_ratio 0.01 \
