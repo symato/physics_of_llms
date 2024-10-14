@@ -164,7 +164,9 @@ python3 model_edit.py -t trimm_vocab
 
 python3 model_edit.py -m ../Qwen2.5-1.5B-Instruct__trimm_vocab -t extend_vocab
 # 101011 - 101055 được gán 0
-# 102075 - 102080 được gán 0 too.
+# 102075 - 102079 được gán 0 too.
+
+python3 model_edit.py -m Qwen2.5-1.5B-Instruct__extend_vocab__1_embeddings_massage -t view_embeddings
 
 ```
 

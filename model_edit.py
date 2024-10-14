@@ -106,7 +106,7 @@ if is_tied_embedding:
 
             for i in range(101012, 101056):
                 x = len( torch.nonzero(old_embeddings[i]) )
-                assert x == 0, f"Phần thừa sau khi làm tròn vocab size phải là 0, {base_embeddings[i]}"
+                assert x == 0, f"Phần thừa sau khi làm tròn vocab size phải là 0, {old_embeddings[i]}"
 
         print("base_embeddings", base_embeddings.shape)
 
@@ -153,6 +153,21 @@ if is_tied_embedding:
         print(f"{len(word2tid)} words add. See {filename}")
         with open(filename, "wt") as f:
             f.write(json.dumps(word2tid, ensure_ascii = False))
+
+
+    if args.task == "view_embeddings":
+        vocab_size, embed_size = old_embeddings.shape
+        assert vocab_size == 102080
+        assert embed_size == 1536
+
+        # 101011 - 101055 được gán 0
+        # 102075 - 102079 được gán 0 too.
+
+        for i in range(101011, 101056):
+            print(old_embeddings[i])
+            x = len( torch.nonzero(old_embeddings[i]) )
+            assert x == 0, f"Phần thừa sau khi làm tròn vocab size phải là 0, {old_embeddings[i]}"
+
 
     else:
         assert False, "Không hỗ trợ task này" 
