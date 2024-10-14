@@ -147,6 +147,8 @@ xzcat data/vi_words_impact.jsonl.xz | head -n 2000 | tail -n 10
 - [ ] sau đó finetune toàn bộ model (lora + embedding or full finetune)
   - [x] `./finetune_qwen__3_final.sh` hỗ trợ 7b trên 40g vram
   - [ ] kịch bản lora cho 14b model, có thể phải dồn vocab để chạy được trên 40g vram
+    - Nên lora base model? vì chiến lược merge dưới đây sẽ cho hiệu quả tốt?
+      https://docs.google.com/document/u/0/d/1OjbjU5AOz4Ftn9xHQrX3oFQGhQ6RDUuXQipnQ9gn6tU/mobilebasic
 
 - [x] build datasets và giáo án huấn luyện phù hợp
   - [x] `trimm vocab` 7b model https://huggingface.co/Symato/Qwen2.5-7B-Instruct__trimm_vocab
