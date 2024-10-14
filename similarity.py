@@ -9,11 +9,6 @@ model_path = config.OFFLINE_MODEL_PATH
 tokenizer = transformers.AutoTokenizer.from_pretrained(model_path)
 
 sim0 = [ json.loads(line) for line in open("data/vi_words_similarity.jsonl") ]
-sim1 = [ json.loads(line) for line in open("data/vi_words_similarity_berua.jsonl") ]
-
-# pprint(sim0[0])
-# pprint(sim1[0]); input()
-
 
 def get_similiar_words(n = None):
 	words = {}
@@ -46,12 +41,6 @@ def get_similiar_words(n = None):
 			en_word = splits[i].strip()
 			get_uniq_token_ids(word, en_word)
 
-
-	for x in sim1:
-		word = x["term"]
-		for e in x["example"]:
-			en_word = e["term"]
-			# get_uniq_token_ids(word, en_word)
 
 	# Loại bỏ words 
 	for word, en_words in list(words.items()):

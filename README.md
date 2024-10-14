@@ -121,9 +121,9 @@ xzcat data/vi_words_impact.jsonl.xz | head -n 2000 | tail -n 10
 
 => **Chọn khoảng 1k - 2k từ ghép để mở rộng vocab là đủ tạo impact**
 
-- [ ] lọc và map những từ ghép này vào token ids mới
+- [x] lọc và map những từ ghép này vào token ids mới
 
-- [ ] tìm các cách *hiệu quả* để khởi tạo embedding values của tokens mới
+- [x] tìm các cách *hiệu quả* để khởi tạo embedding values của tokens mới => sử dụng embedding của từ TA tương đương!
   - Với 1 từ được chọn, tìm ra 1-3 câu liên quan tới từ đó:
     - thay toàn bộ embedding values của từ được chọn băng 01 embedding value mới được init bằng nhiều cách:
       - embedding value của từ đơn tương ứng trong tiếng Anh
@@ -135,11 +135,23 @@ xzcat data/vi_words_impact.jsonl.xz | head -n 2000 | tail -n 10
     khác biệt thấp nhất => hiệu quả nhất?
   - Việc lựa chọn embedding values có thực sự quan trọng? Vì đằng nào cũng cần continue pretrain.
 
-- [ ] Mát xa new embeddings (and old embeddings too)
-  - freeze *most* layers, finetune embeddings và vài low layers trước
+- [x] Sinh dữ liệu tổng hợp giúp tạo và massage new embeddings cho ~1k từ tại `data/vi_words_similarity.jsonl`
+
+- [ ] Mát xa new embeddings (giữ nguyên old embeddings)
+  - [ ] Sau khi tune new embeddings, cần thay thế giá trị gốc của old embeddings,
+    ở cuối chu kỳ update params hoặc sau khi train xong.
+
+- [ ] freeze *most* layers, finetune embeddings và vài low layers trước
     - Lý do: từ vựng, ngữ pháp, các skills ngôn ngữ tập trung nhiều ở low layers
-  - sau đó finetune toàn bộ model (lora + embedding or full finetune)
-  - build datasets và giáo án huấn luyện phù hợp
+
+- [ ] sau đó finetune toàn bộ model (lora + embedding or full finetune)
+  - [x] `./finetune_qwen__3_final.sh` hỗ trợ 7b trên 40g vram
+  - [ ] kịch bản lora cho 14b model, có thể phải dồn vocab để chạy được trên 40g vram
+
+- [x] build datasets và giáo án huấn luyện phù hợp
+  - [x] `trimm vocab` 7b model https://huggingface.co/Symato/Qwen2.5-7B-Instruct__trimm_vocab
+  - [ ] `trimm and extend vocab` 7b model ...
+  - [ ] `original vocab` 14b model
 
 - - -
 
@@ -154,8 +166,7 @@ Bot: "Tôi đã thực hiện kế hoạch của mình thành công."
 Giờ ta sẽ mask từ "thực hiện" và được "Tôi đã ___ kế hoạch của mình thành công.", 
 giờ ta để LLM tự điền vào chỗ trống 01 token thì liệu nó có tìm ra token có embedding value hợp lý nhất cho từ "thực hiện" không?
 
-Hidden value (embedding) ở layer cuối, khi nhân với lm_head để tạo logits và chọn ra vị trí có logits cao nhất làm token_id, 
-lm_head value ở ví trí đó với qwen 1.5 chính là embedding value vì qwen 1.5 dùng tied embeddings.
+Hidden value (embedding) ở layer cuối, khi nhân với lm_head để tạo logits và chọn ra vị trí có logits cao nhất làm token_id, lm_head value ở ví trí đó với qwen 1.5 chính là embedding value vì qwen 1.5 dùng tied embeddings.
 
 ![](img/vocab-extend-00.jpg)
 
@@ -174,7 +185,11 @@ Sau khi train xong lại re-map và merge vào vocab gốc.
 - không làm ảnh hưởng bộ tknz gốc
 
 Nhược:
-- Các embeddings khác không được tune?
+- Các embeddings khác không được tune? có bị ảnh hưởng? 
+  Embeddings ko dùng => ko activate => ko cần update gradient? Cần confirm = code.
+
+**TODOs**
+- [ ] Check xem các embeddings không dùng có bị update gradient không?
 
 - - -
 
@@ -186,12 +201,23 @@ Nhược:
 ## Thử nghiệm Block Expansion
 - https://arxiv.org/abs/2401.02415v2
 
-## Thử nghiệm LAYER SWAPPING
+## Thử nghiệm Layer Swapping
 - https://arxiv.org/abs/2410.01335
+
+## Thử nghiệm Memory Tuning để khử hallu
+- https://arxiv.org/abs/2406.17642
+
+- LLMs augmented with a massive Mixture of Memory Experts (MoME) can easily memorize large datasets
+
+- simple neural networks trained to predict the next token hallucinate when the training loss 
+  is above a threshold as it usually does in practice when training on internet scale data
+
+- design a model for removing hallucinations that stores facts in a massive mixture of 
+  millions of memory experts that are retrieved dynamically
 
 ## Physics of LMs: làm thí nghiệm về Knowledge Storage, Extraction and Manipulation
 
-## Physics of LMs: làm thí nghiệm [TinyStories](TinyStories.md) về học language
+## Physics of LMs: làm thí nghiệm [TinyStories](TinyStories.md) về học languages
 - Build dataset theo một hướng khác? TinyFantasy? TinyFunny?
 - Mở rộng: xây bộ data để chuyển knowledge đã học từ Vi => En
 - Mở rộng: Từ hiểu ngôn ngữ tới làm thơ và làm thơ thuận nghịch độc

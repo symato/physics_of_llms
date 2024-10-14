@@ -28,18 +28,19 @@ model = transformers.AutoModelForCausalLM.from_pretrained(
 tokenizer = transformers.AutoTokenizer.from_pretrained(model_path)
 
 print(model.model)
-# print("lm_head", model.lm_head) # Linear(in_features=1536, out_features=151936, bias=False)
-# print("embed_tokens", model.model.embed_tokens) # Embedding(151936, 1536) ~= 233m params
 
 x = model.lm_head.weight == model.model.embed_tokens.weight
 is_tied_embedding = torch.all(x)
 
 
 x = model_path.lower()
+
 if "qwen" in x: 
     from qwen_vocab import kept_tids
+
 elif "gemma" in x:
     from gemma_vocab import kept_tids
+
 else:
     assert False
 
@@ -96,7 +97,7 @@ if is_tied_embedding:
         print("base_embeddings", base_embeddings.shape)
 
         from similarity import get_similiar_words
-        words = get_similiar_words(n = 128) # Thử nghiệm với 128 words trước
+        words = get_similiar_words()
         added_tokens_count = len(words)
 
         print(f"Adding {added_tokens_count} new tokens ...")
@@ -105,9 +106,15 @@ if is_tied_embedding:
 
         # input_embeddings_avg = input_embeddings[:-num_new_tokens].mean(dim=0, keepdim=True)
         for idx, (k, v) in enumerate(words):
-            print(v.values())
-            tid = list(v.values())[0] # lấy tid của 1 từ tiếng Anh tương ứng
-            new_embeddings[ vocab_size + idx ] = base_embeddings[tid]
+            english_tids = v.values()
+
+            embeddings_ = []
+            for tid in english_tids:
+                 embeddings_.append( base_embeddings[tid].tolist() )
+
+            embeddings_ = torch.Tensor(embeddings_)
+            embeddings_avg = embeddings_.mean(dim=0, keepdim=True)
+            new_embeddings[ vocab_size + idx ] = embeddings_avg
 
         x = model.model.embed_tokens.weight == new_embeddings
         assert torch.all(x), "Không thay được new_embeddings"
