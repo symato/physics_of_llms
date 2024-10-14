@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 
 # save more vram by offload gradients to cpu (unblocking)
 # Source https://raw.githubusercontent.com/axolotl-ai-cloud/axolotl/main/src/axolotl/utils/models.py
-from unsloth_utils import hf_grad_checkpoint_unsloth_wrapper
+from axolotl_unsloth import hf_grad_checkpoint_unsloth_wrapper
 transformers.modeling_utils.checkpoint = hf_grad_checkpoint_unsloth_wrapper
 
 @dataclass
