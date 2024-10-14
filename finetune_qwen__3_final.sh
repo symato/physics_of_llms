@@ -13,7 +13,7 @@ data_path=final_finetune1
   # --optim adamw_8bit
 
 python finetune.py \
-  --model_name_or_path "../Qwen2.5-1.5B-Instruct__extend_vocab" \  
+  --model_name_or_path "../Qwen2.5-1.5B-Instruct__extend_vocab" \
   --finetune_layers "all" \
   --data_path "$data_path" \
   --model_max_length 4096 \
