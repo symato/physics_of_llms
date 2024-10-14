@@ -3,6 +3,7 @@ import transformers
 import sys
 import config
 import re
+import json
 
 import argparse
 
@@ -100,24 +101,39 @@ if is_tied_embedding:
         words = get_similiar_words()
         added_tokens_count = len(words)
 
+        # Làm tròn lên hệ số 64
+        if added_tokens_count % 64 != 0:
+            added_tokens_count += (64 - added_tokens_count % 64)
+
+        # print(words)
         print(f"Adding {added_tokens_count} new tokens ...")
+
         model.resize_token_embeddings(vocab_size + added_tokens_count)
         new_embeddings = model.model.embed_tokens.weight.detach()
 
-        # input_embeddings_avg = input_embeddings[:-num_new_tokens].mean(dim=0, keepdim=True)
+        word2tid = {}
         for idx, (k, v) in enumerate(words):
             english_tids = v.values()
 
             embeddings_ = []
             for tid in english_tids:
-                 embeddings_.append( base_embeddings[tid].tolist() )
+                embeddings_.append( base_embeddings[tid].tolist() )
+            
+            new_tid = vocab_size + idx
+            word2tid[k] = new_tid
 
-            embeddings_ = torch.Tensor(embeddings_)
-            embeddings_avg = embeddings_.mean(dim=0, keepdim=True)
-            new_embeddings[ vocab_size + idx ] = embeddings_avg
+            print(f"Tạo embedding value cho new token #{new_tid} {k}")
+
+            embeddings_avg = torch.Tensor(embeddings_).mean(dim=0, keepdim=True)
+            new_embeddings[ new_tid ] = embeddings_avg
 
         x = model.model.embed_tokens.weight == new_embeddings
         assert torch.all(x), "Không thay được new_embeddings"
+
+        filename = f"{model_path}/new_words.json"
+        print(f"{len(word2tid)} words add. See {filename}")
+        with open(filename, "wt") as f:
+            f.write(json.dumps(word2tid, ensure_ascii = False))
 
     else:
         assert False, "Không hỗ trợ task này" 

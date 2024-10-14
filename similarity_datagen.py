@@ -114,11 +114,11 @@ done = [ json.loads(line)["word"] for line in open(outfile) ]
 print(done)
 
 skips_count = 0
-skip_words = "New▁York"
+skip_words = "New▁York The▁reviewer"
 
 for idx, line in enumerate( lzma.open(infile) ):
     # Thử trước với ~1000 words
-    if idx >= 1000: break
+    if idx >= 1050: break
 
     word = json.loads(line)["word"]
 
