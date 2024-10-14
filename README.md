@@ -146,9 +146,6 @@ xzcat data/vi_words_impact.jsonl.xz | head -n 2000 | tail -n 10
 
 - [ ] sau đó finetune toàn bộ model (lora + embedding or full finetune)
   - [x] `./finetune_qwen__3_final.sh` hỗ trợ 7b trên 40g vram
-  - [ ] kịch bản lora cho 14b model, có thể phải dồn vocab để chạy được trên 40g vram
-    - Nên lora base model? vì chiến lược merge dưới đây sẽ cho hiệu quả tốt?
-      https://docs.google.com/document/u/0/d/1OjbjU5AOz4Ftn9xHQrX3oFQGhQ6RDUuXQipnQ9gn6tU/mobilebasic
 
 - [x] build datasets và giáo án huấn luyện phù hợp
   - [x] `trimm vocab` 7b model https://huggingface.co/Symato/Qwen2.5-7B-Instruct__trimm_vocab
@@ -166,7 +163,7 @@ python3 model_edit.py -m ../Qwen2.5-1.5B-Instruct__trimm_vocab -t extend_vocab
 # 101011 - 101055 được gán 0
 # 102075 - 102079 được gán 0 too.
 
-python3 model_edit.py -m Qwen2.5-1.5B-Instruct__extend_vocab__1_embeddings_massage -t view_embeddings
+python3 model_edit.py -m ../Qwen2.5-1.5B-Instruct__extend_vocab__1_embeddings_massage -t view_embeddings
 
 ```
 
@@ -188,25 +185,6 @@ Hidden value (embedding) ở layer cuối, khi nhân với lm_head để tạo l
 ![](img/vocab-extend-00.jpg)
 
 ![](img/vocab-extend-02.jpg)
-
-- - -
-
-## Kỹ thuật dồn vocab khi finetune
-
-Khi finetune trên 1 tập domain data nhỏ (vài GB) sẽ không dùng hết 100k - 200k vocab, => 
-lọc tokens thực sự dùng trong data (1/4 - 1/2), dồn embeddings lại và chỉ train trên những embeddings đó.
-Sau khi train xong lại re-map và merge vào vocab gốc.
-
-Ưu: 
-- Save vram while training! (embeddings ở định dạng f32 nên khá tốn)
-- không làm ảnh hưởng bộ tknz gốc
-
-Nhược:
-- Các embeddings khác không được tune? có bị ảnh hưởng? 
-  Embeddings ko dùng => ko activate => ko cần update gradient? Cần confirm = code.
-
-**TODOs**
-- [ ] Check xem các embeddings không dùng có bị update gradient không?
 
 - - -
 
