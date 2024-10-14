@@ -52,6 +52,7 @@ Một vấn đề là `cùng một chuyên gia có thể được chọn nhiều
 - https://github.com/predibase/lorax (Apache 2.0 License)
   serve thousands of fine-tuned models on a single GPU.
 
+=> CÁCH ĐƠN GIẢN NHẤT TUNE TỪNG LORA CHO TỪNG TẬP CON CỦA DATA (CATEGORY), VỚI MỖI QUERY PHÂN LOẠI NÓ VÀO 01 CATEGORY, LOAD CATEGORY'S LORA VÀ INFER CHO QUERY ĐÓ.
 
 - - -
 
