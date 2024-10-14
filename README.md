@@ -186,6 +186,13 @@ Hidden value (embedding) ở layer cuối, khi nhân với lm_head để tạo l
 
 ![](img/vocab-extend-02.jpg)
 
+## Câu hỏi
+- Với mỗi newly added token
+  - Cần khoảng bao nhiêu samples liên quan để nó trở nên có hiệu quả? (bắt đầu xuất hiện trong inference)
+  - Cần khoảng bao nhiêu samples liên quan để LLM sử dụng nó thuần thục? 
+  - => cần định nghĩa thế nào là sử dụng thuần thục?
+    - perplexity?
+
 - - -
 
 ## Thử nghiệm In-context Pretraining xem khi trộn lẫn training sample trong ctxlen ảnh hưởng gì tới model?
