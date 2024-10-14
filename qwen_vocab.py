@@ -2,13 +2,12 @@ import os, sys, glob, json
 from utils_lang import *
 from transformers import AutoTokenizer
 
+from config import ONLINE_MODEL_PATH as model_path
+tokenizer = AutoTokenizer.from_pretrained(model_path)
+
 def get_kept_tids():
     # Keep all special tokens
     kept_tids = set( x for x in range(151643, 151664 + 1) )
-
-    # '''
-    from config import ONLINE_MODEL_PATH as model_path
-    tokenizer = AutoTokenizer.from_pretrained(model_path)
 
     canbe_vi_kept = 0
     is_ascii_kept = 0
@@ -92,26 +91,60 @@ def old2new_tid(x, tokenizer):
 
 
 from pyvi import ViTokenizer
-added_tokens = json.load(open("data/new_words.json"))
-allowed_words = set( added_tokens.keys() )
+new2tid = json.load(open("data/new_words.json"))
+tid2new = { v: k for k, v in new2tid.items() }
+allowed_words = set( new2tid.keys() )
 allowed_words_re = re.compile(f'({"|".join(allowed_words)})', flags = re.MULTILINE)
-# print(added_tokens, allowed_words) # DEBUG
 
-def tknz(x):
+def tknz_encode(x, tokenizer):
     x = ViTokenizer.tknz(x, allowed_words = allowed_words)
-    splits = re.split(, x)
+    splits = re.split(allowed_words_re, x)
+    # print(splits); input() # DEBUG
 
-    token_ids = tokenizer(str, add_special_tokens=False).input_ids
-    ## không cần nữa bỏ qua first token nữa vì đã có add_special_tokens=False
-    token_ids = [ old2new_tid(x, tokenizer) for x in token_ids ]
+    token_ids = []
+    for i, s in enumerate(splits):
+        if i % 2 == 1:
+            assert s in allowed_words
+            token_ids.append(new2tid[s])
+        elif len(s) > 0:
+            tids = tokenizer.encode(s, add_special_tokens=False)
+            tids = [ old2new_tid(x, tokenizer) for x in tids ]
+            token_ids += tids
+
     token_ids = [ x for x in token_ids if x is not None ]
     return token_ids
 
+def tknz_decode(tids, tokenizer):
+    s = ""
+    for x in tids:
+        if x in tid2new:
+            s += tid2new[x]
+        else:
+            x = new2old[x]
+            s += tokenizer.decode(x)
+    return s
+
+olds = "Việt Nam thời gian  còn rất dài thực hiện"
+tids = tknz_encode(olds, tokenizer)
+news = tknz_decode(tids, tokenizer)
+assert news.replace("▁", " ") == olds
+# print(news)
 
 if __name__ == "__main__":
+    import math
 
     n = len(kept_tids)
-    nn = round(n / 64) * 64
+    nn = math.ceil(n / 64) * 64
+
+    nnn = n # cách tính khác
+    if nnn % 64 != 0:
+        nnn += 64 - (nnn % 64)
+    assert nn == nnn
 
     print("kept_tids", n)
-    print(n, nn) # 76138 => 76160 (làm tròn để chia hết cho 64)
+    print(n, nn) # 101011 => 101056 (làm tròn để chia hết cho 64)
+
+    print(olds)
+    print(news)
+
+    print("tokenizer.vocab_size", tokenizer.vocab_size)

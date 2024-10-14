@@ -69,7 +69,7 @@ if ( not PREPARE_DATA_ONLY ) or ( PREPARE_DATA_ONLY and local_rank == 0 ):
     tknz_name = tokenizer.__class__.__name__.lower()
 
     if "qwen" in tknz_name:
-        from qwen_vocab import new2old, old2new_tid
+        from qwen_vocab import new2old, old2new_tid, tknz_decode
 
     elif "gemma" in tknz_name:
         from gemma_vocab import new2old, old2new_tid
@@ -116,10 +116,6 @@ if True: # PREPARE_DATA_ONLY: # Show some sample data to double check
     import random
     train_dataset = data_module["train_dataset"]
     rank0_print(">>>", train_dataset)
-
-    def tknz_decode(tids):
-        tids = [ new2old[x] for x in tids.tolist() ]
-        return tokenizer.decode(tids)
 
     for idx in random.sample(range(len(train_dataset)), 1):
         for index in [idx]:

@@ -22,7 +22,9 @@ def preprocess(sources, tokenizer, max_len):
     tknz_name = tokenizer.__class__.__name__.lower()
 
     if "qwen" in tknz_name:
-        from qwen_vocab import old2new_tid, tknz
+        from qwen_vocab import old2new_tid, tknz_encode
+        def tknz(str):
+            return tknz_encode(str, tokenizer)
 
     elif "gemma" in tknz_name:
         from gemma_vocab import old2new_tid
