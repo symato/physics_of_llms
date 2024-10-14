@@ -97,7 +97,7 @@ if is_tied_embedding:
 
             # load base embeddings
             base_model = transformers.AutoModelForCausalLM.from_pretrained(
-               args.model,
+               args.base_model,
                torch_dtype = torch.bfloat16, # dtype gốc của qwen
                device_map = "cpu"
             )
@@ -105,7 +105,7 @@ if is_tied_embedding:
             base_embeddings = base_model.model.embed_tokens.weight.detach().clone()
 
             for i in range(101012, 101056):
-                x = len( torch.nonzero(base_embeddings[i]) )
+                x = len( torch.nonzero(old_embeddings[i]) )
                 assert x == 0, f"Phần thừa sau khi làm tròn vocab size phải là 0, {base_embeddings[i]}"
 
         print("base_embeddings", base_embeddings.shape)
