@@ -120,7 +120,7 @@ if True: # PREPARE_DATA_ONLY: # Show some sample data to double check
     for idx in random.sample(range(len(train_dataset)), 1):
         for index in [idx]:
             pre_input_ids = train_dataset[index - 1]["input_ids"][-8:]
-            pre_text = tknz_decode(pre_input_ids)
+            pre_text = tknz_decode(pre_input_ids, tokenizer)
 
             input_ids = train_dataset[index]["input_ids"]
             labels    = train_dataset[index]["labels"]
