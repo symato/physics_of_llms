@@ -199,17 +199,6 @@ Hidden value (embedding) ở layer cuối, khi nhân với lm_head để tạo l
 ## Thử nghiệm Layer Swapping
 - https://arxiv.org/abs/2410.01335
 
-## Thử nghiệm Memory Tuning để khử hallu
-- https://arxiv.org/abs/2406.17642
-
-- LLMs augmented with a massive Mixture of Memory Experts (MoME) can easily memorize large datasets
-
-- simple neural networks trained to predict the next token hallucinate when the training loss 
-  is above a threshold as it usually does in practice when training on internet scale data
-
-- design a model for removing hallucinations that stores facts in a massive mixture of 
-  millions of memory experts that are retrieved dynamically
-
 ## Physics of LMs: làm thí nghiệm về Knowledge Storage, Extraction and Manipulation
 
 ## Physics of LMs: làm thí nghiệm [TinyStories](TinyStories.md) về học languages
