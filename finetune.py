@@ -216,10 +216,11 @@ if "all" not in training_args.finetune_layers.lower():
     for idx in finetune_layers:
         for param in model.model.layers[idx].parameters():
             param.requires_grad = True
+    training_args.finetune_layers = finetune_layers
 # '''
 
 print(">>> finetune_model", training_args.model_name_or_path)
-print(">>> finetune_layers", finetune_layers)
+print(">>> finetune_layers", training_args.finetune_layers)
 
 ## Detecting last checkpoint
 last_checkpoint = None
