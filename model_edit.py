@@ -15,7 +15,6 @@ parser.add_argument("-t", "--task", type = str, default = None, \
 
 args = parser.parse_args()
 print(args)
-assert args.task in "trimm_vocab extend_vocab".split()
 
 # bỏ / ở cuối model_path
 model_path = re.sub(r'/*$', "", args.model.strip())
