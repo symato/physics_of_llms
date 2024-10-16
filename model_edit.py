@@ -167,75 +167,6 @@ if is_tied_embedding:
             x = len( torch.nonzero(old_embeddings[i]) )
             assert x == 0, f"Phần thừa sau khi làm tròn vocab size phải là 0, {old_embeddings[i]}"
 
-
-    elif args.task == "extend_vocab":
-
-        vocab_size, _ = old_embeddings.shape
-
-        if args.base_model == args.model:
-
-            assert vocab_size == 151936
-            base_embeddings = old_embeddings # same model
-
-        else:
-
-            assert vocab_size == 101056 # qwen 2.5 sau khi trimm vocab
-
-            # load base embeddings
-            base_model = transformers.AutoModelForCausalLM.from_pretrained(
-               args.base_model,
-               torch_dtype = torch.bfloat16, # dtype gốc của qwen
-               device_map = "cpu"
-            )
-
-            base_embeddings = base_model.model.embed_tokens.weight.detach().clone()
-
-            for i in range(101012, 101056):
-                x = len( torch.nonzero(old_embeddings[i]) )
-                assert x == 0, f"Phần thừa sau khi làm tròn vocab size phải là 0, {old_embeddings[i]}"
-
-        print("base_embeddings", base_embeddings.shape)
-
-        from similarity import get_similiar_words
-        words = get_similiar_words()
-        added_tokens_count = len(words)
-
-        # Làm tròn lên hệ số 64
-        if added_tokens_count % 64 != 0:
-            added_tokens_count += (64 - added_tokens_count % 64)
-
-        # print(words)
-        print(f"Adding {added_tokens_count} new tokens ...")
-
-        model.resize_token_embeddings(vocab_size + added_tokens_count)
-        new_embeddings = model.model.embed_tokens.weight.detach()
-
-        redudant = added_tokens_count - len(words)
-        new_embeddings[ -redudant-1 : ] = torch.zeros(redudant+1, new_embeddings.shape[1])
-        print(new_embeddings[ -redudant : ]) # DEBUG
-
-        word2tid = {}
-        for idx, (k, v) in enumerate(words):
-            english_tids = v.values()
-
-            embeddings_ = []
-            for tid in english_tids:
-                embeddings_.append( base_embeddings[tid].tolist() )
-            
-            new_tid = vocab_size + idx
-            word2tid[k] = new_tid
-
-            # print(f"Tạo embedding value cho new token #{new_tid} {k}")
-
-            embeddings_avg = torch.Tensor(embeddings_).mean(dim=0, keepdim=True)
-            new_embeddings[ new_tid ] = embeddings_avg
-
-        print(new_embeddings[ -redudant - 1 : ])#; input() # DEBUG
-
-        x = model.model.embed_tokens.weight == new_embeddings
-        assert torch.all(x), "Không thay được new_embeddings"
-
-
     else:
         assert False, "Không hỗ trợ task này" 
 
@@ -266,6 +197,77 @@ else:
         x = model.model.embed_tokens.weight == new_embeddings
         assert torch.all(x), "Không thay được new_embeddings"
 
+        x = model.lm_head.weight == new_lm_head
+        assert torch.all(x), "Không thay được new_lm_head"
+
+
+    elif args.task == "extend_vocab":
+
+        vocab_size, _ = old_embeddings.shape
+
+        if args.base_model == args.model:
+
+            assert vocab_size == 151936
+            base_embeddings = old_embeddings # same model
+
+        else:
+
+            assert vocab_size == 101056 # qwen 2.5 sau khi trimm vocab
+
+            # load base embeddings
+            base_model = transformers.AutoModelForCausalLM.from_pretrained(
+               args.base_model,
+               torch_dtype = torch.bfloat16, # dtype gốc của qwen
+               device_map = "cpu"
+            )
+
+            base_embeddings = base_model.model.embed_tokens.weight.detach().clone()
+            base_lm_head    = base_model.lm_head.weight.detach().clone()
+
+            for i in range(101012, 101056):
+                x = len( torch.nonzero(old_embeddings[i]) )
+                assert x == 0, f"Phần thừa sau khi làm tròn vocab size phải là 0, {old_embeddings[i]}"
+
+        print("base_embeddings", base_embeddings.shape)
+
+        from similarity import get_similiar_words
+        words = get_similiar_words()
+        added_tokens_count = len(words)
+
+        # Làm tròn lên hệ số 64
+        if added_tokens_count % 64 != 0:
+            added_tokens_count += (64 - added_tokens_count % 64)
+
+        # print(words)
+        print(f"Adding {added_tokens_count} new tokens ...")
+
+        model.resize_token_embeddings(vocab_size + added_tokens_count)
+        new_embeddings = model.model.embed_tokens.weight.detach()
+
+        new_lm_head = model.lm_head.weight.detach()
+        print(new_lm_head.shape)
+
+        for idx, (k, v) in enumerate(words):
+            english_tids = v.values()
+
+            embeddings_ = []
+            lm_head_ = []
+            for tid in english_tids:
+                embeddings_.append( base_embeddings[tid].tolist() )
+                lm_head_.append( base_lm_head[tid].tolist() )
+            
+            new_tid = vocab_size + idx
+
+            # print(f"Tạo embedding value cho new token #{new_tid} {k}")
+
+            embeddings_avg = torch.Tensor(embeddings_).mean(dim=0, keepdim=True)
+            new_embeddings[ new_tid ] = embeddings_avg
+
+            lm_head_avg = torch.Tensor(lm_head_).mean(dim=0, keepdim=True)
+            new_lm_head[ new_tid ] = lm_head_avg
+
+        x = model.model.embed_tokens.weight == new_embeddings
+        assert torch.all(x), "Không thay được new_embeddings"
 
         x = model.lm_head.weight == new_lm_head
         assert torch.all(x), "Không thay được new_lm_head"
