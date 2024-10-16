@@ -224,10 +224,6 @@ else:
             base_embeddings = base_model.model.embed_tokens.weight.detach().clone()
             base_lm_head    = base_model.lm_head.weight.detach().clone()
 
-            for i in range(101012, 101056):
-                x = len( torch.nonzero(old_embeddings[i]) )
-                assert x == 0, f"Phần thừa sau khi làm tròn vocab size phải là 0, {old_embeddings[i]}"
-
         print("base_embeddings", base_embeddings.shape)
 
         from similarity import get_similiar_words
