@@ -16,10 +16,12 @@ from tqdm import tqdm
 import warnings
 warnings.simplefilter("ignore")
 
-def main(args):
-    llm = args.llm
-    device = args.device
-    folder = args.folder
+
+if __name__ == "__main__":
+
+    llm = "../Qwen2.5-1.5B-Instruct"
+    device = "cuda"
+    folder = "."
 
     path = llm.replace('/', '-')
 
@@ -28,22 +30,18 @@ def main(args):
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
     # Configure logging
-    logging.basicConfig(filename=f"./logs/{path}.log", level=logging.INFO, format='%(asctime)s - %(levelname)s: %(message)s')
+    logging.basicConfig(filename=f"./logs/{path.split('/')[-1]}.log", level=logging.INFO, format='%(asctime)s - %(levelname)s: %(message)s')
     logging.info(f'Model name: {llm}')
 
     config = AutoConfig.from_pretrained(llm, trust_remote_code=True)  
     config.init_device = device
-    # config.attn_config['attn_impl'] = 'triton' # Enable if "triton" installed!
     
     model = AutoModelForCausalLM.from_pretrained(  
         llm, config=config, torch_dtype=torch.bfloat16, trust_remote_code=True  
         )
     model.to(device)
     model.config.use_cache = False
-    if 'sealion' in llm or 'Qwen' in llm:
-        tokenizer = AutoTokenizer.from_pretrained(llm, trust_remote_code=True)
-    else:
-        tokenizer = AutoTokenizer.from_pretrained(llm)
+    tokenizer = AutoTokenizer.from_pretrained(llm, trust_remote_code=True)
 
     # Create empty lists to store data
     ids = []
@@ -56,7 +54,7 @@ def main(args):
 
     # Read JSONL files
     data_path = Path(folder)
-    jsonl_files = list(data_path.glob('test.jsonl'))
+    jsonl_files = list(data_path.glob('test_vmlu.jsonl'))
 
     for file in jsonl_files:
         with open(file, "r", encoding="utf-8") as f:
@@ -118,15 +116,8 @@ def main(args):
         return input_text
 
     # Test a toy example
-    if 'falcon' in llm:
-        inputs = tokenizer(format_input(df, 0), return_tensors="pt", return_token_type_ids=False).to(device)
-        outputs = model.generate(**inputs, pad_token_id=tokenizer.eos_token_id, max_new_tokens=1)
-    elif 'sealion' in llm:
-        inputs = tokenizer(format_input(df, 0), return_tensors="pt").to(device)
-        outputs = model.generate(inputs["input_ids"], max_new_tokens=1)
-    else:
-        inputs = tokenizer(format_input(df, 0), return_tensors="pt").to(device)
-        outputs = model.generate(**inputs, max_new_tokens=1)
+    inputs = tokenizer(format_input(df, 0), return_tensors="pt").to(device)
+    outputs = model.generate(**inputs, max_new_tokens=1)
 
     answer = tokenizer.batch_decode(outputs, skip_special_tokens=True)
 
@@ -162,19 +153,3 @@ def main(args):
     # save the answer csv
     df[['id','answer']].to_csv(f"./logs/{path}.csv", index = False)
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Your script description here")
-
-    # Add command-line arguments
-    parser.add_argument("--llm", type=str, default="bigscience/bloom-1b7",
-                        help="Specify the llm value (default: bigscience/bloom-1b7)")
-    parser.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu",
-                        help="Specify the device")
-    parser.add_argument("--folder", type=str, default="./vmlu_v1.5/",
-                        help="Specify the folder data")
-
-    # Parse the command-line arguments6
-    args = parser.parse_args()
-
-    # Call the main function with the parsed arguments
-    main(args)
